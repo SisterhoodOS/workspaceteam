@@ -1,61 +1,620 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Workspace Team</title>
-  <style>
-    :root {
-      --bg: #faf7f4;
-      --fg: #2e2a27;
-      --muted: #7a716a;
-      --accent: #b08968;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1c1917;
-        --fg: #f0ebe6;
-        --muted: #a89e96;
-        --accent: #d4a373;
-      }
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 2rem;
-    }
-    main { max-width: 34rem; text-align: center; }
-    h1 {
-      font-size: clamp(2rem, 6vw, 3rem);
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      margin: 0 0 1rem;
-    }
-    p { color: var(--muted); line-height: 1.7; margin: 0 0 2rem; }
-    .badge {
-      display: inline-block;
-      padding: 0.4rem 1rem;
-      border: 1px solid var(--accent);
-      border-radius: 999px;
-      color: var(--accent);
-      font-size: 0.8rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workspace Monika · Saha Synergy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0E0C0C; --black-soft:#1A1615; --maroon:#6E2233; --maroon-lt:#8F3547;
+  --beige:#EFE6DA; --beige-dp:#DCCFBE; --cream:#F8F4EE; --gold:#B08D57;
+  --txt:#26201E; --muted:#8A7D74; --line:#E2D6C6;
+  --ok:#3F6B4E; --wait:#B08D57; --no:#8F3547;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--txt);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+header{background:var(--black);color:var(--beige);padding:38px 0 30px;border-bottom:3px solid var(--gold)}
+.brand{color:var(--gold);font-size:10px;letter-spacing:3.5px;text-transform:uppercase;margin-bottom:12px}
+header h1{font-size:38px;color:var(--cream);letter-spacing:.5px}
+header .sub{color:#A79A90;font-size:12.5px;margin-top:8px}
+
+nav{background:var(--black-soft);border-bottom:1px solid #2C2523;position:sticky;top:0;z-index:20}
+nav .wrap{display:flex;gap:2px;overflow-x:auto}
+nav button{background:none;border:0;color:#9A8D84;font-family:inherit;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;
+  padding:15px 20px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.18s}
+nav button:hover{color:var(--beige)}
+nav button.on{color:var(--gold);border-bottom-color:var(--gold)}
+
+main{padding:34px 0 80px}
+.panel{display:none}.panel.on{display:block}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 26px;margin-bottom:20px}
+.card h2{font-size:24px;margin-bottom:4px}
+.card .lead{color:var(--muted);font-size:13px;margin-bottom:20px}
+.seclabel{font-size:9.5px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px}
+
+.hero{background:linear-gradient(150deg,var(--black) 0%,#2A1418 55%,var(--maroon) 100%);color:var(--beige);
+  border-radius:12px;padding:32px;margin-bottom:22px}
+.hero .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hero .big{font-family:'Cormorant Garamond',serif;font-size:52px;line-height:1.05;color:#fff}
+.hero .usd{color:#C6B39D;font-size:14px;margin-top:8px}
+.hero .split{display:flex;flex-wrap:wrap;gap:26px;margin-top:24px;padding-top:22px;border-top:1px solid rgba(176,141,87,.35)}
+.hero .split div{min-width:120px}
+.hero .split .k{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.hero .split .v{font-size:16px;color:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:#fff;border:1px solid var(--line);border-left:3px solid var(--maroon);border-radius:8px;padding:17px 19px}
+.stat .k{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.stat .v{font-family:'Cormorant Garamond',serif;font-size:27px;color:var(--black)}
+.stat .n{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--maroon);
+  background:var(--beige);padding:11px 13px;border-bottom:1px solid var(--line);font-weight:600;white-space:nowrap}
+td{padding:12px 13px;border-bottom:1px solid #F0E9DF;vertical-align:top}
+tbody tr:hover{background:#FBF8F4}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rate{font-weight:600;white-space:nowrap}
+
+.pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:10.5px;letter-spacing:.6px;font-weight:500;white-space:nowrap}
+.p-ok{background:#E6EFE8;color:var(--ok)} .p-wait{background:#F6EEE0;color:#8A6A2F}
+.p-no{background:#F6E7EA;color:var(--no)} .p-neu{background:#EFEAE3;color:var(--muted)}
+
+label{display:block;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;
+  font-family:inherit;font-size:13.5px;color:var(--txt);background:#fff}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--maroon)}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:14px}
+.f{margin-bottom:0}
+
+button.btn{background:var(--maroon);color:var(--beige);border:0;border-radius:6px;padding:11px 24px;
+  font-family:inherit;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer;transition:.18s}
+button.btn:hover{background:var(--maroon-lt)}
+button.ghost{background:none;color:var(--maroon);border:1px solid var(--maroon)}
+button.ghost:hover{background:var(--maroon);color:var(--beige)}
+button.dark{background:var(--black)}button.dark:hover{background:#302826}
+.mini{background:none;border:0;color:var(--muted);cursor:pointer;font-size:11px;font-family:inherit;padding:2px 5px}
+.mini:hover{color:var(--maroon);text-decoration:underline}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.note{background:var(--beige);border-left:3px solid var(--gold);padding:14px 17px;border-radius:0 6px 6px 0;
+  font-size:12.5px;color:#5C5049;margin:16px 0}
+.note strong{color:var(--black)}
+.warn{background:#F9EDEF;border-left-color:var(--maroon)}
+
+.empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:13px}
+.empty .serif{font-size:19px;color:var(--txt);display:block;margin-bottom:6px}
+a.lnk{color:var(--maroon);font-size:12px}
+.foot{text-align:center;padding:30px 0;color:var(--muted);font-size:11px;border-top:1px solid var(--line);margin-top:40px}
+.foot em{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:13px}
+.catrow td{background:var(--beige);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--maroon);font-weight:600}
+@media(max-width:640px){header h1{font-size:28px}.hero .big{font-size:38px}.card{padding:20px 17px}}
+@media print{nav,.noprint{display:none!important}body{background:#fff}}
+</style>
 </head>
 <body>
-  <main>
-    <h1>Workspace Team</h1>
-    <p>Halaman ini sedang dibangun. Isinya akan segera diganti.</p>
-    <span class="badge">Coming soon</span>
-  </main>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Saha Synergy Group Ltd</div>
+    <h1>Workspace Monika Purba</h1>
+    <div class="sub">Rate List efektif 16 Juli 2026 · Independent Contractor · Invoice bulanan, dibayar tanggal 5 bulan berikutnya</div>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <button class="on" data-p="dash">Ringkasan Bulan</button>
+    <button data-p="log">Catat Kerja</button>
+    <button data-p="appr">Approval</button>
+    <button data-p="rates">Daftar Tarif</button>
+    <button data-p="rules">Aturan Kerja</button>
+    <button data-p="data">Data &amp; Backup</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ================= DASHBOARD ================= -->
+<section class="panel on" id="p-dash">
+  <div class="frow noprint" style="max-width:430px">
+    <div class="f"><label>Bulan</label><select id="mSel"></select></div>
+    <div class="f"><label>Kurs (IDR per USD)</label><input type="number" id="fx" value="18000"></div>
+  </div>
+
+  <div class="hero">
+    <div class="lbl">Total yang kamu dapat bulan ini</div>
+    <div class="big" id="hTotal">IDR 0</div>
+    <div class="usd" id="hUsd">~$0</div>
+    <div class="split">
+      <div><div class="k">Sudah di-approve</div><div class="v" id="hOk">IDR 0</div></div>
+      <div><div class="k">Menunggu approval</div><div class="v" id="hWait">IDR 0</div></div>
+      <div><div class="k">Jumlah entri</div><div class="v" id="hCount">0</div></div>
+      <div><div class="k">Jatuh tempo bayar</div><div class="v" id="hDue">-</div></div>
+    </div>
+  </div>
+
+  <div class="grid" id="statGrid"></div>
+
+  <div class="card">
+    <div class="seclabel">Batas Kontrak</div>
+    <h2>Jam Admin Per Minggu</h2>
+    <p class="lead">Kisaran normal 15–25 jam per minggu. Di atas 25 jam perlu approval tertulis Sophia lebih dulu, kalau tidak jamnya bisa tidak dibayar.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Minggu</th><th class="num">Jam admin</th><th>Posisi</th><th class="num">Nilai (IDR)</th></tr></thead>
+      <tbody id="weekBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Rincian</div>
+    <h2>Semua Pekerjaan Bulan Ini</h2>
+    <p class="lead">Setiap baris adalah uang. Kalau tidak ada di sini, tidak terhitung.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Klien</th><th class="num">Jml</th><th class="num">Tarif</th><th class="num">Total</th><th>Approval</th><th>Link</th></tr></thead>
+      <tbody id="dashBody"></tbody>
+    </table></div>
+    <div class="btnrow noprint" style="margin-top:16px">
+      <button class="btn dark" onclick="window.print()">Cetak / Simpan PDF Invoice</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOG ================= -->
+<section class="panel" id="p-log">
+  <div class="card">
+    <div class="seclabel">Input</div>
+    <h2>Catat Pekerjaan</h2>
+    <p class="lead">Pilih jenis pekerjaan, tarifnya terisi otomatis. Isi setiap selesai kerja, jangan ditumpuk sampai akhir bulan.</p>
+
+    <div class="frow">
+      <div class="f"><label>Tanggal</label><input type="date" id="iDate"></div>
+      <div class="f"><label>Jenis pekerjaan</label><select id="iType"></select></div>
+      <div class="f"><label>Klien / untuk siapa</label><input id="iClient" placeholder="Sisterhood OS, Rania, Sheree..."></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label id="lQty">Jumlah</label><input type="number" id="iQty" value="1" min="0" step="0.25"></div>
+      <div class="f"><label>Tarif per unit (IDR)</label><input type="number" id="iRate"></div>
+      <div class="f"><label>Status approval Sophia</label><select id="iAppr">
+        <option value="tidak">Tidak perlu approval</option>
+        <option value="menunggu">Menunggu approval</option>
+        <option value="approved">Sudah di-approve</option>
+        <option value="revisi">Diminta revisi</option>
+      </select></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Link hasil kerja (video / halaman)</label><input id="iLink" placeholder="https://..."></div>
+      <div class="f"><label>Status bayar</label><select id="iPaid">
+        <option value="belum">Belum ditagih</option>
+        <option value="ditagih">Sudah masuk invoice</option>
+        <option value="dibayar">Sudah dibayar</option>
+      </select></div>
+    </div>
+    <div class="frow"><div class="f" style="grid-column:1/-1"><label>Catatan</label><input id="iNote" placeholder="Batch 10 reel Juli, revisi ke-2, dsb"></div></div>
+
+    <div id="hintBox" class="note" style="display:none"></div>
+
+    <div class="btnrow">
+      <button class="btn" id="saveBtn">Simpan Entri</button>
+      <button class="btn ghost" id="cancelBtn" style="display:none">Batal Edit</button>
+      <span id="liveCalc" class="serif" style="font-size:19px;color:var(--maroon)"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Riwayat</div>
+    <h2>Semua Entri Tersimpan</h2>
+    <p class="lead">Klik ubah untuk memperbaiki, hapus untuk membuang.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Klien</th><th class="num">Jml</th><th class="num">Total</th><th>Approval</th><th>Bayar</th><th>Link</th><th></th></tr></thead>
+      <tbody id="logBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= APPROVAL ================= -->
+<section class="panel" id="p-appr">
+  <div class="card">
+    <div class="seclabel">Perlu Perhatian</div>
+    <h2>Menunggu Approval Sophia</h2>
+    <p class="lead">Aturan kontrak: pekerjaan project (batch reel, website, production day) harus disetujui tertulis sebelum dikerjakan. Yang di bawah ini belum beres approval-nya.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Klien</th><th class="num">Nilai</th><th>Status</th><th>Link</th><th></th></tr></thead>
+      <tbody id="apprBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Referensi</div>
+    <h2>Siapa Approve Apa</h2>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Jenis pekerjaan</th><th>Arahan</th><th>Yang menyetujui</th></tr></thead>
+      <tbody>
+        <tr><td>Website &amp; portal, desain UI</td><td>Sophia mengarahkan dari awal sampai akhir</td><td>Sophia approve sebelum live</td></tr>
+        <tr><td>Meta ad video edit</td><td>Kerja sendiri, tanpa arahan</td><td>Sophia review tiap video sebelum launch</td></tr>
+        <tr><td>Batch reel</td><td>Kerja sendiri, berbasis template</td><td>Assistant Director. Sophia ikut untuk klien baru</td></tr>
+        <tr><td>Admin, rumah tangga, vendor</td><td>Kerja mandiri</td><td>Log mingguan terperinci</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= RATES ================= -->
+<section class="panel" id="p-rates">
+  <div class="card">
+    <div class="seclabel">Kontrak</div>
+    <h2>Daftar Tarif Lengkap</h2>
+    <p class="lead">Persis seperti dokumen yang kamu tanda tangan 16 Juli 2026. Kurs referensi 18.000 IDR per USD, ditinjau tiap 3 bulan.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Pekerjaan</th><th class="num">Tarif (IDR)</th><th class="num">USD</th><th>Syarat</th></tr></thead>
+      <tbody id="rateBody"></tbody>
+    </table></div>
+    <div class="note"><strong>Perbandingan tarif reel:</strong> Tarif Ana (IDR 125.000–145.000 per video) untuk edit produksi custom yang makan waktu berjam-jam. Tarif reel Monika untuk perakitan berbasis template, hitungan menit per reel. Edit yang butuh skill produksi (multi-scene, motion graphics, ad creative kompleks) masuk ke Ana, bukan ke daftar ini.</div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 5</div>
+    <h2>Komisi Penjualan</h2>
+    <p class="lead">Bertingkat, dihitung dari closing yang kamu dapat dan tutup sendiri. Komisi ini tambahan, di luar semua tarif di atas.</p>
+    <div class="grid">
+      <div class="stat"><div class="k">Foundation</div><div class="v">10%</div><div class="n">1–2 closing per bulan</div></div>
+      <div class="stat"><div class="k">Growth</div><div class="v">15%</div><div class="n">3–4 closing per bulan</div></div>
+      <div class="stat"><div class="k">Performance</div><div class="v">20%</div><div class="n">5 closing atau lebih</div></div>
+    </div>
+    <div class="note">Komisi SPC enrollment memakai tarif flat terpisah, disepakati sendiri. Catat komisi lewat jenis pekerjaan <strong>Komisi / lainnya</strong> di tab Catat Kerja, lalu isi nominalnya manual.</div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 6</div>
+    <h2>Backpay Sekali Bayar</h2>
+    <p class="lead">Pelunasan kontrak lama, Februari sampai Mei 2026. Dibayar satu kali.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Bulan</th><th class="num">Backpay (IDR)</th><th class="num">USD</th></tr></thead>
+      <tbody>
+        <tr><td>Februari 2026</td><td class="num rate">1.300.000</td><td class="num">~$72</td></tr>
+        <tr><td>Maret 2026</td><td class="num rate">500.000</td><td class="num">~$28</td></tr>
+        <tr><td>April 2026</td><td class="num rate">1.075.000</td><td class="num">~$60</td></tr>
+        <tr><td>Mei 2026</td><td class="num rate">600.000</td><td class="num">~$33</td></tr>
+        <tr style="background:var(--beige)"><td><strong>Total</strong></td><td class="num rate">3.475.000</td><td class="num">~$193</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= RULES ================= -->
+<section class="panel" id="p-rules">
+  <div class="card">
+    <div class="seclabel">Dasar Perhitungan</div>
+    <h2>Versi Yang Dipakai</h2>
+    <div class="note">
+      Workspace ini mengikuti <strong>dokumen yang kamu tanda tangan tanggal 16 Juli 2026</strong>, yaitu versi dengan jam admin <strong>15–25 jam per minggu</strong>.
+      <br><br>
+      Artinya: kisaran normal admin kira-kira 65–108 jam per bulan, atau IDR 2.600.000–4.330.000 per bulan. Jam di atas 25 per minggu perlu approval tertulis Sophia lebih dulu.
+      <br><br>
+      Catatan kecil: ada versi PDF lain yang beredar dan menulis 15–25 jam per <em>bulan</em>. Versi itu <strong>tidak</strong> dipakai di sini. Semua tarif lainnya sama persis di kedua versi, jadi tidak ada yang berubah selain bagian jam admin ini.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 8</div>
+    <h2>Aturan Umum</h2>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Hal</th><th>Aturan</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Catat jam</strong></td><td>Log mingguan terperinci, dibagikan ke Sophia. Setiap entri harus menjelaskan apa yang dikerjakan, bukan cuma jumlah jam. Jam yang tidak dicatat atau tidak dijelaskan tidak bisa ditagih.</td></tr>
+        <tr><td><strong>Approval</strong></td><td>Pekerjaan project (batch, website, production day) harus dipesan tertulis sebelum mulai dikerjakan.</td></tr>
+        <tr><td><strong>Pembayaran</strong></td><td>Satu invoice per bulan, gabungan jam kerja dan deliverable. Dibayar tanggal 5 bulan berikutnya.</td></tr>
+        <tr><td><strong>Tinjauan tarif</strong></td><td>Tiap 3 bulan, atau kalau kurs IDR terhadap USD bergerak lebih dari 10% selama 60 hari.</td></tr>
+        <tr><td><strong>Batas tugas</strong></td><td>Tidak mengelola orang. Kiriman dan postingan ke klien harus disetujui Sophia.</td></tr>
+        <tr><td><strong>Aturan scope build</strong></td><td>Build di-quote dan disepakati tertulis sebelum mulai. Copywriting, desain brand, dan strategi tidak termasuk. Waktu belajar tool baru sudah termasuk harga project, tidak ditagih per jam.</td></tr>
+        <tr><td><strong>Tanpa dobel tagih</strong></td><td>Production day tidak ditambah jam admin. Meeting di dalam jam admin tidak ditagih terpisah.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 9</div>
+    <h2>Contoh Bulan Penuh</h2>
+    <p class="lead">Ilustrasi dari dokumen, memakai beban kerja Juli 2026.</p>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Pekerjaan</th><th>Volume</th><th>Tarif</th><th class="num">Total (IDR)</th></tr></thead>
+      <tbody>
+        <tr><td>Jam admin</td><td>15–25 jam/minggu (~65–108 jam)</td><td>IDR 40.000/jam</td><td class="num rate">2.600.000–4.330.000</td></tr>
+        <tr><td>Website (Rania)</td><td>1 landing page</td><td>IDR 600.000 flat</td><td class="num rate">600.000</td></tr>
+        <tr><td>Meta ad edit (Sheree)</td><td>10 edit</td><td>IDR 40.000/edit</td><td class="num rate">400.000</td></tr>
+        <tr><td>Carousel klien lama</td><td>1 template baru + 11 ulangan</td><td>40.000 + 10.000 each</td><td class="num rate">150.000</td></tr>
+        <tr><td>Production day</td><td>2–4 hari penuh</td><td>IDR 350.000/hari</td><td class="num rate">700.000–1.400.000</td></tr>
+        <tr><td>Meeting</td><td>4 (1 per minggu)</td><td>IDR 50.000 each</td><td class="num rate">200.000</td></tr>
+        <tr style="background:var(--beige)"><td colspan="3"><strong>Total bulan</strong></td><td class="num rate">4.650.000–7.080.000 (~$258–393)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note">Cara membaca contoh ini: bulan penuh dengan satu build landing page, beberapa hari syuting, dan output konten yang stabil. Website itu item sekali jalan. Bulan biasa tanpa build kira-kira IDR 4.050.000–6.480.000. Kalau template carousel sudah ada, baris carousel jadi IDR 120.000.</div>
+  </div>
+</section>
+
+<!-- ================= DATA ================= -->
+<section class="panel" id="p-data">
+  <div class="card">
+    <div class="seclabel">Penting</div>
+    <h2>Data Tersimpan Di Mana</h2>
+    <div class="note warn"><strong>Baca ini.</strong> Data kamu tersimpan di dalam browser komputer ini saja. Tidak terkirim ke internet, dan tidak ada orang lain yang bisa melihatnya, termasuk Sophia.<br><br>
+    Artinya: kalau kamu buka halaman ini dari HP atau komputer lain, datanya kosong. Kalau riwayat browser dibersihkan, datanya hilang.<br><br>
+    Jadi tiap akhir bulan, tekan tombol <strong>Unduh Cadangan</strong> di bawah dan simpan filenya. Itu pengaman kamu.</div>
+    <div class="btnrow">
+      <button class="btn" id="expBtn">Unduh Cadangan</button>
+      <button class="btn ghost" id="impBtn">Muat Cadangan</button>
+      <button class="btn ghost" id="csvBtn">Unduh Excel (CSV)</button>
+      <input type="file" id="impFile" accept="application/json" style="display:none">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Total Sepanjang Waktu</div>
+    <h2>Rekap Semua Bulan</h2>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Bulan</th><th class="num">Entri</th><th class="num">Total (IDR)</th><th class="num">USD</th><th>Status bayar</th></tr></thead>
+      <tbody id="allBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Hati-hati</div>
+    <h2>Hapus Semua</h2>
+    <p class="lead">Menghapus seluruh catatan kerja. Tidak bisa dikembalikan. Unduh cadangan dulu sebelum menekan ini.</p>
+    <button class="btn ghost" id="wipeBtn">Hapus Semua Data</button>
+  </div>
+</section>
+
+</main>
+
+<div class="foot wrap">
+  Saha Synergy Group Ltd · sahasynergy.com<br>
+  <em>Structure that frees you</em>
+</div>
+
+<script>
+const RATES=[
+ {id:'admin',cat:'Admin',lbl:'Admin support (per jam)',rate:40000,unit:'jam',qtyLbl:'Jumlah jam',
+  cond:'Semua tugas admin dan EA. Dicatat per 15 menit. Kisaran normal 15-25 jam per minggu. Jam di atas 25 per minggu perlu approval tertulis Sophia lebih dulu.'},
+ {id:'reel_tpl',cat:'Konten',lbl:'Reel dari template (per reel)',rate:10000,unit:'reel',qtyLbl:'Jumlah reel',
+  cond:'Perakitan cepat berbasis template, dikirim sebagai postingan harian. Dipesan dalam batch 10 reel (IDR 100.000 per batch). Direview Assistant Director sebelum batch berikutnya.'},
+ {id:'reel_trial',cat:'Konten',lbl:'Reel klien baru, trial batch (per reel)',rate:15000,unit:'reel',qtyLbl:'Jumlah reel',
+  cond:'Batch pertama 10 reel untuk klien baru (IDR 150.000 per batch), mencakup setup dan template. Direview bersama Sophia.'},
+ {id:'meta_ad',cat:'Konten',lbl:'Meta ad video edit (per edit)',rate:40000,unit:'edit',qtyLbl:'Jumlah edit',
+  cond:'Dihitung custom reel, bukan template reel. Dikerjakan mandiri tanpa arahan Sophia. Setiap video ad direview Sophia sebelum tayang.'},
+ {id:'reel_custom',cat:'Konten',lbl:'Custom reel, edit sendiri (per reel)',rate:40000,unit:'reel',qtyLbl:'Jumlah reel',
+  cond:'Reel di luar alur batch yang butuh edit tersendiri, kira-kira satu jam kerja. Flat per reel berapa pun waktu yang terpakai.'},
+ {id:'car_new',cat:'Konten',lbl:'Carousel, template baru',rate:40000,unit:'template',qtyLbl:'Jumlah template',
+  cond:'Mendesain template carousel baru di Canva, termasuk carousel pertama yang sudah jadi dan caption-nya.'},
+ {id:'car_rep',cat:'Konten',lbl:'Carousel dari template lama',rate:10000,unit:'carousel',qtyLbl:'Jumlah carousel',
+  cond:'Mengulang template yang sudah disetujui dengan konten baru, caption termasuk. Turnaround cepat, tarif sama dengan reel.'},
+ {id:'prod_full',cat:'Produksi',lbl:'Production day, sehari penuh',rate:350000,unit:'hari',qtyLbl:'Jumlah hari',
+  cond:'Sampai 10 jam di lokasi atau di set: setup, koordinasi, bantu syuting, ambil BTS. Tidak ditambah tagihan jam admin.'},
+ {id:'prod_half',cat:'Produksi',lbl:'Production day, setengah hari',rate:200000,unit:'hari',qtyLbl:'Jumlah setengah hari',
+  cond:'Sampai 5 jam.'},
+ {id:'meeting',cat:'Produksi',lbl:'Menghadiri meeting',rate:50000,unit:'meeting',qtyLbl:'Jumlah meeting',
+  cond:'Per meeting, sampai 90 menit, tatap muka atau video call, selama tidak berada di dalam jam admin yang sudah dicatat. Tidak boleh dobel tagih.'},
+ {id:'web_land',cat:'Web',lbl:'Landing page satu halaman',rate:600000,unit:'project',qtyLbl:'Jumlah project',
+  cond:'Satu halaman di platform yang disepakati (Wix, Circle.so, atau sejenis), dari copy dan aset brand yang diberikan. Termasuk 3 putaran revisi.'},
+ {id:'web_std',cat:'Web',lbl:'Website sampai 5 halaman',rate:1600000,unit:'project',qtyLbl:'Jumlah project',
+  cond:'Home ditambah sampai 4 halaman dalam, sudah dicek di HP, form dan link terpasang. Termasuk 3 putaran revisi.'},
+ {id:'web_page',cat:'Web',lbl:'Halaman tambahan di atas 5',rate:120000,unit:'halaman',qtyLbl:'Jumlah halaman',
+  cond:'Per halaman, scope sama.'},
+ {id:'web_upd',cat:'Web',lbl:'Update halaman yang sudah ada (per jam)',rate:40000,unit:'jam',qtyLbl:'Jumlah jam',
+  cond:'Edit kecil, penggantian, dan perawatan masuk jam admin, bukan tarif project.'},
+ {id:'other',cat:'Lainnya',lbl:'Komisi / lainnya (isi nominal manual)',rate:0,unit:'item',qtyLbl:'Jumlah',
+  cond:'Untuk komisi penjualan, backpay, atau hal di luar daftar. Isi tarifnya manual, lalu jelaskan di catatan.'}
+];
+const R={};RATES.forEach(r=>R[r.id]=r);
+const KEY='monika_workspace_v1';
+let db=load(), editId=null;
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function fmt(n){return'IDR '+Math.round(n).toLocaleString('id-ID')}
+function usd(n){return'~$'+Math.round(n/(+document.getElementById('fx').value||18000)).toLocaleString('en-US')}
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function mkey(d){return(d||'').slice(0,7)}
+function mname(k){const[y,m]=k.split('-');return['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][+m-1]+' '+y}
+function dueDate(k){let[y,m]=k.split('-').map(Number);m++;if(m>12){m=1;y++}return'5 '+mname(y+'-'+String(m).padStart(2,'0'))}
+function total(e){return(+e.qty||0)*(+e.rate||0)}
+
+// ---- nav
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+b.dataset.p).classList.add('on');window.scrollTo(0,0);
+});
+
+// ---- form setup
+const iType=document.getElementById('iType');
+let lastCat='';
+RATES.forEach(r=>{
+  if(r.cat!==lastCat){const g=document.createElement('optgroup');g.label=r.cat;g.id='og-'+r.cat;iType.appendChild(g);lastCat=r.cat}
+  const o=document.createElement('option');o.value=r.id;o.textContent=r.lbl;
+  document.getElementById('og-'+r.cat).appendChild(o);
+});
+function syncType(){
+  const r=R[iType.value];
+  document.getElementById('iRate').value=r.rate;
+  document.getElementById('lQty').textContent=r.qtyLbl;
+  const h=document.getElementById('hintBox');h.style.display='block';h.innerHTML='<strong>Syarat:</strong> '+esc(r.cond);
+  calc();
+}
+function calc(){
+  const t=(+document.getElementById('iQty').value||0)*(+document.getElementById('iRate').value||0);
+  document.getElementById('liveCalc').textContent=t?fmt(t):'';
+}
+iType.onchange=syncType;
+['iQty','iRate'].forEach(id=>document.getElementById(id).oninput=calc);
+document.getElementById('iDate').value=new Date().toISOString().slice(0,10);
+syncType();
+
+document.getElementById('saveBtn').onclick=()=>{
+  const d=document.getElementById('iDate').value;
+  if(!d){alert('Isi tanggalnya dulu.');return}
+  const e={id:editId||('e'+Date.now()+Math.random().toString(36).slice(2,7)),
+    date:d,type:iType.value,client:document.getElementById('iClient').value.trim(),
+    qty:+document.getElementById('iQty').value||0,rate:+document.getElementById('iRate').value||0,
+    appr:document.getElementById('iAppr').value,paid:document.getElementById('iPaid').value,
+    link:document.getElementById('iLink').value.trim(),note:document.getElementById('iNote').value.trim()};
+  if(editId){db=db.map(x=>x.id===editId?e:x);editId=null;
+    document.getElementById('saveBtn').textContent='Simpan Entri';
+    document.getElementById('cancelBtn').style.display='none';}
+  else db.push(e);
+  ['iClient','iLink','iNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('iQty').value=1;calc();save();
+};
+document.getElementById('cancelBtn').onclick=()=>{
+  editId=null;document.getElementById('saveBtn').textContent='Simpan Entri';
+  document.getElementById('cancelBtn').style.display='none';
+  ['iClient','iLink','iNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('iQty').value=1;syncType();
+};
+function edit(id){
+  const e=db.find(x=>x.id===id);if(!e)return;editId=id;
+  document.getElementById('iDate').value=e.date;iType.value=e.type;syncType();
+  document.getElementById('iClient').value=e.client||'';document.getElementById('iQty').value=e.qty;
+  document.getElementById('iRate').value=e.rate;document.getElementById('iAppr').value=e.appr;
+  document.getElementById('iPaid').value=e.paid;document.getElementById('iLink').value=e.link||'';
+  document.getElementById('iNote').value=e.note||'';
+  document.getElementById('saveBtn').textContent='Simpan Perubahan';
+  document.getElementById('cancelBtn').style.display='inline-block';
+  document.querySelector('nav button[data-p="log"]').click();calc();
+}
+function del(id){if(confirm('Hapus entri ini?')){db=db.filter(x=>x.id!==id);save()}}
+function setAppr(id,v){db=db.map(x=>x.id===id?{...x,appr:v}:x);save()}
+
+const APPR={tidak:['Tidak perlu','p-neu'],menunggu:['Menunggu Sophia','p-wait'],approved:['Approved','p-ok'],revisi:['Minta revisi','p-no']};
+const PAID={belum:['Belum ditagih','p-neu'],ditagih:['Masuk invoice','p-wait'],dibayar:['Sudah dibayar','p-ok']};
+function pill(m,v){const x=m[v]||['-','p-neu'];return'<span class="pill '+x[1]+'">'+x[0]+'</span>'}
+function linkCell(e){return e.link?'<a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">Lihat</a>':'<span style="color:var(--muted)">-</span>'}
+
+// ---- render
+function render(){
+  const months=[...new Set(db.map(e=>mkey(e.date)))].sort().reverse();
+  const cur=new Date().toISOString().slice(0,7);
+  if(!months.includes(cur))months.unshift(cur);
+  const sel=document.getElementById('mSel'),keep=sel.value;
+  sel.innerHTML=months.map(m=>'<option value="'+m+'">'+mname(m)+'</option>').join('');
+  sel.value=months.includes(keep)?keep:months[0];
+  const mk=sel.value;
+  const rows=db.filter(e=>mkey(e.date)===mk).sort((a,b)=>a.date.localeCompare(b.date));
+
+  const sum=rows.reduce((s,e)=>s+total(e),0);
+  const ok=rows.filter(e=>e.appr==='approved'||e.appr==='tidak').reduce((s,e)=>s+total(e),0);
+  const wait=rows.filter(e=>e.appr==='menunggu'||e.appr==='revisi').reduce((s,e)=>s+total(e),0);
+  document.getElementById('hTotal').textContent=fmt(sum);
+  document.getElementById('hUsd').textContent=usd(sum);
+  document.getElementById('hOk').textContent=fmt(ok);
+  document.getElementById('hWait').textContent=fmt(wait);
+  document.getElementById('hCount').textContent=rows.length;
+  document.getElementById('hDue').textContent=dueDate(mk);
+
+  const cats={};rows.forEach(e=>{const c=R[e.type]?R[e.type].cat:'Lainnya';cats[c]=(cats[c]||0)+total(e)});
+  const hrs=rows.filter(e=>e.type==='admin').reduce((s,e)=>s+(+e.qty||0),0);
+  const reels=rows.filter(e=>['reel_tpl','reel_trial','reel_custom','meta_ad'].includes(e.type)).reduce((s,e)=>s+(+e.qty||0),0);
+  let g='<div class="stat"><div class="k">Jam admin tercatat</div><div class="v">'+hrs+' jam</div><div class="n">'+fmt(hrs*40000)+' · kisaran normal 65-108 jam/bulan</div></div>'+
+        '<div class="stat"><div class="k">Total video dibuat</div><div class="v">'+reels+'</div><div class="n">reel, edit, ad video</div></div>';
+  Object.keys(cats).sort().forEach(c=>{g+='<div class="stat"><div class="k">'+c+'</div><div class="v">'+fmt(cats[c]).replace('IDR ','')+'</div><div class="n">'+usd(cats[c])+'</div></div>'});
+  document.getElementById('statGrid').innerHTML=g;
+
+  // jam admin per minggu, batas 25 jam per minggu sesuai dokumen yang ditanda tangani
+  const wk={};
+  rows.filter(e=>e.type==='admin'||e.type==='web_upd').forEach(e=>{
+    const d=new Date(e.date+'T00:00:00');if(isNaN(d))return;
+    const off=(d.getDay()+6)%7,mon=new Date(d);mon.setDate(d.getDate()-off);
+    const k=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+    wk[k]=(wk[k]||0)+(+e.qty||0);
+  });
+  const wks=Object.keys(wk).sort();
+  document.getElementById('weekBody').innerHTML=wks.length?wks.map(k=>{
+    const h=wk[k],mon=new Date(k+'T00:00:00'),sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    const rng=mon.getDate()+'/'+(mon.getMonth()+1)+' sampai '+sun.getDate()+'/'+(sun.getMonth()+1);
+    const p=h>25?'<span class="pill p-no">Lewat 25 jam, perlu approval</span>'
+      :h>=15?'<span class="pill p-ok">Dalam kisaran normal</span>'
+      :'<span class="pill p-wait">Di bawah kisaran</span>';
+    return '<tr><td>'+rng+'</td><td class="num">'+h+' jam</td><td>'+p+'</td><td class="num rate">'+(h*40000).toLocaleString('id-ID')+'</td></tr>';
+  }).join(''):'<tr><td colspan="4"><div class="empty"><span class="serif">Belum ada jam admin</span>Catat jam admin di tab Catat Kerja, nanti muncul di sini per minggu.</div></td></tr>';
+
+  const emptyRow=n=>'<tr><td colspan="'+n+'"><div class="empty"><span class="serif">Belum ada catatan</span>Buka tab Catat Kerja untuk menambah pekerjaan pertama bulan ini.</div></td></tr>';
+  document.getElementById('dashBody').innerHTML=rows.length?rows.map(e=>{
+    const r=R[e.type]||{lbl:e.type,unit:''};
+    return '<tr><td>'+e.date.slice(8)+'/'+e.date.slice(5,7)+'</td><td>'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
+      '</td><td>'+esc(e.client||'-')+'</td><td class="num">'+e.qty+' '+esc(r.unit)+'</td><td class="num">'+(+e.rate).toLocaleString('id-ID')+
+      '</td><td class="num rate">'+total(e).toLocaleString('id-ID')+'</td><td>'+pill(APPR,e.appr)+'</td><td>'+linkCell(e)+'</td></tr>'}).join('')
+    +'<tr style="background:var(--beige)"><td colspan="5"><strong>Total '+mname(mk)+'</strong></td><td class="num rate">'+sum.toLocaleString('id-ID')+'</td><td colspan="2">'+usd(sum)+'</td></tr>'
+    :emptyRow(8);
+
+  const all=[...db].sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('logBody').innerHTML=all.length?all.map(e=>{
+    const r=R[e.type]||{lbl:e.type,unit:''};
+    return '<tr><td>'+esc(e.date)+'</td><td>'+esc(r.lbl)+'</td><td>'+esc(e.client||'-')+'</td><td class="num">'+e.qty+'</td>'+
+      '<td class="num rate">'+total(e).toLocaleString('id-ID')+'</td><td>'+pill(APPR,e.appr)+'</td><td>'+pill(PAID,e.paid)+'</td><td>'+linkCell(e)+
+      '</td><td class="noprint"><button class="mini" onclick="edit(\''+e.id+'\')">ubah</button><button class="mini" onclick="del(\''+e.id+'\')">hapus</button></td></tr>'}).join(''):emptyRow(9);
+
+  const pend=db.filter(e=>e.appr==='menunggu'||e.appr==='revisi').sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('apprBody').innerHTML=pend.length?pend.map(e=>{
+    const r=R[e.type]||{lbl:e.type};
+    return '<tr><td>'+esc(e.date)+'</td><td>'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
+      '</td><td>'+esc(e.client||'-')+'</td><td class="num rate">'+total(e).toLocaleString('id-ID')+'</td><td>'+pill(APPR,e.appr)+'</td><td>'+linkCell(e)+
+      '</td><td class="noprint"><button class="mini" onclick="setAppr(\''+e.id+'\',\'approved\')">tandai approved</button></td></tr>'}).join('')
+    :'<tr><td colspan="7"><div class="empty"><span class="serif">Semua beres</span>Tidak ada yang menunggu approval Sophia.</div></td></tr>';
+
+  const byM={};db.forEach(e=>{const k=mkey(e.date);(byM[k]=byM[k]||[]).push(e)});
+  const ks=Object.keys(byM).sort().reverse();
+  document.getElementById('allBody').innerHTML=ks.length?ks.map(k=>{
+    const t=byM[k].reduce((s,e)=>s+total(e),0);
+    const paid=byM[k].every(e=>e.paid==='dibayar')?'<span class="pill p-ok">Lunas</span>':
+      byM[k].some(e=>e.paid==='dibayar')?'<span class="pill p-wait">Sebagian</span>':'<span class="pill p-neu">Belum</span>';
+    return '<tr><td>'+mname(k)+'</td><td class="num">'+byM[k].length+'</td><td class="num rate">'+t.toLocaleString('id-ID')+'</td><td class="num">'+usd(t)+'</td><td>'+paid+'</td></tr>'}).join('')
+    :'<tr><td colspan="5"><div class="empty"><span class="serif">Belum ada data</span>Rekap muncul setelah kamu mencatat pekerjaan.</div></td></tr>';
+}
+document.getElementById('mSel').onchange=render;
+document.getElementById('fx').oninput=render;
+
+// ---- rate table
+document.getElementById('rateBody').innerHTML=(()=>{let out='',c='';
+  RATES.filter(r=>r.id!=='other').forEach(r=>{
+    if(r.cat!==c){out+='<tr class="catrow"><td colspan="4">'+r.cat+'</td></tr>';c=r.cat}
+    out+='<tr><td><strong>'+esc(r.lbl)+'</strong></td><td class="num rate">'+r.rate.toLocaleString('id-ID')+
+      '</td><td class="num" style="color:var(--muted)">~$'+(r.rate/18000).toFixed(2)+'</td><td style="color:#5C5049;font-size:12.5px">'+esc(r.cond)+'</td></tr>'});
+  return out})();
+
+// ---- data tools
+document.getElementById('expBtn').onclick=()=>{
+  const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='cadangan-workspace-monika.json';a.click();
+};
+document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
+document.getElementById('impFile').onchange=ev=>{
+  const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{const d=JSON.parse(rd.result);
+    if(!Array.isArray(d))throw 0;
+    if(confirm('Muat '+d.length+' entri? Data yang sekarang akan diganti.')){db=d;save()}
+  }catch(e){alert('File tidak terbaca. Pastikan file cadangan yang benar.')}};
+  rd.readAsText(f);ev.target.value='';
+};
+document.getElementById('csvBtn').onclick=()=>{
+  const h=['Tanggal','Pekerjaan','Klien','Jumlah','Tarif','Total','Approval','Bayar','Link','Catatan'];
+  const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const lines=[h.join(',')].concat([...db].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>{
+    const r=R[e.type]||{lbl:e.type};
+    return [e.date,r.lbl,e.client,e.qty,e.rate,total(e),(APPR[e.appr]||[''])[0],(PAID[e.paid]||[''])[0],e.link,e.note].map(q).join(',')}));
+  const b=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='workspace-monika.csv';a.click();
+};
+document.getElementById('wipeBtn').onclick=()=>{
+  if(confirm('Hapus SEMUA catatan kerja? Tidak bisa dikembalikan.')&&confirm('Yakin? Sudah unduh cadangan?')){db=[];save()}
+};
+
+render();
+</script>
 </body>
 </html>
