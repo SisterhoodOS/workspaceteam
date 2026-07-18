@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workspace Team</title>
+  <style>
+    :root {
+      --bg: #faf7f4;
+      --fg: #2e2a27;
+      --muted: #7a716a;
+      --accent: #b08968;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1917;
+        --fg: #f0ebe6;
+        --muted: #a89e96;
+        --accent: #d4a373;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 2rem;
+    }
+    main { max-width: 34rem; text-align: center; }
+    h1 {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      margin: 0 0 1rem;
+    }
+    p { color: var(--muted); line-height: 1.7; margin: 0 0 2rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Workspace Team</h1>
+    <p>Halaman ini sedang dibangun. Isinya akan segera diganti.</p>
+    <span class="badge">Coming soon</span>
+  </main>
+</body>
+</html>
