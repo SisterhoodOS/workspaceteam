@@ -197,14 +197,12 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
   <div class="card">
     <div class="brand">Saha Synergy Group Ltd</div>
     <h2>Workspace</h2>
-    <p class="lede">Sign in so your records follow you to any device.</p>
-    <label for="gEmail">Email</label>
-    <input id="gEmail" type="email" autocomplete="username" placeholder="you@email.com">
+    <p class="lede">Enter the team password. Your records then follow you to any device.</p>
     <label for="gPass">Password</label>
-    <input id="gPass" type="password" autocomplete="current-password" placeholder="Your password">
-    <button id="gBtn">Sign in</button>
+    <input id="gPass" type="password" autocomplete="current-password" placeholder="Team password">
+    <button id="gBtn">Open workspace</button>
     <div class="msg" id="gMsg"></div>
-    <div class="foot">Your records are private to this login. Forgot the password? Reset it from the Supabase dashboard.</div>
+    <div class="foot">You only do this once on each device. This browser will remember you afterwards.</div>
   </div>
 </div>
 
@@ -1574,6 +1572,8 @@ render();
 (function(){
 const SB_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
 const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
+// one shared team account, so the gate only ever asks for a password
+const ACCOUNT_EMAIL='purbamonika610@gmail.com';
 const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
             'monika_finance_v1','monika_commit_v1','monika_seeded_v1'];
 
@@ -1664,13 +1664,12 @@ async function pullThenBoot(){
 
 // ---- sign in
 btn.onclick=async function(){
-  const email=document.getElementById('gEmail').value.trim();
   const pass=document.getElementById('gPass').value;
-  if(!email||!pass){say('Please fill in both fields.','err');return}
-  btn.disabled=true;say('Signing in…');
-  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(!pass){say('Please enter the password.','err');return}
+  btn.disabled=true;say('Opening…');
+  const {data,error}=await sb.auth.signInWithPassword({email:ACCOUNT_EMAIL,password:pass});
   btn.disabled=false;
-  if(error){say(error.message,'err');return}
+  if(error){say('That password did not work. Check it and try again.','err');return}
   uid=data.user.id;
   say('Signed in.','ok');
   pullThenBoot();
