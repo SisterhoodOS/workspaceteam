@@ -226,7 +226,7 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
     <h2>Whose workspace?</h2>
     <p class="lede">Each person keeps their own records. Pick yours.</p>
     <button class="who" data-who="MONIKA"><div class="nm">Monika</div><div class="sub">Head of Social Media &amp; Operations</div></button>
-    <button class="who" data-who="LIA"><div class="nm">Lia</div><div class="sub">Team member</div></button>
+    <button class="who" data-who="LIA"><div class="nm">Lia</div><div class="sub">Outreach, clients, meetings, reports</div></button>
     <button class="who" data-who="LENY"><div class="nm">Leny</div><div class="sub">Home organising, stock, shopping, meals, Hanu</div></button>
   </div>
 </div>
@@ -1665,13 +1665,14 @@ function wrapWrites(){
 function showPicker(){gate.classList.add('hide');pick.classList.add('show')}
 function chooseProfile(p){
   const last=localStorage.getItem(PROFKEY);
-  // Leny runs a different app entirely, her own hub, on its own page.
-  // the handoff flag is what proves she came through the password.
-  if(p==='LENY'){
+  // Leny and Lia each run their own app on their own page. The handoff
+  // flag is what proves they came through the password.
+  const OWN_PAGE={LENY:'leny.html',LIA:'lia.html'};
+  if(OWN_PAGE[p]){
     if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
-    localStorage.setItem(PROFKEY,'LENY');
+    localStorage.setItem(PROFKEY,p);
     try{sessionStorage.setItem(GATEFLAG,'1')}catch(e){}
-    location.href='leny.html';
+    location.href=OWN_PAGE[p];
     return;
   }
   // leaving someone else's folder: clear their records off this device first,

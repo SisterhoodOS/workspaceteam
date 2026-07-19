@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lia · Outreach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --blush-50:#fdf6f8; --pink-100:#fbe4ee; --pink-300:#f0b8cc;
+  --purple-200:#e3cdec; --purple-500:#a97bc4;
+  --maroon-700:#8c2f4a; --maroon-900:#5c1a2e;
+  --ink:#3a1424; --ink-soft:#7a4a5e; --cream:#fff8fa;
+  --line:#f2dfe7;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Quicksand','Trebuchet MS',sans-serif;
+  --r-sm:10px; --r-md:16px; --r-lg:24px;
+  --shadow:0 8px 24px rgba(92,26,46,.12);
+  --shadow-sm:0 4px 12px rgba(92,26,46,.08);
+  --ok:#3f7d52; --warn:#b8791f; --bad:#b5453f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);color:var(--ink);font-size:14px;line-height:1.55;
+  background:linear-gradient(180deg,var(--blush-50),var(--pink-100) 60%) fixed;min-height:100vh}
+h1,h2,h3,.disp{font-family:var(--font-display);font-weight:600}
+a{color:var(--maroon-700)}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+header.app{padding:26px 0 18px}
+header.app .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.app h1{font-size:30px;color:var(--maroon-900);letter-spacing:.3px}
+header.app h1 span{color:var(--purple-500);font-weight:400}
+header.app .spacer{flex:1}
+
+.btn{border:0;border-radius:999px;padding:9px 18px;cursor:pointer;font-weight:600;font-size:13px;
+  background:#fff;color:var(--maroon-700);box-shadow:var(--shadow-sm);transition:.16s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+.btn-primary{background:linear-gradient(135deg,var(--maroon-900),var(--maroon-700));color:var(--cream)}
+.btn-ghost{background:rgba(255,255,255,.6)}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-lg{padding:14px 30px;font-size:15px}
+.btn-danger{background:#fff;color:var(--bad)}
+
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 18px}
+nav.tabs button{border:0;border-radius:999px;padding:9px 20px;cursor:pointer;font-weight:600;font-size:13px;
+  background:rgba(255,255,255,.65);color:var(--ink-soft);transition:.16s}
+nav.tabs button.on{background:linear-gradient(135deg,var(--pink-300),var(--purple-500));color:#fff;box-shadow:var(--shadow-sm)}
+
+nav.views{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;background:rgba(255,255,255,.5);
+  border-radius:999px;padding:5px;width:fit-content}
+nav.views button{border:0;border-radius:999px;padding:8px 17px;cursor:pointer;font-weight:600;font-size:12.5px;
+  background:none;color:var(--ink-soft);transition:.16s;white-space:nowrap}
+nav.views button.on{background:#fff;color:var(--maroon-900);box-shadow:var(--shadow-sm)}
+
+.card{background:#fff;border-radius:var(--r-md);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card h2{font-size:19px;color:var(--maroon-900);margin-bottom:3px}
+.card .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:#fff;border-radius:var(--r-md);box-shadow:var(--shadow-sm);padding:16px 18px}
+.stat .n{font-family:var(--font-display);font-size:30px;color:var(--maroon-900);line-height:1.1}
+.stat .l{font-size:11.5px;color:var(--ink-soft);letter-spacing:.4px;margin-top:3px}
+.stat .hint{font-size:11px;color:var(--purple-500);margin-top:5px}
+
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--font-display);font-size:12px;text-align:left;color:var(--maroon-700);
+  padding:9px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:nth-child(even){background:rgba(253,246,248,.7)}
+tbody tr:hover{background:var(--blush-50)}
+.scroller{overflow-x:auto;margin:0 -6px;padding:0 6px}
+
+.pill{display:inline-block;border-radius:999px;padding:3px 11px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.s-no_response{background:var(--pink-100);color:var(--ink-soft)}
+.s-response{background:var(--purple-200);color:var(--purple-500)}
+.s-interest{background:var(--pink-100);color:#e0709a}
+.s-not_interest{background:var(--pink-100);color:#9c6b78;text-decoration:line-through}
+.s-booked{background:var(--maroon-900);color:var(--cream)}
+.s-canceled{background:#e8e0e2;color:#8a7378;text-decoration:line-through}
+.s-pending{background:var(--pink-100);color:var(--ink-soft)}
+.s-contacted{background:var(--purple-200);color:var(--purple-500)}
+
+input[type=text],input[type=url],input[type=date],input[type=time],input[type=datetime-local],select,textarea{
+  border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 11px;background:#fff;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--purple-500)}
+textarea{min-height:110px;resize:vertical;line-height:1.5}
+label.fld{display:block;margin-bottom:12px}
+label.fld .lbl{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar input[type=text]{max-width:250px}
+.toolbar select{max-width:175px}
+
+.empty{text-align:center;padding:34px 16px;color:var(--ink-soft);font-family:var(--font-display);font-size:15px}
+
+.modal{position:fixed;inset:0;background:rgba(58,20,36,.4);z-index:300;display:none;
+  align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+.modal.on{display:flex}
+.modal .box{background:#fff;border-radius:var(--r-lg);box-shadow:0 20px 60px rgba(58,20,36,.3);
+  width:100%;max-width:560px;padding:26px;position:relative;margin:auto}
+.modal .box.lg{max-width:820px}
+.modal .x{position:absolute;top:14px;right:16px;border:0;background:none;font-size:26px;
+  color:var(--ink-soft);cursor:pointer;line-height:1}
+.modal h2{font-size:22px;color:var(--maroon-900);margin-bottom:4px;padding-right:30px}
+.modal .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:18px}
+.modal .acts{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+
+.sect{border-top:1px dashed var(--purple-200);margin-top:20px;padding-top:18px}
+.sect h3{font-size:15px;color:var(--maroon-700);margin-bottom:3px}
+.sect .sub{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
+.locked{background:var(--blush-50);border-radius:var(--r-sm);padding:12px 14px;font-size:12.5px;color:var(--ink-soft)}
+pre.report{background:var(--blush-50);border-radius:var(--r-sm);padding:14px;font-family:'Courier New',monospace;
+  font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:340px;overflow-y:auto}
+
+.bell{position:relative}
+.bell .b{border:0;background:#fff;border-radius:999px;width:38px;height:38px;font-size:16px;cursor:pointer;box-shadow:var(--shadow-sm)}
+.bell .badge{position:absolute;top:-3px;right:-3px;background:var(--maroon-900);color:var(--cream);
+  border-radius:999px;min-width:19px;height:19px;font-size:11px;font-weight:700;display:flex;
+  align-items:center;justify-content:center;padding:0 5px}
+.bell .panel{position:absolute;right:0;top:46px;width:min(330px,calc(100vw - 36px));background:#fff;
+  border-radius:var(--r-md);box-shadow:0 14px 40px rgba(58,20,36,.22);z-index:200;overflow:hidden}
+.bell .panel .hd{background:var(--maroon-900);color:var(--cream);padding:11px 15px;font-family:var(--font-display);font-size:14px}
+.bell .panel .list{max-height:340px;overflow-y:auto}
+.bell .panel .it{padding:11px 15px;border-bottom:1px solid var(--line);font-size:12.5px;cursor:pointer}
+.bell .panel .it:hover{background:var(--blush-50)}
+.bell .panel .it.unseen{background:var(--pink-100)}
+.bell .panel .it .when{font-size:11px;color:var(--ink-soft);margin-top:3px}
+
+#sync{position:fixed;right:14px;bottom:14px;z-index:250;background:var(--maroon-900);color:var(--cream);
+  border-radius:999px;padding:8px 15px;font-size:11.5px;box-shadow:var(--shadow);display:flex;align-items:center;gap:9px}
+#sync .dot{width:8px;height:8px;border-radius:50%;background:#8fbf6a;flex:none}
+#sync.busy .dot{background:#d9a441}
+#sync.bad .dot{background:#c4593f}
+#sync a{color:#d8c8bc;text-decoration:underline;cursor:pointer;flex:none}
+@media(max-width:560px){#sync{left:14px;right:14px;justify-content:center}}
+
+#wait{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,var(--purple-200),var(--pink-300) 70%);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-display);
+  font-size:17px;color:var(--maroon-900)}
+
+.rowacts{display:flex;gap:6px;flex-wrap:wrap}
+.mini{font-size:11.5px;color:var(--ink-soft)}
+.trunc{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.savenote{font-size:11.5px;margin-left:8px}
+.savenote.ok{color:var(--ok)} .savenote.bad{color:var(--bad)} .savenote.busy{color:var(--warn)}
+</style>
+</head>
+<body>
+
+<div id="wait">Loading…</div>
+
+<div class="wrap" id="app" style="display:none">
+
+  <header class="app">
+    <div class="row">
+      <h1>Lia <span>· Outreach</span></h1>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" id="tplBtn">Edit templates</button>
+      <div class="bell">
+        <button class="b" id="bellBtn" title="Notifications">🔔</button>
+        <span class="badge" id="bellBadge" style="display:none">0</span>
+        <div class="panel" id="bellPanel" style="display:none">
+          <div class="hd">Notifications</div>
+          <div class="list" id="bellList"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="projTabs"></nav>
+  <nav class="views" id="viewTabs"></nav>
+
+  <div id="view"></div>
+</div>
+
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+
+<div id="sync" style="display:none"><span class="dot"></span><span id="syncTxt">Ready</span><a id="syncBack">Switch person</a></div>
+
+<script>
+/* ===========================================================
+   Lia · Outreach
+
+   Rebuilt from effi-lia-outreach and moved onto the shared
+   workspace link. It talks to the SAME Supabase project and the
+   SAME five tables as before, so every existing client, target,
+   template and notification is still here untouched. Nothing in
+   this file invents a record.
+=========================================================== */
+(function(){
+'use strict';
+
+// ---- the outreach data lives in Lia's original project
+const DATA_URL='https://hseffkdzxyiescyrvvzr.supabase.co';
+const DATA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzZWZma2R6eHlpZXNjeXJ2dnpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5OTM2NzIsImV4cCI6MjA5NDU2OTY3Mn0.X6upfM8BUyyvQiFSrS7WkDd5iR08qEp3p8tE9nn2bmQ';
+// ---- the workspace password gate lives in the other project
+const GATE_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
+const GATE_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
+
+const sb=supabase.createClient(DATA_URL,DATA_KEY);
+
+const PROJECTS=['saha_synergy','bwb','bfp'];
+const PROJECT_LABELS={saha_synergy:'Saha Synergy',bwb:'BWB',bfp:'Best Friend Production'};
+const PLATFORMS=['instagram','linkedin','facebook','tiktok','web','in_person'];
+const PLATFORM_LABELS={instagram:'Instagram',linkedin:'LinkedIn',facebook:'Facebook',
+  tiktok:'TikTok',web:'Web',in_person:'In Person'};
+const STATUSES=['no_response','response','interest','not_interest','booked','canceled'];
+const STATUS_LABELS={no_response:'No Response',response:'Response',interest:'Interest',
+  not_interest:'Not Interest',booked:'Booked',canceled:'Canceled'};
+const TARGET_STATUSES=['pending','contacted','response','interest','booked'];
+const TARGET_STATUS_LABELS={pending:'Pending',contacted:'Contacted',response:'Response',
+  interest:'Interest',booked:'Booked'};
+const SLOTS=50;
+
+const VIEWS=[['today','Today'],['clients','Clients'],['meetings','Meetings'],['insight','Insight']];
+
+const state={project:'saha_synergy',view:'today',clients:[],notifs:[],
+  targets:[],session:null,targetDate:null,readonly:false};
+
+// ---------- small helpers ----------
+const $=id=>document.getElementById(id);
+function esc(s){
+  if(s===null||s===undefined)return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// only http(s) links are ever turned into anchors, so a stored
+// javascript: url cannot become a clickable trap
+function safeUrl(u){
+  if(!u)return null;
+  const s=String(u).trim();
+  if(/^https?:\/\//i.test(s))return s;
+  if(/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(s))return 'https://'+s;
+  return null;
+}
+function linkCell(u,label){
+  const safe=safeUrl(u);
+  if(!safe)return u?'<span class="mini">'+esc(u)+'</span>':'<span class="mini">-</span>';
+  return '<a href="'+esc(safe)+'" target="_blank" rel="noopener"><span class="trunc">'+esc(label||safe)+'</span></a>';
+}
+function todayISO(){const d=new Date();return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function fmtDateTime(iso){if(!iso)return '';const d=new Date(iso);
+  return d.toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}
+function fmtDate(iso){if(!iso)return '';const d=new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long',year:'numeric'})}
+function statusPill(s,map){const lbl=(map||STATUS_LABELS)[s]||s||'-';
+  return '<span class="pill s-'+esc(s||'no_response')+'">'+esc(lbl)+'</span>'}
+function optionList(vals,labels,sel){
+  return vals.map(v=>'<option value="'+esc(v)+'"'+(v===sel?' selected':'')+'>'+esc(labels[v]||v)+'</option>').join('');
+}
+// a datetime-local input needs local wall time, not the UTC slice
+function toLocalInput(iso){
+  if(!iso)return '';
+  const d=new Date(iso);
+  return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+}
+
+// ---------- sync badge: every write reports back ----------
+const syncBar=$('sync'), syncTxt=$('syncTxt');
+let pending=0;
+function syncing(){pending++;syncBar.className='busy';syncTxt.textContent='Saving…'}
+function synced(ok,what){
+  pending=Math.max(0,pending-1);
+  if(!ok){syncBar.className='bad';syncTxt.textContent='Not saved: '+(what||'change');return}
+  if(pending===0){syncBar.className='';syncTxt.textContent='Saved'}
+}
+
+// ---------- db, errors are surfaced not swallowed ----------
+// effi_daily_sessions was written against but never actually created in this
+// project, so the old app's day timer silently did nothing. Detected once,
+// then the day-timing parts simply stay out of the way.
+let hasSessions=null;
+
+const db={
+  async rows(table,filters,quiet){
+    let q=sb.from(table).select('*');
+    for(const k in (filters||{}))q=q.eq(k,filters[k]);
+    const {data,error}=await q;
+    if(error){
+      console.error(table,error);
+      if(table==='effi_daily_sessions'&&error.code==='PGRST205')hasSessions=false;
+      else if(!quiet){syncBar.className='bad';syncTxt.textContent='Could not load '+table}
+      return null;
+    }
+    if(table==='effi_daily_sessions')hasSessions=true;
+    return data||[];
+  },
+  async insert(table,row,what){
+    syncing();
+    const {data,error}=await sb.from(table).insert(row).select().single();
+    synced(!error,what);
+    if(error)console.error(table,error);
+    return error?null:data;
+  },
+  async update(table,id,patch,what){
+    syncing();
+    const {data,error}=await sb.from(table).update(patch).eq('id',id).select().single();
+    synced(!error,what);
+    if(error)console.error(table,error);
+    return error?null:data;
+  },
+  async remove(table,id,what){
+    syncing();
+    const {error}=await sb.from(table).delete().eq('id',id);
+    synced(!error,what);
+    if(error)console.error(table,error);
+    return !error;
+  }
+};
+
+// ---------- modal ----------
+function openModal(html,big){
+  $('modalBox').className='box'+(big?' lg':'');
+  $('modalBox').innerHTML='<button class="x" data-close>&times;</button>'+html;
+  $('modal').classList.add('on');
+}
+function closeModal(){$('modal').classList.remove('on')}
+$('modal').addEventListener('click',e=>{
+  if(e.target===$('modal')||e.target.hasAttribute('data-close'))closeModal();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// ---------- shell ----------
+function renderTabs(){
+  $('projTabs').innerHTML=PROJECTS.map(p=>
+    '<button data-p="'+p+'" class="'+(p===state.project?'on':'')+'">'+esc(PROJECT_LABELS[p])+'</button>').join('');
+  $('viewTabs').innerHTML=VIEWS.map(v=>
+    '<button data-v="'+v[0]+'" class="'+(v[0]===state.view?'on':'')+'">'+esc(v[1])+'</button>').join('');
+}
+$('projTabs').onclick=async e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  state.project=b.dataset.p; renderTabs(); await loadProject();
+};
+$('viewTabs').onclick=e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  state.view=b.dataset.v; renderTabs(); renderView();
+};
+
+function renderView(){
+  if(state.view==='today')renderToday();
+  else if(state.view==='clients')renderClients();
+  else if(state.view==='meetings')renderMeetings();
+  else renderInsight();
+}
+
+// ===========================================================
+//  TODAY  ·  the 50 slot outreach board
+// ===========================================================
+async function ensureSlots(date){
+  const rows=await db.rows('effi_daily_targets',{project:state.project,target_date:date});
+  if(rows===null)return [];
+  if(rows.length)return rows;
+  if(date!==todayISO())return [];
+  const seed=[];
+  for(let i=1;i<=SLOTS;i++)seed.push({project:state.project,target_date:date,slot_number:i,client_name:'',done:false});
+  syncing();
+  const {data,error}=await sb.from('effi_daily_targets').insert(seed).select();
+  synced(!error,'today’s board');
+  if(error){const again=await db.rows('effi_daily_targets',{project:state.project,target_date:date});return again||[]}
+  return data||[];
+}
+async function loadSession(date){
+  if(hasSessions===false)return null;
+  const rows=await db.rows('effi_daily_sessions',{project:state.project,target_date:date},true);
+  if(hasSessions===false)return null;
+  if(rows&&rows.length)return rows[0];
+  if(date!==todayISO())return null;
+  const {data,error}=await sb.from('effi_daily_sessions')
+    .insert({project:state.project,target_date:date}).select().single();
+  if(error){if(error.code==='PGRST205')hasSessions=false;return null}
+  return data;
+}
+async function openDay(date){
+  state.targetDate=date;
+  state.readonly=date!==todayISO();
+  $('view').innerHTML='<div class="card"><div class="empty">Opening '+esc(fmtDate(date))+'…</div></div>';
+  state.targets=await ensureSlots(date);
+  state.session=await loadSession(date);
+  if(state.session&&state.session.finished_at)state.readonly=true;
+  renderToday();
+}
+
+function renderToday(){
+  if(!state.targetDate){
+    $('view').innerHTML=
+      '<div class="card" style="text-align:center;padding:40px 20px">'+
+        '<h2>Ready when you are</h2>'+
+        '<div class="sub">Open the board for today, or look back at any past day.</div>'+
+        '<button class="btn btn-primary btn-lg" id="startDay">Start the day, Queen</button>'+
+        '<div style="margin-top:20px;display:flex;gap:9px;justify-content:center;flex-wrap:wrap;align-items:center">'+
+          '<input type="date" id="pickDate" max="'+todayISO()+'" style="max-width:190px">'+
+          '<button class="btn btn-ghost btn-sm" id="openDate">Open that day</button>'+
+        '</div>'+
+      '</div>';
+    $('startDay').onclick=()=>openDay(todayISO());
+    $('openDate').onclick=()=>{const v=$('pickDate').value;if(v)openDay(v)};
+    return;
+  }
+
+  const t=state.targets.slice().sort((a,b)=>(a.slot_number||0)-(b.slot_number||0));
+  const filled=t.filter(r=>(r.client_name||'').trim()).length;
+  const done=t.filter(r=>r.done).length;
+  const finished=state.session&&state.session.finished_at;
+
+  let head='<div class="card">'+
+    '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
+      '<div><h2>'+esc(fmtDate(state.targetDate))+'</h2>'+
+        '<div class="sub" style="margin:0">'+done+' of '+filled+' filled slots done · '+filled+' of '+SLOTS+' slots used</div></div>'+
+      '<div style="flex:1"></div>'+
+      (finished?'<span class="pill s-booked">Day completed'+elapsed()+'</span>':'')+
+      (state.readonly&&!finished?'<span class="pill s-canceled">Past day, read only</span>':'')+
+      (!state.readonly&&hasSessions!==false?'<button class="btn btn-primary btn-sm" id="finishDay">Finish day</button>':'')+
+      '<button class="btn btn-ghost btn-sm" id="backDays">Back</button>'+
+    '</div>';
+
+  if(!t.length){
+    head+='<div class="empty">No targets were logged for this day.</div></div>';
+    $('view').innerHTML=head;
+    $('backDays').onclick=()=>{state.targetDate=null;renderToday()};
+    return;
+  }
+
+  const rows=t.map(r=>{
+    const ro=state.readonly?' disabled':'';
+    return '<tr data-id="'+esc(r.id)+'">'+
+      '<td class="disp" style="color:var(--purple-500)">'+esc(r.slot_number)+'</td>'+
+      '<td><input type="text" data-f="client_name" value="'+esc(r.client_name||'')+'" placeholder="Who are you reaching?"'+ro+'></td>'+
+      '<td><select data-f="status"'+ro+'>'+optionList(TARGET_STATUSES,TARGET_STATUS_LABELS,r.status||'pending')+'</select></td>'+
+      '<td><select data-f="platform"'+ro+'><option value="">-</option>'+optionList(PLATFORMS,PLATFORM_LABELS,r.platform||'')+'</select></td>'+
+      '<td><input type="text" data-f="profile_link" value="'+esc(r.profile_link||'')+'" placeholder="Link"'+ro+'></td>'+
+      '<td><input type="text" data-f="notes" value="'+esc(r.notes||'')+'" placeholder="Notes"'+ro+'></td>'+
+      '<td style="text-align:center"><input type="checkbox" data-f="done"'+(r.done?' checked':'')+ro+' style="width:auto"></td>'+
+      '<td>'+(state.readonly?'':'<button class="btn btn-sm" data-promote>To client</button>')+'</td>'+
+    '</tr>';
+  }).join('');
+
+  head+='<div class="scroller"><table style="min-width:1080px"><thead><tr>'+
+    '<th>#</th><th>Target name</th><th>Status</th><th>Platform</th><th>Link</th><th>Notes</th><th>Done</th><th></th>'+
+    '</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+
+  $('view').innerHTML=head;
+  $('backDays').onclick=()=>{state.targetDate=null;renderToday()};
+  if(!state.readonly){
+    if($('finishDay'))$('finishDay').onclick=finishDay;
+    wireTargetInputs();
+  }
+}
+function elapsed(){
+  const s=state.session;
+  if(!s||!s.finished_at||!s.started_at)return '';
+  const ms=new Date(s.finished_at)-new Date(s.started_at);
+  if(!(ms>0))return '';
+  const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);
+  return ' in '+(h?h+'h ':'')+m+'m';
+}
+const timers={};
+function wireTargetInputs(){
+  const tbody=document.querySelector('#view tbody');
+  if(!tbody)return;
+  tbody.addEventListener('input',e=>{
+    const f=e.target.dataset.f; if(!f||e.target.type==='checkbox')return;
+    const id=e.target.closest('tr').dataset.id;
+    const key=id+':'+f;
+    clearTimeout(timers[key]);
+    timers[key]=setTimeout(()=>saveTarget(id,f,e.target.value),500);
+  });
+  tbody.addEventListener('change',e=>{
+    const f=e.target.dataset.f; if(!f)return;
+    if(e.target.type==='checkbox')saveTarget(e.target.closest('tr').dataset.id,f,e.target.checked);
+    else if(e.target.tagName==='SELECT')saveTarget(e.target.closest('tr').dataset.id,f,e.target.value);
+  });
+  tbody.addEventListener('click',e=>{
+    if(!e.target.hasAttribute('data-promote'))return;
+    promoteTarget(e.target.closest('tr').dataset.id);
+  });
+}
+async function saveTarget(id,field,value){
+  const patch={}; patch[field]=value;
+  const row=await db.update('effi_daily_targets',id,patch,field.replace('_',' '));
+  const local=state.targets.find(r=>String(r.id)===String(id));
+  if(local&&row)Object.assign(local,row);
+  if(local&&!row)local[field]=value;
+  if(field==='done'||field==='client_name')refreshDayCount();
+}
+function refreshDayCount(){
+  const filled=state.targets.filter(r=>(r.client_name||'').trim()).length;
+  const done=state.targets.filter(r=>r.done).length;
+  const el=document.querySelector('#view .sub');
+  if(el)el.textContent=done+' of '+filled+' filled slots done · '+filled+' of '+SLOTS+' slots used';
+}
+// the old board refused to finish unless all 50 slots were typed in, so a
+// twenty outreach day could never be closed. Now it just tells you.
+async function finishDay(){
+  const filled=state.targets.filter(r=>(r.client_name||'').trim()).length;
+  const empty=SLOTS-filled;
+  const msg=empty?('You filled '+filled+' of '+SLOTS+' slots. Finish the day anyway?'):'Finish the day?';
+  if(!confirm(msg))return;
+  if(!state.session){alert('No session row for this day, so it cannot be closed.');return}
+  const row=await db.update('effi_daily_sessions',state.session.id,{finished_at:new Date().toISOString()},'finish day');
+  if(row){state.session=row;state.readonly=true;renderToday()}
+}
+// a target and a client used to be typed in twice. This carries one across.
+async function promoteTarget(id){
+  const t=state.targets.find(r=>String(r.id)===String(id));
+  if(!t)return;
+  const name=(t.client_name||'').trim();
+  if(!name){alert('Give the slot a name first.');return}
+  const dupe=state.clients.find(c=>(c.name||'').trim().toLowerCase()===name.toLowerCase());
+  if(dupe&&!confirm(name+' is already in the client list. Add a second entry?'))return;
+  const row=await db.insert('effi_clients',{project:state.project,name:name,
+    source:t.platform||'',profile_link:t.profile_link||'',note:t.notes||''},'new client');
+  if(row){state.clients.unshift(row);alert(name+' was added to the client list.')}
+}
+
+// ===========================================================
+//  CLIENTS
+// ===========================================================
+const filters={q:'',status:'',platform:''};
+function renderClients(){
+  $('view').innerHTML=
+    '<div class="card">'+
+      '<div class="toolbar">'+
+        '<input type="text" id="fq" placeholder="Search name, notes, link, handler" value="'+esc(filters.q)+'">'+
+        '<select id="fs"><option value="">All statuses</option>'+optionList(STATUSES,STATUS_LABELS,filters.status)+'</select>'+
+        '<select id="fp"><option value="">All platforms</option>'+optionList(PLATFORMS,PLATFORM_LABELS,filters.platform)+'</select>'+
+        '<div style="flex:1"></div>'+
+        '<button class="btn btn-primary" id="addClient">+ Add client</button>'+
+      '</div>'+
+      '<div id="clientList"></div>'+
+    '</div>';
+  $('fq').oninput=e=>{filters.q=e.target.value;renderClientList()};
+  $('fs').onchange=e=>{filters.status=e.target.value;renderClientList()};
+  $('fp').onchange=e=>{filters.platform=e.target.value;renderClientList()};
+  $('addClient').onclick=()=>clientForm(null);
+  renderClientList();
+}
+function matching(){
+  const q=filters.q.trim().toLowerCase();
+  return state.clients.filter(c=>{
+    if(filters.status&&(c.status||'no_response')!==filters.status)return false;
+    if(filters.platform&&(c.source||'')!==filters.platform)return false;
+    if(!q)return true;
+    return [c.name,c.note,c.profile_link,c.handled_by].some(v=>String(v||'').toLowerCase().includes(q));
+  }).sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+}
+function renderClientList(){
+  const rows=matching();
+  const box=$('clientList');
+  if(!state.clients.length){
+    box.innerHTML='<div class="empty">No clients in '+esc(PROJECT_LABELS[state.project])+' yet. Add the first one above.</div>';
+    return;
+  }
+  if(!rows.length){box.innerHTML='<div class="empty">Nothing matches that search.</div>';return}
+  box.innerHTML='<div class="mini" style="margin-bottom:8px">'+rows.length+' of '+state.clients.length+' shown</div>'+
+    '<div class="scroller"><table style="min-width:900px"><thead><tr>'+
+    '<th>Name</th><th>Status</th><th>Platform</th><th>Handled by</th><th>Meeting</th><th>Link</th><th>Notes</th><th></th>'+
+    '</tr></thead><tbody>'+rows.map(c=>
+      '<tr data-id="'+esc(c.id)+'">'+
+        '<td><strong class="disp">'+esc(c.name||'(no name)')+'</strong></td>'+
+        '<td>'+statusPill(c.status||'no_response')+'</td>'+
+        '<td class="mini">'+esc(PLATFORM_LABELS[c.source]||c.source||'-')+'</td>'+
+        '<td class="mini">'+esc(c.handled_by||'-')+'</td>'+
+        '<td class="mini">'+(c.meeting_at?esc(fmtDateTime(c.meeting_at)):'-')+'</td>'+
+        '<td>'+linkCell(c.profile_link)+'</td>'+
+        '<td class="mini"><span class="trunc">'+esc(c.note||'-')+'</span></td>'+
+        '<td><div class="rowacts">'+
+          '<button class="btn btn-sm" data-open>Open</button>'+
+        '</div></td>'+
+      '</tr>').join('')+'</tbody></table></div>';
+  box.querySelector('tbody').onclick=e=>{
+    const tr=e.target.closest('tr'); if(!tr)return;
+    if(e.target.hasAttribute('data-open')||e.target.tagName==='TD'||e.target.tagName==='STRONG')
+      clientDetail(state.clients.find(c=>String(c.id)===String(tr.dataset.id)));
+  };
+}
+
+function clientForm(c){
+  const edit=!!c;
+  openModal(
+    '<h2>'+(edit?'Edit client':'Add client')+'</h2>'+
+    '<div class="sub">'+esc(PROJECT_LABELS[state.project])+'</div>'+
+    '<div class="grid2">'+
+      '<label class="fld"><span class="lbl">Name</span><input type="text" id="cName" value="'+esc(c?c.name:'')+'"></label>'+
+      '<label class="fld"><span class="lbl">Platform</span><select id="cSource"><option value="">-</option>'+
+        optionList(PLATFORMS,PLATFORM_LABELS,c?c.source:'')+'</select></label>'+
+      '<label class="fld"><span class="lbl">Profile link</span><input type="text" id="cLink" value="'+esc(c?c.profile_link:'')+'"></label>'+
+      '<label class="fld"><span class="lbl">Handled by</span><input type="text" id="cBy" value="'+esc(c?c.handled_by:'')+'"></label>'+
+    '</div>'+
+    '<label class="fld"><span class="lbl">Notes</span><textarea id="cNote">'+esc(c?c.note:'')+'</textarea></label>'+
+    '<div class="acts">'+
+      '<button class="btn btn-primary" id="cSave">Save</button>'+
+      '<button class="btn btn-ghost" data-close>Cancel</button>'+
+      '<div style="flex:1"></div>'+
+      (edit?'<button class="btn btn-danger" id="cDel">Delete</button>':'')+
+    '</div>');
+  $('cSave').onclick=async()=>{
+    const name=$('cName').value.trim();
+    if(!name){alert('A name is needed.');return}
+    const payload={name:name,source:$('cSource').value,profile_link:$('cLink').value.trim(),
+      handled_by:$('cBy').value.trim(),note:$('cNote').value};
+    if(edit){
+      const row=await db.update('effi_clients',c.id,payload,'client');
+      if(row)Object.assign(c,row);
+    }else{
+      payload.project=state.project;
+      const row=await db.insert('effi_clients',payload,'client');
+      if(row)state.clients.unshift(row);
+    }
+    closeModal();renderClientList();
+  };
+  if(edit)$('cDel').onclick=async()=>{
+    if(!confirm('Delete '+(c.name||'this client')+'?\n\nTheir research, chat and report are deleted with them. This cannot be undone.'))return;
+    if(!confirm('Really delete? There is no backup.'))return;
+    if(await db.remove('effi_clients',c.id,'client')){
+      state.clients=state.clients.filter(x=>String(x.id)!==String(c.id));
+      closeModal();renderClientList();
+    }
+  };
+}
+
+// ---------- client detail: status, meeting, research, chat, report ----------
+let unlocked=false;
+function clientDetail(c){
+  if(!c)return;
+  unlocked=false;
+  drawDetail(c);
+}
+function drawDetail(c){
+  const sent=!!c.report_sent_at;
+  const showWork=!sent||unlocked;
+  openModal(
+    '<h2>'+esc(c.name||'(no name)')+'</h2>'+
+    '<div class="sub">'+esc(PROJECT_LABELS[c.project]||c.project)+' · '+
+      esc(PLATFORM_LABELS[c.source]||c.source||'no platform')+
+      (c.handled_by?' · handled by '+esc(c.handled_by):'')+'</div>'+
+
+    '<div class="grid2">'+
+      '<label class="fld"><span class="lbl">Status</span><select id="dStatus">'+
+        optionList(STATUSES,STATUS_LABELS,c.status||'no_response')+'</select></label>'+
+      '<label class="fld"><span class="lbl">Meeting</span>'+
+        '<input type="datetime-local" id="dMeet" value="'+esc(toLocalInput(c.meeting_at))+'"></label>'+
+    '</div>'+
+    '<div class="acts" style="margin-top:0">'+
+      '<button class="btn btn-sm btn-primary" id="dSaveTop">Save status and meeting</button>'+
+      (c.meeting_at?'<button class="btn btn-sm btn-ghost" id="dClearMeet">Clear meeting</button>':'')+
+      '<button class="btn btn-sm btn-ghost" id="dEdit">Edit details</button>'+
+      '<span class="savenote" id="dNote"></span>'+
+    '</div>'+
+    (c.profile_link?'<div class="mini" style="margin-top:10px">Profile: '+linkCell(c.profile_link)+'</div>':'')+
+
+    (showWork?
+      '<div class="sect"><h3>Research</h3>'+
+        '<div class="sub">Open their profile, gather what matters, paste it here.</div>'+
+        (safeUrl(c.profile_link)?'<button class="btn btn-sm btn-ghost" id="dCopy" style="margin-bottom:10px">Open profile and copy a research prompt</button>':'')+
+        '<textarea id="dResearch" placeholder="Paste the research here">'+esc(c.research_text||'')+'</textarea>'+
+        '<label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px">'+
+          '<input type="checkbox" id="dValid" style="width:auto"'+(c.research_validated?' checked':'')+'> Research checked and correct</label>'+
+      '</div>'+
+      '<div class="sect"><h3>Chat</h3>'+
+        '<div class="sub">Paste the conversation so far.</div>'+
+        '<textarea id="dChat" placeholder="Paste the chat here">'+esc(c.chat_transcript||'')+'</textarea>'+
+      '</div>'
+      :'<div class="sect"><h3>Research and chat</h3>'+
+        '<div class="locked">Locked, because the report was sent '+esc(fmtDateTime(c.report_sent_at))+'. '+
+        'Unlock only if something needs correcting, then send again so the report matches.</div>'+
+        '<div class="acts"><button class="btn btn-sm btn-ghost" id="dUnlock">Unlock to edit</button></div></div>')+
+
+    '<div class="sect"><h3>Report</h3>'+
+      (sent?'<div class="sub">Sent '+esc(fmtDateTime(c.report_sent_at))+'</div><pre class="report">'+esc(c.report_text||'')+'</pre>'
+           :'<div class="sub">Ready once the research is checked and a chat is pasted.</div>')+
+      '<div class="acts">'+
+        '<button class="btn btn-primary" id="dSend">'+(sent?'Send again with the latest':'Send to Sophia')+'</button>'+
+        (sent?'<button class="btn btn-ghost" id="dPdf">Download PDF</button>':'')+
+      '</div>'+
+      (sent&&showWork?'<div class="mini" style="margin-top:8px;color:var(--warn)">The report above is the sent snapshot. Edits below it are not in it until you send again.</div>':'')+
+    '</div>'
+  ,true);
+
+  const note=$('dNote');
+  const flag=(t,cls)=>{note.textContent=t;note.className='savenote '+(cls||'')};
+
+  $('dSaveTop').onclick=async()=>{
+    const st=$('dStatus').value;
+    const mv=$('dMeet').value;
+    if(st==='booked'&&!mv){alert('A booked client needs a meeting time.');return}
+    flag('Saving…','busy');
+    const row=await db.update('effi_clients',c.id,
+      {status:st,meeting_at:mv?new Date(mv).toISOString():null},'status');
+    if(row){Object.assign(c,row);flag('Saved','ok');renderClientList()}
+    else flag('Not saved','bad');
+  };
+  if($('dClearMeet'))$('dClearMeet').onclick=async()=>{
+    const row=await db.update('effi_clients',c.id,{meeting_at:null},'meeting');
+    if(row){Object.assign(c,row);drawDetail(c);renderClientList()}
+  };
+  $('dEdit').onclick=()=>clientForm(c);
+  if($('dUnlock'))$('dUnlock').onclick=()=>{unlocked=true;drawDetail(c)};
+
+  if($('dCopy'))$('dCopy').onclick=()=>{
+    const prompt='Research this person for an outreach conversation.\n\nName: '+(c.name||'')+
+      '\nPlatform: '+(PLATFORM_LABELS[c.source]||c.source||'')+'\nProfile: '+(c.profile_link||'')+
+      '\n\nTell me what they do, who they serve, what they seem to care about right now, '+
+      'and one specific thing worth opening a conversation with. Keep it short and factual. '+
+      'Say plainly if something cannot be found rather than guessing.';
+    if(navigator.clipboard)navigator.clipboard.writeText(prompt);
+    const u=safeUrl(c.profile_link); if(u)window.open(u,'_blank','noopener');
+  };
+
+  // autosave the long fields
+  ['dResearch','dChat'].forEach(id=>{
+    const el=$(id); if(!el)return;
+    let t=null;
+    el.oninput=()=>{
+      clearTimeout(t);
+      flag('Typing…','busy');
+      t=setTimeout(async()=>{
+        const patch=id==='dResearch'?{research_text:el.value}:{chat_transcript:el.value};
+        const row=await db.update('effi_clients',c.id,patch,'text');
+        if(row){Object.assign(c,row);flag('Saved','ok')}else flag('Not saved','bad');
+      },600);
+    };
+  });
+  if($('dValid'))$('dValid').onchange=async e=>{
+    const row=await db.update('effi_clients',c.id,{research_validated:e.target.checked},'checkbox');
+    if(row)Object.assign(c,row);
+  };
+
+  $('dSend').onclick=async()=>{
+    if(!c.research_validated){alert('Tick "Research checked and correct" first.');return}
+    if(!String(c.chat_transcript||'').trim()){alert('Paste the chat first.');return}
+    const text=buildReport(c);
+    const row=await db.update('effi_clients',c.id,
+      {report_text:text,report_sent_at:new Date().toISOString()},'report');
+    if(!row)return;
+    Object.assign(c,row);
+    await db.insert('effi_notifications',{project:c.project,client_id:c.id,audience:'sophia',
+      kind:'new_report',message:'New report ready: '+(c.name||'')+' ('+(PROJECT_LABELS[c.project]||c.project)+')'},'notification');
+    unlocked=false;
+    await loadNotifs();
+    drawDetail(c);
+    renderClientList();
+  };
+  if($('dPdf'))$('dPdf').onclick=()=>makePdf(c);
+}
+
+function buildReport(c){
+  const L=[];
+  L.push('PROFILE');
+  L.push('Name: '+(c.name||''));
+  L.push('Platform: '+(PLATFORM_LABELS[c.source]||c.source||'-'));
+  L.push('Profile link: '+(c.profile_link||'-'));
+  L.push('Meeting: '+(c.meeting_at?fmtDateTime(c.meeting_at):'-'));
+  L.push('Handled by: '+(c.handled_by||'-'));
+  L.push('');
+  L.push('RESEARCH');
+  L.push(c.research_text||'-');
+  L.push('');
+  L.push('CHAT');
+  L.push(c.chat_transcript||'-');
+  L.push('');
+  L.push('SUGGESTED APPROACH');
+  L.push(String(c.note||'').trim()||'-');
+  return L.join('\n');
+}
+
+// the old PDF only checked for a page break between sections, so a long
+// chat ran off the bottom and was lost. This breaks per line.
+function makePdf(c){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight();
+  const M=48, MAXW=W-M*2;
+  let y=0;
+
+  function header(){
+    doc.setFillColor(92,26,46);doc.rect(0,0,W,90,'F');
+    doc.setTextColor(255,248,250);
+    doc.setFont('times','bold');doc.setFontSize(20);doc.text('Lia · Outreach',M,44);
+    doc.setFont('helvetica','normal');doc.setFontSize(11);
+    doc.text('Client report — '+(PROJECT_LABELS[c.project]||c.project||''),M,66);
+    y=120;
+  }
+  function room(h){if(y+h>H-M){doc.addPage();y=M}}
+  function section(title){
+    room(40);
+    doc.setFillColor(251,228,238);doc.rect(M-10,y-14,MAXW+20,24,'F');
+    doc.setTextColor(140,47,74);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.text(String(title).toUpperCase(),M,y+2);
+    y+=30;
+  }
+  function body(text){
+    doc.setTextColor(58,20,36);doc.setFont('helvetica','normal');doc.setFontSize(10.5);
+    const lines=doc.splitTextToSize(String(text==null||text===''?'-':text),MAXW);
+    lines.forEach(ln=>{room(16);doc.text(ln,M,y);y+=14});
+    y+=8;
+  }
+
+  header();
+  section('Profile');
+  body('Name: '+(c.name||'-')+'\nPlatform: '+(PLATFORM_LABELS[c.source]||c.source||'-')+
+       '\nProfile link: '+(c.profile_link||'-')+'\nMeeting: '+(c.meeting_at?fmtDateTime(c.meeting_at):'-')+
+       '\nHandled by: '+(c.handled_by||'-'));
+  section('Research');body(c.research_text);
+  section('Chat');body(c.chat_transcript);
+  section('Suggested approach');body(c.note);
+
+  const slug=String(c.name||'client').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  doc.save('lia-'+(slug||'client')+'-report.pdf');
+}
+
+// ===========================================================
+//  MEETINGS  ·  the booked dates already in the data, finally visible
+// ===========================================================
+function renderMeetings(){
+  const withMeet=state.clients.filter(c=>c.meeting_at)
+    .sort((a,b)=>new Date(a.meeting_at)-new Date(b.meeting_at));
+  const now=Date.now();
+  const soon=withMeet.filter(c=>new Date(c.meeting_at)>=now);
+  const past=withMeet.filter(c=>new Date(c.meeting_at)<now).reverse();
+
+  const tbl=(list,none)=>list.length?
+    '<div class="scroller"><table style="min-width:640px"><thead><tr>'+
+    '<th>When</th><th>Name</th><th>Status</th><th>Platform</th><th>Handled by</th><th></th></tr></thead><tbody>'+
+    list.map(c=>'<tr data-id="'+esc(c.id)+'">'+
+      '<td><strong>'+esc(fmtDateTime(c.meeting_at))+'</strong></td>'+
+      '<td class="disp">'+esc(c.name||'(no name)')+'</td>'+
+      '<td>'+statusPill(c.status||'no_response')+'</td>'+
+      '<td class="mini">'+esc(PLATFORM_LABELS[c.source]||c.source||'-')+'</td>'+
+      '<td class="mini">'+esc(c.handled_by||'-')+'</td>'+
+      '<td><button class="btn btn-sm" data-open>Open</button></td></tr>').join('')+
+    '</tbody></table></div>'
+    :'<div class="empty">'+none+'</div>';
+
+  $('view').innerHTML=
+    '<div class="card"><h2>Coming up</h2><div class="sub">Meetings still ahead, soonest first.</div>'+tbl(soon,'No meetings booked yet.')+'</div>'+
+    '<div class="card"><h2>Already happened</h2><div class="sub">Most recent first.</div>'+tbl(past,'Nothing has happened yet.')+'</div>';
+
+  document.querySelectorAll('#view tbody').forEach(tb=>tb.onclick=e=>{
+    const tr=e.target.closest('tr'); if(!tr)return;
+    clientDetail(state.clients.find(c=>String(c.id)===String(tr.dataset.id)));
+  });
+}
+
+// ===========================================================
+//  INSIGHT  ·  counted from the rows that exist, nothing modelled
+// ===========================================================
+function renderInsight(){
+  const cs=state.clients;
+  const by=s=>cs.filter(c=>(c.status||'no_response')===s).length;
+  const booked=by('booked');
+  const rate=cs.length?Math.round(booked/cs.length*100):0;
+  const replied=cs.length-by('no_response');
+
+  const perPlatform={};
+  cs.forEach(c=>{
+    const k=c.source||'unset';
+    perPlatform[k]=perPlatform[k]||{n:0,booked:0};
+    perPlatform[k].n++;
+    if((c.status||'')==='booked')perPlatform[k].booked++;
+  });
+  const platRows=Object.keys(perPlatform).sort((a,b)=>perPlatform[b].n-perPlatform[a].n).map(k=>
+    '<tr><td>'+esc(PLATFORM_LABELS[k]||(k==='unset'?'Not set':k))+'</td>'+
+    '<td>'+perPlatform[k].n+'</td><td>'+perPlatform[k].booked+'</td>'+
+    '<td>'+(perPlatform[k].n?Math.round(perPlatform[k].booked/perPlatform[k].n*100):0)+'%</td></tr>').join('');
+
+  $('view').innerHTML=
+    '<div class="stats">'+
+      '<div class="stat"><div class="n">'+cs.length+'</div><div class="l">CLIENTS</div></div>'+
+      '<div class="stat"><div class="n">'+replied+'</div><div class="l">HAVE REPLIED</div></div>'+
+      '<div class="stat"><div class="n">'+booked+'</div><div class="l">BOOKED</div><div class="hint">'+rate+'% of all clients</div></div>'+
+      '<div class="stat"><div class="n">'+by('interest')+'</div><div class="l">INTERESTED</div></div>'+
+    '</div>'+
+    '<div class="card"><h2>Where they stand</h2><div class="sub">Every client in '+esc(PROJECT_LABELS[state.project])+', counted by status.</div>'+
+      (cs.length?'<div class="scroller"><table><thead><tr><th>Status</th><th>Clients</th></tr></thead><tbody>'+
+        STATUSES.map(s=>'<tr><td>'+statusPill(s)+'</td><td>'+by(s)+'</td></tr>').join('')+
+      '</tbody></table></div>':'<div class="empty">Nothing to count yet.</div>')+
+    '</div>'+
+    '<div class="card"><h2>By platform</h2><div class="sub">Which platform actually turns into meetings.</div>'+
+      (platRows?'<div class="scroller"><table><thead><tr><th>Platform</th><th>Clients</th><th>Booked</th><th>Rate</th></tr></thead><tbody>'+
+        platRows+'</tbody></table></div>':'<div class="empty">Nothing to count yet.</div>')+
+    '</div>'+
+    '<div class="card"><h2>Days worked</h2><div class="sub">Loading…</div><div id="daysBox"></div></div>';
+
+  loadDays();
+}
+async function loadDays(){
+  const rows=await db.rows('effi_daily_sessions',{project:state.project},true);
+  const box=$('daysBox'); if(!box)return;
+  const sub=box.previousElementSibling;
+  if(hasSessions===false){
+    if(sub)sub.textContent='Not recording yet.';
+    box.innerHTML='<div class="locked">The table that stores start and finish times, '+
+      '<strong>effi_daily_sessions</strong>, was never created in this database, so the old app was '+
+      'never able to record how long a day took. Nothing was lost, it simply never saved. '+
+      'It can be added whenever you want this.</div>';
+    return;
+  }
+  if(sub)sub.textContent='Every day that was started, newest first.';
+  if(!rows||!rows.length){box.innerHTML='<div class="empty">No days recorded yet.</div>';return}
+  const list=rows.slice().sort((a,b)=>String(b.target_date||'').localeCompare(String(a.target_date||''))).slice(0,30);
+  box.innerHTML='<div class="scroller"><table><thead><tr><th>Day</th><th>Finished</th><th>Time taken</th></tr></thead><tbody>'+
+    list.map(s=>{
+      let took='-';
+      if(s.started_at&&s.finished_at){
+        const ms=new Date(s.finished_at)-new Date(s.started_at);
+        if(ms>0){const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);took=(h?h+'h ':'')+m+'m'}
+      }
+      return '<tr><td>'+esc(fmtDate(s.target_date))+'</td>'+
+        '<td class="mini">'+(s.finished_at?esc(fmtDateTime(s.finished_at)):'still open')+'</td>'+
+        '<td class="mini">'+esc(took)+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+}
+
+// ===========================================================
+//  NOTIFICATIONS
+// ===========================================================
+async function loadNotifs(){
+  const team=await db.rows('effi_notifications',{project:state.project,audience:'team'});
+  const soph=await db.rows('effi_notifications',{audience:'sophia'});
+  const all=[].concat(team||[],soph||[]);
+  const seen={};
+  state.notifs=all.filter(n=>{if(seen[n.id])return false;seen[n.id]=1;return true})
+    .sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,30);
+  drawBell();
+}
+function drawBell(){
+  const unseen=state.notifs.filter(n=>!n.seen).length;
+  const badge=$('bellBadge');
+  badge.style.display=unseen?'flex':'none';
+  badge.textContent=unseen;
+  $('bellList').innerHTML=state.notifs.length?state.notifs.map(n=>
+    '<div class="it'+(n.seen?'':' unseen')+'" data-id="'+esc(n.id)+'" data-client="'+esc(n.client_id||'')+'">'+
+      (n.audience==='sophia'?'👑 ':'')+esc(n.message||'')+
+      '<div class="when">'+esc(fmtDateTime(n.created_at))+(n.seen?'':' · tap to open')+'</div>'+
+    '</div>').join(''):'<div class="empty" style="padding:22px">Nothing yet.</div>';
+}
+$('bellBtn').onclick=e=>{
+  e.stopPropagation();
+  const p=$('bellPanel');
+  p.style.display=p.style.display==='none'?'block':'none';
+};
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.bell'))$('bellPanel').style.display='none';
+});
+$('bellList').onclick=async e=>{
+  const it=e.target.closest('.it'); if(!it)return;
+  const n=state.notifs.find(x=>String(x.id)===String(it.dataset.id));
+  if(n&&!n.seen){const row=await db.update('effi_notifications',n.id,{seen:true},'notification');if(row)n.seen=true;drawBell()}
+  // the old bell stored client_id and did nothing with it
+  const cid=it.dataset.client;
+  if(cid){
+    const c=state.clients.find(x=>String(x.id)===String(cid));
+    if(c){$('bellPanel').style.display='none';clientDetail(c)}
+  }
+};
+
+// ===========================================================
+//  TEMPLATES
+// ===========================================================
+const TPL_KINDS=[['client_6h','To the client, 6 hours before'],
+                 ['client_1h','To the client, 1 hour before'],
+                 ['sophia_6h','To Sophia, 6 hours before']];
+$('tplBtn').onclick=async()=>{
+  const rows=await db.rows('effi_templates',{});
+  if(rows===null)return;
+  const pick=kind=>rows.find(r=>r.kind===kind&&r.project===state.project)||
+                   rows.find(r=>r.kind===kind&&!r.project)||null;
+  openModal(
+    '<h2>Message templates</h2>'+
+    '<div class="sub">'+esc(PROJECT_LABELS[state.project])+' · use {{name}}, {{time}} and {{project}} where the details go.</div>'+
+    TPL_KINDS.map(k=>{
+      const r=pick(k[0]);
+      return '<label class="fld"><span class="lbl">'+esc(k[1])+
+        (r&&!r.project?' · currently the shared default':'')+'</span>'+
+        '<textarea data-kind="'+k[0]+'" data-id="'+esc(r?r.id:'')+'" data-global="'+(r&&!r.project?'1':'')+'">'+
+        esc(r?r.body:'')+'</textarea></label>';
+    }).join('')+
+    '<div class="locked">These are stored, but nothing sends them automatically yet. Sending still happens by hand.</div>'+
+    '<div class="acts"><button class="btn btn-primary" id="tSave">Save</button>'+
+    '<button class="btn btn-ghost" data-close>Close</button><span class="savenote" id="tNote"></span></div>'
+  ,true);
+  $('tSave').onclick=async()=>{
+    const note=$('tNote');note.textContent='Saving…';note.className='savenote busy';
+    let ok=true;
+    for(const el of document.querySelectorAll('#modalBox textarea[data-kind]')){
+      const id=el.dataset.id, isGlobal=el.dataset.global==='1', body=el.value;
+      let res;
+      if(id&&!isGlobal)res=await db.update('effi_templates',id,{body:body,updated_at:new Date().toISOString()},'template');
+      else res=await db.insert('effi_templates',{project:state.project,kind:el.dataset.kind,body:body},'template');
+      if(!res)ok=false;
+    }
+    note.textContent=ok?'Saved':'Some did not save';note.className='savenote '+(ok?'ok':'bad');
+  };
+};
+
+// ===========================================================
+//  BOOT
+// ===========================================================
+async function loadProject(){
+  state.targetDate=null;state.targets=[];state.session=null;
+  $('view').innerHTML='<div class="card"><div class="empty">Loading '+esc(PROJECT_LABELS[state.project])+'…</div></div>';
+  const cs=await db.rows('effi_clients',{project:state.project});
+  state.clients=cs||[];
+  await loadNotifs();
+  renderView();
+}
+
+$('syncBack').onclick=function(){
+  try{sessionStorage.removeItem('ws_gate')}catch(e){}
+  localStorage.setItem('ws_profile','');
+  location.href='index.html';
+};
+
+// the password is on the workspace entry page. Arriving here without
+// having passed it in this tab sends you back.
+(async function(){
+  let passed=false;
+  try{passed=sessionStorage.getItem('ws_gate')==='1'}catch(e){}
+  if(!passed){location.replace('index.html');return}
+  const gate=supabase.createClient(GATE_URL,GATE_KEY);
+  const {data}=await gate.auth.getSession();
+  if(!data||!data.session){location.replace('index.html');return}
+  localStorage.setItem('ws_profile','LIA');
+  $('wait').style.display='none';
+  $('app').style.display='block';
+  syncBar.style.display='flex';
+  renderTabs();
+  await loadProject();
+  setInterval(loadNotifs,60000);
+})();
+})();
+</script>
+</body>
+</html>
