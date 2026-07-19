@@ -157,9 +157,58 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
   .grid{grid-template-columns:1fr}.hero .split div{min-width:100%}.hero .big{font-size:31px}
 }
 @media print{nav,.noprint{display:none!important}body{background:#fff}}
+
+/* ---- sign in gate + cloud sync ---- */
+#gate{position:fixed;inset:0;z-index:900;background:linear-gradient(135deg,var(--choc) 0%,#4A121F 55%,var(--burg) 100%);
+  display:flex;align-items:center;justify-content:center;padding:24px}
+#gate.hide{display:none}
+#gate .card{background:var(--cream);border-radius:4px;padding:34px 30px;width:100%;max-width:390px;
+  box-shadow:0 18px 50px rgba(0,0,0,.34)}
+#gate .brand{color:var(--olive);font-size:10px;letter-spacing:3.5px;text-transform:uppercase;margin-bottom:10px}
+#gate h2{font-size:27px;color:var(--burg);margin-bottom:6px}
+#gate p.lede{color:var(--muted);font-size:12.5px;margin-bottom:22px}
+#gate label{display:block;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--choc-lt);margin-bottom:5px}
+#gate input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:3px;background:var(--paper);
+  font-family:inherit;font-size:14px;color:var(--txt);margin-bottom:15px}
+#gate input:focus{outline:none;border-color:var(--olive)}
+#gate button{width:100%;padding:12px;border:0;border-radius:3px;background:var(--burg);color:#fff;
+  font-family:inherit;font-size:12px;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer;transition:.18s}
+#gate button:hover{background:var(--burg-lt)}
+#gate button:disabled{opacity:.55;cursor:default}
+#gate .msg{font-size:12.5px;margin-top:14px;line-height:1.5;min-height:18px}
+#gate .msg.err{color:var(--burg)}
+#gate .msg.ok{color:var(--olive)}
+#gate .foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.5}
+
+#syncbar{position:fixed;right:14px;bottom:14px;z-index:400;background:var(--choc);color:var(--ivory);
+  border-radius:20px;padding:8px 15px;font-size:11.5px;letter-spacing:.4px;box-shadow:0 6px 20px rgba(0,0,0,.22);
+  display:flex;align-items:center;gap:9px;max-width:calc(100vw - 28px)}
+#syncbar .dot{width:8px;height:8px;border-radius:50%;background:var(--olive-lt);flex:none}
+#syncbar.busy .dot{background:#D9A441}
+#syncbar.off .dot{background:#C4593F}
+#syncbar a{color:#C8B8AC;text-decoration:underline;cursor:pointer;flex:none}
+@media(max-width:520px){#syncbar{left:14px;right:14px;justify-content:center}}
+@media print{#syncbar{display:none!important}}
 </style>
 </head>
 <body>
+
+<div id="gate">
+  <div class="card">
+    <div class="brand">Saha Synergy Group Ltd</div>
+    <h2>Workspace</h2>
+    <p class="lede">Sign in so your records follow you to any device.</p>
+    <label for="gEmail">Email</label>
+    <input id="gEmail" type="email" autocomplete="username" placeholder="you@email.com">
+    <label for="gPass">Password</label>
+    <input id="gPass" type="password" autocomplete="current-password" placeholder="Your password">
+    <button id="gBtn">Sign in</button>
+    <div class="msg" id="gMsg"></div>
+    <div class="foot">Your records are private to this login. Forgot the password? Reset it from the Supabase dashboard.</div>
+  </div>
+</div>
+
+<div id="syncbar" style="display:none"><span class="dot"></span><span id="syncTxt">Synced</span><a id="syncOut">Sign out</a></div>
 
 <header>
   <div class="wrap">
@@ -731,7 +780,8 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
   <em>Structure that frees you</em>
 </div>
 
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script id="appcode" type="text/app-source">
 const FINANCE_SEED=[{"id":"f000","date":"2026-03-09","desc":"Print+laminated","inAmt":0,"outAmt":33505,"note":"","cat":"","link":"","img":null},{"id":"f001","date":"2026-03-10","desc":"Nomeo (boost)","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f002","date":"2026-03-10","desc":"Grab for meeting sisterhood","inAmt":0,"outAmt":16000,"note":"","cat":"","link":"","img":null},{"id":"f003","date":"2026-03-10","desc":"Mac book case","inAmt":0,"outAmt":199460,"note":"","cat":"","link":"","img":null},{"id":"f004","date":"2026-03-10","desc":"Grab for charge and stuff","inAmt":0,"outAmt":14000,"note":"","cat":"","link":"","img":null},{"id":"f005","date":"2026-03-26","desc":"Changed mac case and grab delivery","inAmt":0,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f006","date":"2026-03-26","desc":"Print+laminated qris new and grab","inAmt":0,"outAmt":47000,"note":"","cat":"","link":"","img":null},{"id":"f007","date":"2026-03-26","desc":"girf for sis leny","inAmt":0,"outAmt":434950,"note":"","cat":"","link":"","img":null},{"id":"f008","date":"2026-03-26","desc":"grab gift","inAmt":0,"outAmt":17500,"note":"","cat":"","link":"","img":null},{"id":"f009","date":"2026-03-26","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f010","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":324000,"note":"","cat":"","link":"","img":null},{"id":"f011","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":631451,"note":"","cat":"","link":"","img":null},{"id":"f012","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":174000,"note":"","cat":"","link":"","img":null},{"id":"f013","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f014","date":"2026-03-28","desc":"Grocery - Leny","inAmt":0,"outAmt":890000,"note":"","cat":"","link":"","img":null},{"id":"f015","date":"2026-03-30","desc":"Grab to repair the iphone","inAmt":0,"outAmt":15000,"note":"","cat":"","link":"","img":null},{"id":"f016","date":"2026-03-30","desc":"Coffe nude","inAmt":0,"outAmt":183000,"note":"","cat":"","link":"","img":null},{"id":"f017","date":"2026-03-30","desc":"Coffe kota","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f018","date":"2026-03-30","desc":"Repair the iphone camera + grab","inAmt":0,"outAmt":930000,"note":"","cat":"","link":"","img":null},{"id":"f019","date":"2026-03-30","desc":"Repair the lamp","inAmt":0,"outAmt":135500,"note":"","cat":"","link":"","img":null},{"id":"f020","date":"2026-03-30","desc":"Pay the guy to repair the lamp","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f021","date":"2026-03-31","desc":"Stand laptop","inAmt":0,"outAmt":185000,"note":"","cat":"","link":"","img":null},{"id":"f022","date":"2026-03-31","desc":"Coworking (Monika)","inAmt":0,"outAmt":150000,"note":"","cat":"","link":"","img":null},{"id":"f023","date":"2026-03-31","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f024","date":"2026-04-01","desc":"Print + grab for script","inAmt":0,"outAmt":86000,"note":"","cat":"","link":"","img":null},{"id":"f025","date":"2026-04-03","desc":"Boost nomeo","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f026","date":"2026-04-06","desc":"Gas","inAmt":0,"outAmt":280000,"note":"","cat":"","link":"","img":null},{"id":"f027","date":"2026-04-06","desc":"Grocery","inAmt":0,"outAmt":1102507,"note":"","cat":"","link":"","img":null},{"id":"f028","date":"2026-04-06","desc":"Coffee (Ai event)","inAmt":0,"outAmt":131080,"note":"","cat":"","link":"","img":null},{"id":"f029","date":"2026-04-06","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f030","date":"2026-04-06","desc":"pay the guy for the trash","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f031","date":"2026-04-08","desc":"Coffee","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f032","date":"2026-04-08","desc":"grab helmet","inAmt":0,"outAmt":8000,"note":"","cat":"","link":"","img":null},{"id":"f033","date":"2026-04-09","desc":"Coffee","inAmt":0,"outAmt":40000,"note":"","cat":"","link":"","img":null},{"id":"f034","date":"2026-04-09","desc":"knee pads","inAmt":0,"outAmt":77400,"note":"","cat":"","link":"","img":null},{"id":"f035","date":"2026-04-09","desc":"Shower","inAmt":0,"outAmt":136584,"note":"","cat":"","link":"","img":null},{"id":"f036","date":"2026-04-09","desc":"Bike","inAmt":0,"outAmt":308300,"note":"","cat":"","link":"","img":null},{"id":"f037","date":"2026-04-09","desc":"Grocery by leny","inAmt":0,"outAmt":153000,"note":"","cat":"","link":"","img":null},{"id":"f038","date":"2026-04-09","desc":"Ayelash","inAmt":0,"outAmt":492500,"note":"","cat":"","link":"","img":null},{"id":"f039","date":"2026-04-09","desc":"grab glasses","inAmt":0,"outAmt":11500,"note":"","cat":"","link":"","img":null},{"id":"f040","date":"2026-04-09","desc":"Cookies","inAmt":0,"outAmt":172800,"note":"","cat":"","link":"","img":null},{"id":"f041","date":"2026-04-10","desc":"Trash (pick up)","inAmt":0,"outAmt":752500,"note":"3 month","cat":"","link":"","img":null},{"id":"f042","date":"2026-04-10","desc":"Trash 4","inAmt":0,"outAmt":189477,"note":"","cat":"","link":"","img":null},{"id":"f043","date":"2026-04-10","desc":"Flower","inAmt":0,"outAmt":227500,"note":"","cat":"","link":"","img":null},{"id":"f044","date":"2026-04-10","desc":"Dennise birthday","inAmt":0,"outAmt":765050,"note":"","cat":"","link":"","img":null},{"id":"f045","date":"2026-04-10","desc":"Leny grocery","inAmt":0,"outAmt":212762,"note":"","cat":"","link":"","img":null},{"id":"f046","date":"2026-04-10","desc":"Leny grocery","inAmt":0,"outAmt":157247,"note":"","cat":"","link":"","img":null},{"id":"f047","date":"2026-04-10","desc":"Coffee","inAmt":0,"outAmt":40000,"note":"","cat":"","link":"","img":null},{"id":"f048","date":"2026-04-12","desc":"Leny grocery","inAmt":0,"outAmt":422000,"note":"","cat":"","link":"","img":null},{"id":"f049","date":"2026-04-12","desc":"Matcha","inAmt":0,"outAmt":351110,"note":"","cat":"","link":"","img":null},{"id":"f050","date":"2026-04-12","desc":"Leny grocery","inAmt":0,"outAmt":139000,"note":"","cat":"","link":"","img":null},{"id":"f051","date":"2026-04-12","desc":"grab","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f052","date":"2026-04-13","desc":"Flower +  grab","inAmt":0,"outAmt":535500,"note":"","cat":"","link":"","img":null},{"id":"f053","date":"2026-04-13","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f054","date":"2026-04-13","desc":"Coffee","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f055","date":"2026-04-14","desc":"Cake for camie","inAmt":0,"outAmt":550000,"note":"","cat":"","link":"","img":null},{"id":"f056","date":"2026-04-14","desc":"gas","inAmt":0,"outAmt":20000,"note":"","cat":"","link":"","img":null},{"id":"f057","date":"2026-04-14","desc":"Leny grocery","inAmt":0,"outAmt":42000,"note":"","cat":"","link":"","img":null},{"id":"f058","date":"2026-04-15","desc":"Pool - (mei)","inAmt":0,"outAmt":700000,"note":"","cat":"","link":"","img":null},{"id":"f059","date":"2026-04-15","desc":"grab cake","inAmt":0,"outAmt":90000,"note":"","cat":"","link":"","img":null},{"id":"f060","date":"2026-04-15","desc":"wrap","inAmt":0,"outAmt":10000,"note":"","cat":"","link":"","img":null},{"id":"f061","date":"2026-04-16","desc":"Leny grocery","inAmt":0,"outAmt":437698,"note":"","cat":"","link":"","img":null},{"id":"f062","date":"2026-04-19","desc":"Leny (salary in advance)","inAmt":0,"outAmt":350000,"note":"","cat":"","link":"","img":null},{"id":"f063","date":"2026-04-19","desc":"Leny grocery","inAmt":0,"outAmt":571600,"note":"","cat":"","link":"","img":null},{"id":"f064","date":"2026-04-20","desc":"Leny (cleo water 2)","inAmt":0,"outAmt":80000,"note":"","cat":"","link":"","img":null},{"id":"f065","date":"2026-04-20","desc":"Leny (baterai)","inAmt":0,"outAmt":58000,"note":"","cat":"","link":"","img":null},{"id":"f066","date":"2026-04-20","desc":"Coffee","inAmt":0,"outAmt":64735,"note":"","cat":"","link":"","img":null},{"id":"f067","date":"2026-04-21","desc":"Coffee","inAmt":0,"outAmt":64735,"note":"","cat":"","link":"","img":null},{"id":"f068","date":"2026-04-21","desc":"Leny grocery","inAmt":0,"outAmt":466779,"note":"","cat":"","link":"","img":null},{"id":"f069","date":"2026-04-22","desc":"Leny grocery","inAmt":0,"outAmt":268000,"note":"","cat":"","link":"","img":null},{"id":"f070","date":"2026-04-22","desc":"SOPHIA","inAmt":4100000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f071","date":"2026-04-22","desc":"Dresser","inAmt":0,"outAmt":4100000,"note":"","cat":"","link":"","img":null},{"id":"f072","date":"2026-04-22","desc":"pick up dresser to upstairs","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f073","date":"2026-04-27","desc":"White board","inAmt":0,"outAmt":36354,"note":"","cat":"","link":"","img":null},{"id":"f074","date":"2026-04-27","desc":"Pulsa to call the PLN","inAmt":0,"outAmt":13740,"note":"","cat":"","link":"","img":null},{"id":"f075","date":"2026-04-27","desc":"grab","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f076","date":"2026-04-27","desc":"SOPHIA","inAmt":3000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f077","date":"2026-05-05","desc":"pimple patch","inAmt":0,"outAmt":476950,"note":"","cat":"","link":"","img":null},{"id":"f078","date":"2026-05-05","desc":"Bike","inAmt":0,"outAmt":250000,"note":"","cat":"","link":"","img":null},{"id":"f079","date":"2026-05-05","desc":"Sophia coworking","inAmt":0,"outAmt":363040,"note":"","cat":"","link":"","img":null},{"id":"f080","date":"2026-05-06","desc":"wrap","inAmt":0,"outAmt":161700,"note":"","cat":"","link":"","img":null},{"id":"f081","date":"2026-05-06","desc":"head silk wraps","inAmt":0,"outAmt":135002,"note":"","cat":"","link":"","img":null},{"id":"f082","date":"2026-05-06","desc":"Coffee","inAmt":0,"outAmt":116200,"note":"","cat":"","link":"","img":null},{"id":"f083","date":"2026-05-06","desc":"BBM to seminyak","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f084","date":"2026-05-06","desc":"Shocks","inAmt":0,"outAmt":156700,"note":"","cat":"","link":"","img":null},{"id":"f085","date":"2026-05-06","desc":"Baterai and pay the guy to fixed the door and bell","inAmt":0,"outAmt":123000,"note":"","cat":"","link":"","img":null},{"id":"f086","date":"2026-05-07","desc":"Leny Grocery","inAmt":0,"outAmt":30500,"note":"","cat":"","link":"","img":null},{"id":"f087","date":"2026-05-09","desc":"Piara Dalung Vet Care","inAmt":0,"outAmt":402500,"note":"","cat":"","link":"","img":null},{"id":"f088","date":"2026-05-09","desc":"Cinema","inAmt":0,"outAmt":408000,"note":"","cat":"","link":"","img":null},{"id":"f089","date":"2026-05-09","desc":"Cinema","inAmt":0,"outAmt":1224000,"note":"","cat":"","link":"","img":null},{"id":"f090","date":"2026-05-14","desc":"BBM to denpasar","inAmt":0,"outAmt":40000,"note":"","cat":"","link":"","img":null},{"id":"f091","date":"2026-05-15","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f092","date":"2026-05-15","desc":"Flower","inAmt":0,"outAmt":400000,"note":"","cat":"","link":"","img":null},{"id":"f093","date":"2026-05-15","desc":"Tripod","inAmt":0,"outAmt":68000,"note":"","cat":"","link":"","img":null},{"id":"f094","date":"2026-05-15","desc":"Twizzer 1","inAmt":0,"outAmt":85522,"note":"","cat":"","link":"","img":null},{"id":"f095","date":"2026-05-15","desc":"Twizzer 2","inAmt":0,"outAmt":22250,"note":"","cat":"","link":"","img":null},{"id":"f096","date":"2026-05-17","desc":"Leny","inAmt":0,"outAmt":15000,"note":"","cat":"","link":"","img":null},{"id":"f097","date":"2026-05-17","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f098","date":"2026-05-22","desc":"Salary outreach","inAmt":0,"outAmt":2000000,"note":"","cat":"","link":"","img":null},{"id":"f099","date":"2026-05-22","desc":"Sophia-AT06","inAmt":0,"outAmt":287250,"note":"","cat":"","link":"","img":null},{"id":"f100","date":"2026-05-22","desc":"Kota coffee","inAmt":0,"outAmt":148000,"note":"","cat":"","link":"","img":null},{"id":"f101","date":"2026-05-22","desc":"Grab","inAmt":0,"outAmt":22000,"note":"","cat":"","link":"","img":null},{"id":"f102","date":"2026-05-22","desc":"Leny","inAmt":0,"outAmt":35000,"note":"","cat":"","link":"","img":null},{"id":"f103","date":"2026-05-25","desc":"Kota coffee","inAmt":0,"outAmt":71000,"note":"","cat":"","link":"","img":null},{"id":"f104","date":"2026-05-25","desc":"Nomeo (boost)","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f105","date":"2026-05-25","desc":"sophia AT06","inAmt":0,"outAmt":48000,"note":"","cat":"","link":"","img":null},{"id":"f106","date":"2026-05-26","desc":"AT06","inAmt":0,"outAmt":48220,"note":"","cat":"","link":"","img":null},{"id":"f107","date":"2026-05-27","desc":"Print sticker sis amy","inAmt":0,"outAmt":78500,"note":"","cat":"","link":"","img":null},{"id":"f108","date":"2026-05-27","desc":"stick","inAmt":0,"outAmt":17000,"note":"","cat":"","link":"","img":null},{"id":"f109","date":"2026-05-27","desc":"Leny","inAmt":0,"outAmt":20000,"note":"","cat":"","link":"","img":null},{"id":"f110","date":"2026-05-27","desc":"coffee","inAmt":0,"outAmt":49000,"note":"","cat":"","link":"","img":null},{"id":"f111","date":"2026-05-28","desc":"matcha","inAmt":0,"outAmt":71000,"note":"","cat":"","link":"","img":null},{"id":"f112","date":"2026-05-28","desc":"coffee","inAmt":0,"outAmt":80450,"note":"","cat":"","link":"","img":null},{"id":"f113","date":"2026-06-01","desc":"coffee","inAmt":0,"outAmt":42500,"note":"","cat":"","link":"","img":null},{"id":"f114","date":"2026-06-02","desc":"Screen cleaner","inAmt":0,"outAmt":44400,"note":"","cat":"","link":"","img":null},{"id":"f115","date":"2026-06-02","desc":"Leny Grocery","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f116","date":"2026-06-05","desc":"Coffee","inAmt":0,"outAmt":211860,"note":"","cat":"","link":"","img":null},{"id":"f117","date":"2026-06-08","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f118","date":"2026-06-08","desc":"coffee","inAmt":0,"outAmt":204000,"note":"total 264 (-60 monika and lia coffee)","cat":"","link":"","img":null},{"id":"f119","date":"2026-06-08","desc":"Bike payment","inAmt":0,"outAmt":315600,"note":"","cat":"","link":"","img":null},{"id":"f120","date":"2026-06-10","desc":"Leny Grocery","inAmt":0,"outAmt":500000,"note":"","cat":"","link":"","img":null},{"id":"f121","date":"2026-06-11","desc":"coffee","inAmt":0,"outAmt":64735,"note":"","cat":"","link":"","img":null},{"id":"f122","date":"2026-06-08","desc":"Leny Grocery","inAmt":0,"outAmt":37000,"note":"","cat":"","link":"","img":null},{"id":"f123","date":"2026-06-08","desc":"Leny Grocery","inAmt":0,"outAmt":44000,"note":"","cat":"","link":"","img":null},{"id":"f124","date":"2026-06-08","desc":"SOPHIA","inAmt":1000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f125","date":"2026-06-11","desc":"head shower","inAmt":0,"outAmt":121503,"note":"","cat":"","link":"","img":null},{"id":"f126","date":"2026-06-11","desc":"soil tample","inAmt":0,"outAmt":72500,"note":"","cat":"","link":"","img":null},{"id":"f127","date":"2026-06-11","desc":"grab delivery","inAmt":0,"outAmt":10000,"note":"","cat":"","link":"","img":null},{"id":"f128","date":"2026-06-11","desc":"Leny","inAmt":0,"outAmt":148000,"note":"","cat":"","link":"","img":null},{"id":"f129","date":"2026-06-12","desc":"SOPHIA","inAmt":1000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f130","date":"2026-06-12","desc":"Coffee","inAmt":0,"outAmt":48000,"note":"","cat":"","link":"","img":null},{"id":"f131","date":"2026-06-12","desc":"Pool - Jun","inAmt":0,"outAmt":702500,"note":"","cat":"","link":"","img":null},{"id":"f132","date":"2026-06-12","desc":"Repair the sink","inAmt":0,"outAmt":77500,"note":"","cat":"","link":"","img":null},{"id":"f133","date":"2026-06-15","desc":"pay water","inAmt":0,"outAmt":180000,"note":"","cat":"","link":"","img":null},{"id":"f134","date":"2026-06-15","desc":"SOPHIA","inAmt":1000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f135","date":"2026-06-18","desc":"Coffee and bread","inAmt":0,"outAmt":114000,"note":"-Rp170,734","cat":"","link":"","img":null},{"id":"f136","date":"2026-06-18","desc":"Bynora","inAmt":0,"outAmt":183000,"note":"","cat":"","link":"","img":null},{"id":"f137","date":"2026-06-18","desc":"Leny grocery","inAmt":0,"outAmt":400000,"note":"","cat":"","link":"","img":null},{"id":"f138","date":"2026-06-18","desc":"Water","inAmt":0,"outAmt":270000,"note":"","cat":"","link":"","img":null},{"id":"f139","date":"2026-06-18","desc":"Grab to airport","inAmt":0,"outAmt":138000,"note":"","cat":"","link":"","img":null},{"id":"f140","date":"2026-06-25","desc":"Coffee","inAmt":0,"outAmt":65734,"note":"","cat":"","link":"","img":null},{"id":"f141","date":"2026-06-25","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f142","date":"2026-06-29","desc":"Stuff for sis Elliye","inAmt":0,"outAmt":400650,"note":"","cat":"","link":"","img":null},{"id":"f143","date":"2026-06-29","desc":"Coffee","inAmt":0,"outAmt":67750,"note":"","cat":"","link":"","img":null},{"id":"f144","date":"2026-06-29","desc":"Ghee","inAmt":0,"outAmt":760800,"note":"","cat":"","link":"","img":null},{"id":"f145","date":"2026-06-30","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f146","date":"2026-06-30","desc":"Anna Qr payment for eyelash","inAmt":0,"outAmt":334000,"note":"","cat":"","link":"","img":null},{"id":"f147","date":"2026-06-30","desc":"Trash","inAmt":0,"outAmt":502500,"note":"","cat":"","link":"","img":null},{"id":"f148","date":"2026-06-30","desc":"Flower","inAmt":0,"outAmt":174500,"note":"","cat":"","link":"","img":null},{"id":"f149","date":"2026-06-30","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f150","date":"2026-07-01","desc":"Leny Grocery","inAmt":0,"outAmt":150000,"note":"","cat":"","link":"","img":null},{"id":"f151","date":"2026-07-02","desc":"Coffee","inAmt":0,"outAmt":35000,"note":"","cat":"","link":"","img":null},{"id":"f152","date":"2026-07-03","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f153","date":"2026-07-05","desc":"Coffee","inAmt":0,"outAmt":153000,"note":"","cat":"","link":"","img":null},{"id":"f154","date":"2026-07-05","desc":"Leny Grocery","inAmt":0,"outAmt":400000,"note":"","cat":"","link":"","img":null},{"id":"f155","date":"2026-07-05","desc":"Leny Grocery","inAmt":0,"outAmt":150000,"note":"","cat":"","link":"","img":null},{"id":"f156","date":"2026-07-06","desc":"Leny Grocery","inAmt":0,"outAmt":350000,"note":"","cat":"","link":"","img":null},{"id":"f157","date":"2026-07-06","desc":"Monika's bonus","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f158","date":"2026-07-06","desc":"Electricy","inAmt":0,"outAmt":1003000,"note":"","cat":"","link":"","img":null},{"id":"f159","date":"2026-07-06","desc":"Gimble","inAmt":0,"outAmt":796120,"note":"","cat":"","link":"","img":null},{"id":"f160","date":"2026-07-06","desc":"Delivery universal plug","inAmt":0,"outAmt":20000,"note":"","cat":"","link":"","img":null},{"id":"f161","date":"2026-07-06","desc":"Universal plug","inAmt":0,"outAmt":53241,"note":"","cat":"","link":"","img":null},{"id":"f162","date":"2026-07-06","desc":"Monitor","inAmt":0,"outAmt":1670800,"note":"","cat":"","link":"","img":null},{"id":"f163","date":"2026-07-06","desc":"Table+chair","inAmt":0,"outAmt":905500,"note":"","cat":"","link":"","img":null},{"id":"f164","date":"2026-07-06","desc":"Sophia's bike","inAmt":0,"outAmt":267000,"note":"","cat":"","link":"","img":null},{"id":"f165","date":"2026-07-06","desc":"Nurhayati","inAmt":0,"outAmt":136000,"note":"","cat":"","link":"","img":null},{"id":"f166","date":"2026-07-06","desc":"Shopee","inAmt":0,"outAmt":53241,"note":"","cat":"","link":"","img":null},{"id":"f167","date":"2026-07-06","desc":"Hanu's food","inAmt":0,"outAmt":542250,"note":"","cat":"","link":"","img":null},{"id":"f168","date":"2026-07-06","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f169","date":"2026-07-06","desc":"SOPHIA","inAmt":3000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f170","date":"2026-07-06","desc":"Coconut after dance trial","inAmt":0,"outAmt":259875,"note":"","cat":"","link":"","img":null},{"id":"f171","date":"2026-07-07","desc":"Coffee","inAmt":0,"outAmt":55850,"note":"","cat":"","link":"","img":null},{"id":"f172","date":"2026-07-07","desc":"Nomeo (boost)","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f173","date":"2026-07-07","desc":"Delivery","inAmt":0,"outAmt":18000,"note":"","cat":"","link":"","img":null},{"id":"f174","date":"2026-07-07","desc":"Water (3)","inAmt":0,"outAmt":180000,"note":"","cat":"","link":"","img":null},{"id":"f175","date":"2026-07-07","desc":"Delivery tshirt","inAmt":0,"outAmt":13000,"note":"","cat":"","link":"","img":null},{"id":"f177","date":"2026-07-07","desc":"Dolly","inAmt":0,"outAmt":1252500,"note":"","cat":"","link":"","img":null},{"id":"f178","date":"2026-07-07","desc":"Indomaret (cleanser,cutton bath)","inAmt":0,"outAmt":48900,"note":"","cat":"","link":"","img":null},{"id":"f180","date":"2026-07-08","desc":"Leny Grocery","inAmt":0,"outAmt":800000,"note":"","cat":"","link":"","img":null},{"id":"f181","date":"2026-07-08","desc":"Leny Grocery","inAmt":0,"outAmt":1000000,"note":"","cat":"","link":"","img":null},{"id":"f182","date":"2026-07-08","desc":"cofee for all the team","inAmt":0,"outAmt":401000,"note":"","cat":"","link":"","img":null},{"id":"f183","date":"2026-07-08","desc":"Driver Dolly","inAmt":0,"outAmt":652500,"note":"","cat":"","link":"","img":null},{"id":"f184","date":"2026-07-08","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f185","date":"2026-07-08","desc":"SOPHIA","inAmt":3000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f186","date":"2026-07-08","desc":"SOPHIA (CASH)","inAmt":300000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f187","date":"2026-07-08","desc":"Extansion cable","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f188","date":"2026-07-09","desc":"Driver Elliye","inAmt":0,"outAmt":702500,"note":"","cat":"","link":"","img":null},{"id":"f190","date":"2026-07-10","desc":"Printed","inAmt":0,"outAmt":21500,"note":"","cat":"","link":"","img":null},{"id":"f191","date":"2026-07-10","desc":"Delivery for print","inAmt":0,"outAmt":17000,"note":"","cat":"","link":"","img":null},{"id":"f192","date":"2026-07-10","desc":"Cofee","inAmt":0,"outAmt":91000,"note":"","cat":"","link":"","img":null},{"id":"f193","date":"2026-07-10","desc":"Leny Grocery","inAmt":0,"outAmt":132000,"note":"","cat":"","link":"","img":null}];
 
 const RATES=[
@@ -1512,6 +1562,135 @@ function storageMeter(){
 ['iDate','yDate','tDate','fDate'].forEach(id=>document.getElementById(id).value=todayISO());
 syncType();
 render();
+</script>
+
+<script>
+/* ---------------------------------------------------------------
+   Cloud sync. The app code above is held as inert text in #appcode
+   and only injected once we have a signed-in user and their records
+   have been pulled down, so the app still boots from localStorage
+   exactly as it always did.
+--------------------------------------------------------------- */
+(function(){
+const SB_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
+const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
+const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
+            'monika_finance_v1','monika_commit_v1','monika_seeded_v1'];
+
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const gate=document.getElementById('gate'), bar=document.getElementById('syncbar'),
+      txt=document.getElementById('syncTxt'), msg=document.getElementById('gMsg'),
+      btn=document.getElementById('gBtn');
+let uid=null, booted=false, offline=false;
+
+function readLocal(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function status(s,cls){txt.textContent=s;bar.className=cls||''}
+function say(t,cls){msg.textContent=t;msg.className='msg'+(cls?' '+cls:'')}
+
+// ---- boot the held app code as a real global script
+function bootApp(){
+  if(booted)return; booted=true;
+  const s=document.createElement('script');
+  s.textContent=document.getElementById('appcode').textContent;
+  document.body.appendChild(s);
+  wrapWrites();
+  gate.classList.add('hide');
+  bar.style.display='flex';
+}
+
+// ---- every save also goes up, debounced per key
+const timers={};
+function queuePush(k){
+  if(offline)return;
+  clearTimeout(timers[k]);
+  status('Saving…','busy');
+  timers[k]=setTimeout(()=>pushKey(k),900);
+}
+async function pushKey(k){
+  const raw=localStorage.getItem(k);
+  if(raw==null)return;
+  let val;try{val=JSON.parse(raw)}catch(e){return}
+  const {error}=await sb.from('workspace_state')
+    .upsert({user_id:uid,key:k,value:val,updated_at:new Date().toISOString()},{onConflict:'user_id,key'});
+  if(error){offline=true;status('Not saved to cloud','off');console.error(error)}
+  else status('Saved to cloud');
+}
+function wrapWrites(){
+  const orig=window.writeStore;
+  window.writeStore=function(k,v){const ok=orig(k,v);if(ok)queuePush(k);return ok};
+  // the seed flag is written directly, not through writeStore
+  if(localStorage.getItem('monika_seeded_v1'))queuePush('monika_seeded_v1');
+}
+
+// ---- pull, then boot
+async function pullThenBoot(){
+  status('Loading your records…','busy');
+  const {data,error}=await sb.from('workspace_state').select('key,value');
+  if(error){
+    offline=true;
+    console.error(error);
+    bootApp();
+    status('Offline. Saving on this device only.','off');
+    return;
+  }
+  const remote=new Map((data||[]).map(r=>[r.key,r.value]));
+  const missing=[];
+  // safety: never silently replace a fuller local list with a thinner cloud one.
+  // that would happen if a blank device synced first and overwrote the real records.
+  let shrink=0;
+  KEYS.forEach(k=>{
+    if(!remote.has(k))return;
+    const there=remote.get(k), here=readLocal(k);
+    if(Array.isArray(there)&&Array.isArray(here)&&here.length>there.length)shrink+=here.length-there.length;
+  });
+  if(shrink&&!confirm('This device holds '+shrink+' record'+(shrink===1?'':'s')+
+      ' that the cloud copy does not have.\n\nContinuing replaces them with the cloud copy.\n\n'+
+      'Press Cancel to stop, open Data & Backup, and download a backup first.')){
+    bootApp();
+    offline=true;
+    status('Cloud sync paused. Saving on this device only.','off');
+    return;
+  }
+  KEYS.forEach(k=>{
+    if(remote.has(k))localStorage.setItem(k,JSON.stringify(remote.get(k)));
+    else if(localStorage.getItem(k)!=null)missing.push(k);
+  });
+  bootApp();
+  // first ever sign in, or a key this account has never uploaded: send it up
+  if(remote.size===0)KEYS.forEach(k=>queuePush(k));
+  else missing.forEach(k=>queuePush(k));
+  if(remote.size)status('Synced');
+}
+
+// ---- sign in
+btn.onclick=async function(){
+  const email=document.getElementById('gEmail').value.trim();
+  const pass=document.getElementById('gPass').value;
+  if(!email||!pass){say('Please fill in both fields.','err');return}
+  btn.disabled=true;say('Signing in…');
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false;
+  if(error){say(error.message,'err');return}
+  uid=data.user.id;
+  say('Signed in.','ok');
+  pullThenBoot();
+};
+document.getElementById('gPass').addEventListener('keydown',e=>{if(e.key==='Enter')btn.click()});
+
+// ---- sign out clears this device so nothing is left behind
+document.getElementById('syncOut').onclick=async function(){
+  if(!confirm('Sign out of this device? Anything not yet saved to the cloud will be lost.'))return;
+  await sb.auth.signOut();
+  KEYS.forEach(k=>localStorage.removeItem(k));
+  location.reload();
+};
+
+// ---- already signed in from last time
+(async function(){
+  const {data}=await sb.auth.getSession();
+  if(data&&data.session){uid=data.session.user.id;pullThenBoot()}
+})();
+})();
 </script>
 </body>
 </html>
