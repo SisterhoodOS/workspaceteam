@@ -6046,6 +6046,11 @@ document.getElementById('lsyncBack').onclick=async function(){
   if(!passed){location.replace('index.html');return}
   const {data}=await sb.auth.getSession();
   if(!data||!data.session){location.replace('index.html');return}
+  // this page belongs to Leny's account. Another person's password, even a
+  // valid one, does not open it.
+  if((data.session.user.email||'').toLowerCase()!=='leny@sisterhoodos.io'){
+    location.replace('index.html');return;
+  }
   uid=data.session.user.id;
   localStorage.setItem(PROFKEY,'LENY');
   pullThenBoot();

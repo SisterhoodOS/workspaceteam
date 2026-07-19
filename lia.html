@@ -1029,6 +1029,11 @@ $('syncBack').onclick=function(){
   const gate=supabase.createClient(GATE_URL,GATE_KEY);
   const {data}=await gate.auth.getSession();
   if(!data||!data.session){location.replace('index.html');return}
+  // this page belongs to Lia's account. Another person's password, even a
+  // valid one, does not open it.
+  if((data.session.user.email||'').toLowerCase()!=='lia@sisterhoodos.io'){
+    location.replace('index.html');return;
+  }
   localStorage.setItem('ws_profile','LIA');
   $('wait').style.display='none';
   $('app').style.display='block';

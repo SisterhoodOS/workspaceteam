@@ -161,7 +161,11 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
 /* ---- sign in gate + cloud sync ---- */
 #gate{position:fixed;inset:0;z-index:900;background:linear-gradient(135deg,var(--choc) 0%,#4A121F 55%,var(--burg) 100%);
   display:flex;align-items:center;justify-content:center;padding:24px}
-#gate.hide{display:none}
+#gate{display:none}
+#gate.show{display:flex}
+#gate .back{background:none;border:0;color:var(--muted);font-family:inherit;font-size:11.5px;
+  letter-spacing:1px;text-transform:uppercase;padding:0;width:auto;margin-top:14px;cursor:pointer}
+#gate .back:hover{background:none;color:var(--burg)}
 #gate .card{background:var(--cream);border-radius:4px;padding:34px 30px;width:100%;max-width:390px;
   box-shadow:0 18px 50px rgba(0,0,0,.34)}
 #gate .brand{color:var(--olive);font-size:10px;letter-spacing:3.5px;text-transform:uppercase;margin-bottom:10px}
@@ -210,13 +214,14 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
 <div id="gate">
   <div class="card">
     <div class="brand">Saha Synergy Group Ltd</div>
-    <h2>Workspace</h2>
-    <p class="lede">Enter the team password. Your records then follow you to any device.</p>
+    <h2 id="gWho">Workspace</h2>
+    <p class="lede" id="gLede">Enter your password.</p>
     <label for="gPass">Password</label>
-    <input id="gPass" type="password" autocomplete="current-password" placeholder="Team password">
+    <input id="gPass" type="password" autocomplete="current-password" placeholder="Your password">
     <button id="gBtn">Open workspace</button>
     <div class="msg" id="gMsg"></div>
-    <div class="foot">You only do this once on each device. This browser will remember you afterwards.</div>
+    <button class="back" id="gBack">← Someone else</button>
+    <div class="foot">Your password opens only your own folder. Nobody else's records are reachable from it.</div>
   </div>
 </div>
 
@@ -1598,14 +1603,18 @@ render();
 const SB_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
 const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
 // one shared team account, so the gate only ever asks for a password
-const ACCOUNT_EMAIL='purbamonika610@gmail.com';
 const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
             'monika_finance_v1','monika_commit_v1','monika_seeded_v1'];
 
-// everyone shares one login, so each person's records are kept apart by a
-// prefix on the cloud key. Monika's rows predate the folders and stay
-// unprefixed, which means her existing records need no migration.
+// each person signs in to her own account with her own password, so the
+// separation is enforced by row level security in the database, not by the
+// screen. One person's password cannot reach another person's records.
 const PROFILES={MONIKA:'Monika Purba',LIA:'Lia',LENY:'Leny'};
+const ACCOUNTS={
+  MONIKA:'purbamonika610@gmail.com',
+  LENY:'leny@sisterhoodos.io',
+  LIA:'lia@sisterhoodos.io'
+};
 const PROFKEY='ws_profile';
 // proves the password was entered in this browser tab. sessionStorage, so
 // closing the tab or the browser makes the next visit ask again.
@@ -1630,7 +1639,7 @@ function bootApp(){
   s.textContent=document.getElementById('appcode').textContent;
   document.body.appendChild(s);
   wrapWrites();
-  gate.classList.add('hide');
+  gate.classList.remove('show');
   pick.classList.remove('show');
   bar.style.display='flex';
   const h=document.querySelector('header h1');
@@ -1661,30 +1670,46 @@ function wrapWrites(){
   if(localStorage.getItem('monika_seeded_v1'))queuePush('monika_seeded_v1');
 }
 
-// ---- choosing a person
-function showPicker(){gate.classList.add('hide');pick.classList.add('show')}
-function chooseProfile(p){
+// ---- pick a name first, then that person's own password
+let chosen=null;
+function showPicker(){
+  chosen=null;
+  gate.classList.remove('show');
+  pick.classList.add('show');
+}
+function askPassword(p){
+  chosen=p;
+  document.getElementById('gWho').textContent=PROFILES[p];
+  document.getElementById('gLede').textContent='Enter your password to open your folder.';
+  document.getElementById('gPass').value='';
+  say('');
+  pick.classList.remove('show');
+  gate.classList.add('show');
+  document.getElementById('gPass').focus();
+}
+Array.prototype.forEach.call(document.querySelectorAll('#picker .who'),b=>{
+  b.onclick=()=>askPassword(b.getAttribute('data-who'));
+});
+document.getElementById('gBack').onclick=showPicker;
+
+// Leny and Lia each run their own app on their own page. The handoff flag
+// proves the password was entered here; their page also checks that the
+// signed in account is actually theirs.
+const OWN_PAGE={LENY:'leny.html',LIA:'lia.html'};
+function enterProfile(p){
   const last=localStorage.getItem(PROFKEY);
-  // Leny and Lia each run their own app on their own page. The handoff
-  // flag is what proves they came through the password.
-  const OWN_PAGE={LENY:'leny.html',LIA:'lia.html'};
+  // leaving someone else's folder: clear their records off this device.
+  // they are safe in the cloud under their own account.
+  if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
+  localStorage.setItem(PROFKEY,p);
   if(OWN_PAGE[p]){
-    if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
-    localStorage.setItem(PROFKEY,p);
     try{sessionStorage.setItem(GATEFLAG,'1')}catch(e){}
     location.href=OWN_PAGE[p];
     return;
   }
-  // leaving someone else's folder: clear their records off this device first,
-  // they are already in the cloud under their own keys
-  if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
   profile=p;
-  localStorage.setItem(PROFKEY,p);
   pullThenBoot();
 }
-Array.prototype.forEach.call(document.querySelectorAll('#picker .who'),b=>{
-  b.onclick=()=>chooseProfile(b.getAttribute('data-who'));
-});
 document.getElementById('syncWho').onclick=async function(){
   // switching wipes this folder off the device, so every pending save has to
   // land in the cloud first. If any of them fails, stay put.
@@ -1753,15 +1778,18 @@ async function pullThenBoot(){
 
 // ---- sign in
 btn.onclick=async function(){
+  if(!chosen){showPicker();return}
   const pass=document.getElementById('gPass').value;
-  if(!pass){say('Please enter the password.','err');return}
+  if(!pass){say('Please enter your password.','err');return}
   btn.disabled=true;say('Opening…');
-  const {data,error}=await sb.auth.signInWithPassword({email:ACCOUNT_EMAIL,password:pass});
+  // a stale session from someone else must not survive into this one
+  await sb.auth.signOut();
+  const {data,error}=await sb.auth.signInWithPassword({email:ACCOUNTS[chosen],password:pass});
   btn.disabled=false;
-  if(error){say('That password did not work. Check it and try again.','err');return}
+  if(error){say('That is not '+PROFILES[chosen].split(' ')[0]+'’s password. Try again.','err');return}
   uid=data.user.id;
   say('');
-  showPicker();
+  enterProfile(chosen);
 };
 document.getElementById('gPass').addEventListener('keydown',e=>{if(e.key==='Enter')btn.click()});
 
@@ -1774,13 +1802,11 @@ document.getElementById('syncOut').onclick=async function(){
   location.reload();
 };
 
-// ---- the password is asked for on every visit, and the person is always
-// chosen fresh, so the link never drops straight into someone's records
+// ---- every visit starts at the name list and asks for that person's
+// password, so the link never drops straight into anyone's records
 (async function(){
   try{sessionStorage.removeItem(GATEFLAG)}catch(e){}
-  const {data}=await sb.auth.getSession();
-  if(data&&data.session)uid=data.session.user.id;
-  document.getElementById('gPass').focus();
+  showPicker();
 })();
 })();
 </script>
