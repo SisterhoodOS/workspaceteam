@@ -7,125 +7,130 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --black:#0E0C0C; --black-soft:#1A1615; --maroon:#6E2233; --maroon-lt:#8F3547;
-  --beige:#EFE6DA; --beige-dp:#DCCFBE; --cream:#F8F4EE; --gold:#B08D57;
-  --txt:#26201E; --muted:#8A7D74; --line:#E2D6C6;
-  --ok:#3F6B4E; --wait:#B08D57; --no:#8F3547;
+  --ivory:#F2EDE8; --cream:#FBF9F6; --paper:#fff;
+  --burg:#6A1024; --burg-lt:#8C2038; --burg-dp:#4A0A18;
+  --choc:#362017; --choc-lt:#4A2E22;
+  --olive:#6B7524; --olive-lt:#8A9438; --olive-pale:#E9EDDD;
+  --line:#E4D9CE; --txt:#2E1E17; --muted:#8A7A6E;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--cream);color:var(--txt);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6}
+body{background:var(--ivory);color:var(--txt);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6}
 h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 
-header{background:var(--black);color:var(--beige);padding:38px 0 30px;border-bottom:3px solid var(--gold)}
-.brand{color:var(--gold);font-size:10px;letter-spacing:3.5px;text-transform:uppercase;margin-bottom:12px}
-header h1{font-size:38px;color:var(--cream);letter-spacing:.5px}
-header .sub{color:#A79A90;font-size:12.5px;margin-top:8px}
+header{background:linear-gradient(115deg,var(--choc) 0%,#4A121F 60%,var(--burg) 100%);
+  color:var(--ivory);padding:38px 0 30px;border-bottom:3px solid var(--olive)}
+.brand{color:var(--olive-lt);font-size:10px;letter-spacing:3.5px;text-transform:uppercase;margin-bottom:12px}
+header h1{font-size:38px;color:#fff;letter-spacing:.5px}
+header .sub{color:#C8B8AC;font-size:12.5px;margin-top:8px}
 
-nav{background:var(--black-soft);border-bottom:1px solid #2C2523;position:sticky;top:0;z-index:20}
+nav{background:var(--choc);border-bottom:1px solid #4A2E22;position:sticky;top:0;z-index:20}
 nav .wrap{display:flex;gap:2px;overflow-x:auto}
-nav button{background:none;border:0;color:#9A8D84;font-family:inherit;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;
-  padding:15px 20px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.18s}
-nav button:hover{color:var(--beige)}
-nav button.on{color:var(--gold);border-bottom-color:var(--gold)}
+nav button{background:none;border:0;color:#B0A096;font-family:inherit;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;
+  padding:15px 17px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.18s}
+nav button:hover{color:var(--ivory)}
+nav button.on{color:var(--olive-lt);border-bottom-color:var(--olive-lt)}
 
 main{padding:34px 0 80px}
 .panel{display:none}.panel.on{display:block}
 
-.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 26px;margin-bottom:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:24px 26px;margin-bottom:20px}
 .card h2{font-size:24px;margin-bottom:4px}
 .card .lead{color:var(--muted);font-size:13px;margin-bottom:20px}
-.seclabel{font-size:9.5px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px}
+.seclabel{font-size:9.5px;letter-spacing:2.6px;text-transform:uppercase;color:var(--olive);font-weight:600;margin-bottom:6px}
 
-.hero{background:linear-gradient(150deg,var(--black) 0%,#2A1418 55%,var(--maroon) 100%);color:var(--beige);
+.hero{background:linear-gradient(150deg,var(--choc) 0%,#4A0F1C 50%,var(--burg) 100%);color:var(--ivory);
   border-radius:12px;padding:32px;margin-bottom:22px}
-.hero .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hero .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--olive-lt);margin-bottom:14px}
 .hero .big{font-family:'Cormorant Garamond',serif;font-size:52px;line-height:1.05;color:#fff}
-.hero .usd{color:#C6B39D;font-size:14px;margin-top:8px}
-.hero .split{display:flex;flex-wrap:wrap;gap:26px;margin-top:24px;padding-top:22px;border-top:1px solid rgba(176,141,87,.35)}
+.hero .usd{color:#C8B8AC;font-size:14px;margin-top:8px}
+.hero .split{display:flex;flex-wrap:wrap;gap:26px;margin-top:24px;padding-top:22px;border-top:1px solid rgba(138,148,56,.4)}
 .hero .split div{min-width:120px}
-.hero .split .k{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.hero .split .k{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--olive-lt);margin-bottom:4px}
 .hero .split .v{font-size:16px;color:#fff}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-bottom:22px}
-.stat{background:#fff;border:1px solid var(--line);border-left:3px solid var(--maroon);border-radius:8px;padding:17px 19px}
+.stat{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--burg);border-radius:8px;padding:17px 19px}
+.stat.olv{border-left-color:var(--olive)}
 .stat .k{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
-.stat .v{font-family:'Cormorant Garamond',serif;font-size:27px;color:var(--black)}
+.stat .v{font-family:'Cormorant Garamond',serif;font-size:27px;color:var(--choc)}
 .stat .n{font-size:11.5px;color:var(--muted);margin-top:3px}
 
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--maroon);
-  background:var(--beige);padding:11px 13px;border-bottom:1px solid var(--line);font-weight:600;white-space:nowrap}
-td{padding:12px 13px;border-bottom:1px solid #F0E9DF;vertical-align:top}
-tbody tr:hover{background:#FBF8F4}
+th{text-align:left;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--burg);
+  background:var(--ivory);padding:11px 13px;border-bottom:1px solid var(--line);font-weight:600;white-space:nowrap}
+td{padding:12px 13px;border-bottom:1px solid #F0E9E2;vertical-align:top}
+tbody tr:hover{background:var(--cream)}
 .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
 .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .rate{font-weight:600;white-space:nowrap}
+.pos{color:var(--olive)}.neg{color:var(--burg)}
 
 .pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:10.5px;letter-spacing:.6px;font-weight:500;white-space:nowrap}
-.p-ok{background:#E6EFE8;color:var(--ok)} .p-wait{background:#F6EEE0;color:#8A6A2F}
-.p-no{background:#F6E7EA;color:var(--no)} .p-neu{background:#EFEAE3;color:var(--muted)}
+.p-ok{background:var(--olive-pale);color:#4A5216} .p-wait{background:#F6EDE4;color:#8A5A2F}
+.p-no{background:#F7E8EA;color:var(--burg)} .p-neu{background:#EFE8E1;color:var(--muted)}
 
 label{display:block;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600}
 input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;
-  font-family:inherit;font-size:13.5px;color:var(--txt);background:#fff}
-input:focus,select:focus,textarea:focus{outline:0;border-color:var(--maroon)}
+  font-family:inherit;font-size:13.5px;color:var(--txt);background:var(--paper)}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--burg)}
+textarea{min-height:66px;resize:vertical}
 .frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:14px}
 .f{margin-bottom:0}
 
-button.btn{background:var(--maroon);color:var(--beige);border:0;border-radius:6px;padding:11px 24px;
+button.btn{background:var(--burg);color:var(--ivory);border:0;border-radius:6px;padding:11px 24px;
   font-family:inherit;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer;transition:.18s}
-button.btn:hover{background:var(--maroon-lt)}
-button.ghost{background:none;color:var(--maroon);border:1px solid var(--maroon)}
-button.ghost:hover{background:var(--maroon);color:var(--beige)}
-button.dark{background:var(--black)}button.dark:hover{background:#302826}
+button.btn:hover{background:var(--burg-lt)}
+button.ghost{background:none;color:var(--burg);border:1px solid var(--burg)}
+button.ghost:hover{background:var(--burg);color:var(--ivory)}
+button.olv{background:var(--olive)}button.olv:hover{background:var(--olive-lt)}
+button.dark{background:var(--choc)}button.dark:hover{background:var(--choc-lt)}
 .mini{background:none;border:0;color:var(--muted);cursor:pointer;font-size:11px;font-family:inherit;padding:2px 5px}
-.mini:hover{color:var(--maroon);text-decoration:underline}
+.mini:hover{color:var(--burg);text-decoration:underline}
 .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
-.note{background:var(--beige);border-left:3px solid var(--gold);padding:14px 17px;border-radius:0 6px 6px 0;
-  font-size:12.5px;color:#5C5049;margin:16px 0}
-.note strong{color:var(--black)}
-.warn{background:#F9EDEF;border-left-color:var(--maroon)}
+.note{background:var(--ivory);border-left:3px solid var(--olive);padding:14px 17px;border-radius:0 6px 6px 0;
+  font-size:12.5px;color:#5C4C42;margin:16px 0}
+.note strong{color:var(--choc)}
+.warn{background:#F9EEF0;border-left-color:var(--burg)}
 
 .empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:13px}
 .empty .serif{font-size:19px;color:var(--txt);display:block;margin-bottom:6px}
-a.lnk{color:var(--maroon);font-size:12px}
+a.lnk{color:var(--burg);font-size:12px}
+a.wa{color:var(--olive);font-size:12px;font-weight:500}
 .foot{text-align:center;padding:30px 0;color:var(--muted);font-size:11px;border-top:1px solid var(--line);margin-top:40px}
-.foot em{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:13px}
-.catrow td{background:var(--beige);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--maroon);font-weight:600}
+.foot em{font-family:'Cormorant Garamond',serif;color:var(--olive);font-size:13px}
+.catrow td{background:var(--ivory);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--burg);font-weight:600}
+
+.bar{height:7px;background:var(--ivory);border-radius:99px;overflow:hidden;margin-top:7px;border:1px solid var(--line)}
+.bar span{display:block;height:100%;background:var(--olive);transition:width .3s}
+.bar span.over{background:var(--burg)}
+.done td{opacity:.55}
+.done td:first-child{text-decoration:line-through}
+.thumb{width:44px;height:44px;object-fit:cover;border-radius:5px;border:1px solid var(--line);cursor:pointer;display:block}
+
 /* ---------- mobile ---------- */
 @media(max-width:760px){
   .wrap{padding:0 14px}
-  header{padding:28px 0 22px}
-  header h1{font-size:26px;line-height:1.15}
-  header .sub{font-size:11.5px}
-  nav button{padding:13px 14px;font-size:11px;letter-spacing:1px}
+  header{padding:28px 0 22px}header h1{font-size:26px;line-height:1.15}header .sub{font-size:11.5px}
+  nav button{padding:13px 13px;font-size:10.5px;letter-spacing:.9px}
   main{padding:22px 0 60px}
-  .card{padding:19px 16px;border-radius:9px}
-  .card h2{font-size:21px}
-  .hero{padding:24px 20px}
-  .hero .big{font-size:36px}
+  .card{padding:19px 16px;border-radius:9px}.card h2{font-size:21px}
+  .hero{padding:24px 20px}.hero .big{font-size:36px}
   .hero .split{gap:18px 22px;margin-top:19px;padding-top:18px}
   .hero .split div{min-width:calc(50% - 11px)}
   .grid{grid-template-columns:1fr 1fr;gap:10px}
-  .stat{padding:14px 15px}
-  .stat .v{font-size:22px}
-  .stat .n{font-size:10.5px}
+  .stat{padding:14px 15px}.stat .v{font-size:22px}.stat .n{font-size:10.5px}
   .frow{grid-template-columns:1fr;gap:12px}
-  .btnrow{gap:8px}
-  button.btn{padding:12px 18px;flex:1 1 auto;min-width:140px}
+  .btnrow{gap:8px}button.btn{padding:12px 18px;flex:1 1 auto;min-width:140px}
 
-  /* tables become stacked cards, no side-scrolling */
   .tblwrap{border:0;border-radius:0;overflow:visible}
   table.rsp{font-size:13px}
   table.rsp thead{display:none}
   table.rsp tbody{display:block}
-  table.rsp tr{display:block;background:#fff;border:1px solid var(--line);border-radius:8px;
-    padding:6px 0;margin-bottom:10px}
-  table.rsp tr:hover{background:#fff}
-  table.rsp td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
-    border:0;padding:6px 14px;text-align:right}
+  table.rsp tr{display:block;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 0;margin-bottom:10px}
+  table.rsp tr:hover{background:var(--paper)}
+  table.rsp td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;border:0;padding:6px 14px;text-align:right}
   table.rsp td::before{content:attr(data-label);flex:0 0 42%;text-align:left;
     font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600}
   table.rsp td:empty{display:none}
@@ -133,22 +138,23 @@ a.lnk{color:var(--maroon);font-size:12px}
   table.rsp td[data-label=""]::before{display:none}
   table.rsp td[colspan]{justify-content:flex-start;text-align:left}
   table.rsp td[colspan]::before{display:none}
-  /* long prose cells stack their label above the text instead of squeezing beside it */
   table.rsp td[data-label="Conditions"],table.rsp td[data-label="Detail"],
   table.rsp td[data-label="Guidance"],table.rsp td[data-label="Sign-off"],
-  table.rsp td[data-label="Work"],table.rsp td[data-label="Volume"]{
+  table.rsp td[data-label="Work"],table.rsp td[data-label="Volume"],
+  table.rsp td[data-label="Task"],table.rsp td[data-label="Description"],
+  table.rsp td[data-label="Commitment"],table.rsp td[data-label="Info"]{
     flex-direction:column;align-items:flex-start;text-align:left;gap:3px}
   table.rsp td[data-label="Conditions"]::before,table.rsp td[data-label="Detail"]::before,
   table.rsp td[data-label="Guidance"]::before,table.rsp td[data-label="Sign-off"]::before,
-  table.rsp td[data-label="Work"]::before,table.rsp td[data-label="Volume"]::before{flex:none}
-  table.rsp tr.catrow{background:var(--beige);border-color:var(--beige-dp);padding:0;margin-bottom:8px}
+  table.rsp td[data-label="Work"]::before,table.rsp td[data-label="Volume"]::before,
+  table.rsp td[data-label="Task"]::before,table.rsp td[data-label="Description"]::before,
+  table.rsp td[data-label="Commitment"]::before,table.rsp td[data-label="Info"]::before{flex:none}
+  table.rsp tr.catrow{background:var(--ivory);border-color:var(--line);padding:0;margin-bottom:8px}
   table.rsp tr.catrow td{padding:9px 14px;justify-content:flex-start}
   table.rsp .empty{padding:30px 14px}
 }
 @media(max-width:400px){
-  .grid{grid-template-columns:1fr}
-  .hero .split div{min-width:100%}
-  .hero .big{font-size:31px}
+  .grid{grid-template-columns:1fr}.hero .split div{min-width:100%}.hero .big{font-size:31px}
 }
 @media print{nav,.noprint{display:none!important}body{background:#fff}}
 </style>
@@ -166,11 +172,13 @@ a.lnk{color:var(--maroon);font-size:12px}
 <nav>
   <div class="wrap">
     <button class="on" data-p="dash">Month Summary</button>
+    <button data-p="sched">My Schedule</button>
+    <button data-p="daily">Daily Admin</button>
     <button data-p="log">Log Work</button>
     <button data-p="appr">Approvals</button>
-    <button data-p="pay">Payments Received</button>
-    <button data-p="rates">Rate List</button>
-    <button data-p="rules">Working Terms</button>
+    <button data-p="pay">Salary Paid</button>
+    <button data-p="cash">Petty Cash</button>
+    <button data-p="rates">Contract</button>
     <button data-p="data">Data &amp; Backup</button>
   </div>
 </nav>
@@ -222,6 +230,128 @@ a.lnk{color:var(--maroon);font-size:12px}
   </div>
 </section>
 
+<!-- ================= SCHEDULE ================= -->
+<section class="panel" id="p-sched">
+  <div class="card">
+    <div class="seclabel">This week</div>
+    <h2 id="schTitle">Where You Stand</h2>
+    <p class="lead">Your standing commitments against what you have actually logged. Green means the target is met.</p>
+    <div class="grid" id="schCards"></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Your commitments</div>
+    <h2>What You Owe Each Week and Month</h2>
+    <p class="lead">Set how much of each work type you commit to, how often, and by which day. The expected pay is calculated from the contract rate.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Commitment</th><th class="num">Target</th><th>How often</th><th>Due by</th><th class="num">Rate</th><th class="num">Expected pay</th><th></th></tr></thead>
+      <tbody id="commitBody"></tbody>
+    </table></div>
+
+    <div class="note warn"><strong>These starting numbers are placeholders.</strong> The signed rate list sets the rates but never fixes how many reels or hours you owe each week. Agree the real targets with Sophia in writing, then edit them here so this page reflects the actual deal.</div>
+
+    <h3 class="serif" style="font-size:19px;margin:22px 0 12px">Add or change a commitment</h3>
+    <div class="frow">
+      <div class="f"><label>Work type</label><select id="cType"></select></div>
+      <div class="f"><label>How many</label><input type="number" id="cQty" value="1" min="0" step="0.5"></div>
+      <div class="f"><label>How often</label><select id="cPer">
+        <option value="week">Every week</option>
+        <option value="month">Every month</option>
+      </select></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Due by</label><select id="cDue"></select></div>
+      <div class="f"><label>For whom</label><input id="cFor" placeholder="Sisterhood OS"></div>
+      <div class="f"><label>Note</label><input id="cNote" placeholder="Delivered as daily posts, reviewed in batches of 10"></div>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="cSave">Save Commitment</button>
+      <button class="btn ghost" id="cCancel" style="display:none">Cancel Edit</button>
+      <span id="cCalc" class="serif" style="font-size:19px;color:var(--burg)"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAILY ADMIN ================= -->
+<section class="panel" id="p-daily">
+  <div class="grid" id="taskStats"></div>
+
+  <div class="card">
+    <div class="seclabel">Add a task</div>
+    <h2>Daily Admin List</h2>
+    <p class="lead">Everything you do in a day, in one place: who to contact, the link, the time, and what came of it. Ticking these off is what builds the weekly log Sophia expects.</p>
+
+    <div class="frow">
+      <div class="f"><label>Date</label><input type="date" id="tDate"></div>
+      <div class="f"><label>Time</label><input type="time" id="tTime"></div>
+      <div class="f"><label>Category</label><select id="tCat">
+        <option>Calendar &amp; scheduling</option>
+        <option>Communications follow-up</option>
+        <option>Notion task tracking</option>
+        <option>Document organisation</option>
+        <option>Event &amp; workshop logistics</option>
+        <option>Systems (MailerLite, Circle, Calendly, Canva)</option>
+        <option>Client portal &amp; UI</option>
+        <option>Claude coding session</option>
+        <option>Household management</option>
+        <option>Vendor management</option>
+        <option>Purchase or payment</option>
+        <option>General organizing</option>
+        <option>Other</option>
+      </select></div>
+    </div>
+    <div class="frow">
+      <div class="f" style="grid-column:1/-1"><label>What is the task</label><input id="tTitle" placeholder="Follow up with the venue for the August circle"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>WhatsApp number</label><input id="tWa" placeholder="62812xxxxxxx"></div>
+      <div class="f"><label>Link</label><input id="tLink" placeholder="https://..."></div>
+      <div class="f"><label>Repeats</label><select id="tRep">
+        <option value="none">One time only</option>
+        <option value="daily">Every day</option>
+        <option value="weekly">Every week</option>
+      </select></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Billable admin time (hours)</label><input type="number" id="tHrs" value="0" min="0" step="0.25"></div>
+      <div class="f"><label>Status</label><select id="tStatus">
+        <option value="todo">To do</option>
+        <option value="doing">In progress</option>
+        <option value="done">Done</option>
+        <option value="blocked">Blocked</option>
+      </select></div>
+      <div class="f"><label>Who it involves</label><input id="tWho" placeholder="Leny, Helena, the venue"></div>
+    </div>
+    <div class="frow"><div class="f" style="grid-column:1/-1"><label>Info and notes</label><textarea id="tNote" placeholder="What happened, what was agreed, what to do next"></textarea></div></div>
+
+    <div class="note">Setting billable hours here does not log the money on its own. When the day is done, press <strong>Send hours to Log Work</strong> below and the total becomes one admin entry you can invoice.</div>
+
+    <div class="btnrow">
+      <button class="btn" id="tSave">Save Task</button>
+      <button class="btn ghost" id="tCancel" style="display:none">Cancel Edit</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">The list</div>
+    <h2>Tasks</h2>
+    <div class="frow noprint" style="max-width:620px">
+      <div class="f"><label>Show</label><select id="tFilter">
+        <option value="today">Today</option>
+        <option value="week">This week</option>
+        <option value="open">Everything not finished</option>
+        <option value="all">Everything</option>
+      </select></div>
+      <div class="f"><label>Search</label><input id="tSearch" placeholder="Name, note, number..."></div>
+      <div class="f"><label>&nbsp;</label><button class="btn olv" id="tPush" style="width:100%">Send hours to Log Work</button></div>
+    </div>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Task</th><th>Date</th><th>Time</th><th>Category</th><th>Contact</th><th>Link</th><th class="num">Hrs</th><th>Status</th><th></th></tr></thead>
+      <tbody id="taskBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
 <!-- ================= LOG ================= -->
 <section class="panel" id="p-log">
   <div class="card">
@@ -259,7 +389,7 @@ a.lnk{color:var(--maroon);font-size:12px}
     <div class="btnrow">
       <button class="btn" id="saveBtn">Save Entry</button>
       <button class="btn ghost" id="cancelBtn" style="display:none">Cancel Edit</button>
-      <span id="liveCalc" class="serif" style="font-size:19px;color:var(--maroon)"></span>
+      <span id="liveCalc" class="serif" style="font-size:19px;color:var(--burg)"></span>
     </div>
   </div>
 
@@ -301,12 +431,12 @@ a.lnk{color:var(--maroon);font-size:12px}
   </div>
 </section>
 
-<!-- ================= PAYMENTS ================= -->
+<!-- ================= SALARY PAID ================= -->
 <section class="panel" id="p-pay">
   <div class="card">
     <div class="seclabel">Record a payment</div>
     <h2>Log What Sophia Paid You</h2>
-    <p class="lead">Every time money lands, record it here with the date, the time, and the transfer proof. This is what settles any question at the end of the month.</p>
+    <p class="lead">Every time your salary lands, record it here with the date, the time, and the transfer proof. This is what settles any question at the end of the month.</p>
 
     <div class="frow">
       <div class="f"><label>Payment for which month</label><select id="yFor"></select></div>
@@ -359,7 +489,113 @@ a.lnk{color:var(--maroon);font-size:12px}
   </div>
 </section>
 
-<!-- ================= RATES ================= -->
+<!-- ================= PETTY CASH ================= -->
+<section class="panel" id="p-cash">
+  <div class="hero" style="background:linear-gradient(150deg,var(--choc) 0%,#3E3A18 55%,var(--olive) 100%)">
+    <div class="lbl">Company money you are holding</div>
+    <div class="big" id="cashBal">IDR 0</div>
+    <div class="usd" id="cashHint">-</div>
+    <div class="split">
+      <div><div class="k">Received from Sophia</div><div class="v" id="cashIn">IDR 0</div></div>
+      <div><div class="k">Spent on the business</div><div class="v" id="cashOut">IDR 0</div></div>
+      <div><div class="k">Records</div><div class="v" id="cashN">0</div></div>
+      <div><div class="k">Last movement</div><div class="v" id="cashLast">-</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Add a record</div>
+    <h2>Money In and Money Out</h2>
+    <p class="lead">Money Sophia hands you, and everything you buy or pay on the company's behalf. Attach the receipt so nothing needs explaining later.</p>
+
+    <div class="frow">
+      <div class="f"><label>Date</label><input type="date" id="fDate"></div>
+      <div class="f"><label>Direction</label><select id="fDir">
+        <option value="out">Money out, I spent it</option>
+        <option value="in">Money in, from Sophia</option>
+      </select></div>
+      <div class="f"><label>Amount (IDR)</label><input type="number" id="fAmt" placeholder="150000"></div>
+    </div>
+    <div class="frow">
+      <div class="f" style="grid-column:1/-1"><label>What was it</label><input id="fDesc" placeholder="Leny grocery, coffee for the team, pay the guy for the trash"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Category</label><select id="fCat">
+        <option value="">Not set</option>
+        <option>Groceries &amp; household</option>
+        <option>Staff &amp; contractors</option>
+        <option>Transport &amp; delivery</option>
+        <option>Coffee &amp; meetings</option>
+        <option>Equipment &amp; furniture</option>
+        <option>Repairs &amp; maintenance</option>
+        <option>Utilities</option>
+        <option>Content &amp; printing</option>
+        <option>Gifts &amp; events</option>
+        <option>Top-up from Sophia</option>
+        <option>Other</option>
+      </select></div>
+      <div class="f"><label>Link to receipt</label><input id="fLink" placeholder="https://..."></div>
+      <div class="f"><label>Or attach the receipt</label><input type="file" id="fFile" accept="image/*"></div>
+    </div>
+    <div class="frow"><div class="f" style="grid-column:1/-1"><label>Note</label><input id="fNote" placeholder="3 months paid in advance, split with Lia, etc"></div></div>
+
+    <div id="fPrev" style="display:none;margin:14px 0">
+      <img id="fPrevImg" style="max-width:210px;border:1px solid var(--line);border-radius:8px" alt="Receipt preview">
+      <div><button class="mini" id="fClearImg">remove this image</button></div>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" id="fSave">Save Record</button>
+      <button class="btn ghost" id="fCancel" style="display:none">Cancel Edit</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">By month</div>
+    <h2>Monthly Movement</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Month</th><th class="num">In</th><th class="num">Out</th><th class="num">Net</th><th class="num">Running balance</th></tr></thead>
+      <tbody id="cashMonthBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Where it goes</div>
+    <h2>Spending By Category</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Category</th><th class="num">Records</th><th class="num">Total spent</th><th class="num">Share</th></tr></thead>
+      <tbody id="cashCatBody"></tbody>
+    </table></div>
+    <div class="note">Records imported from your spreadsheet arrive without a category. Open any row, pick one, and this table fills in.</div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">The ledger</div>
+    <h2>Every Record</h2>
+    <div class="frow noprint" style="max-width:620px">
+      <div class="f"><label>Month</label><select id="fMonth"></select></div>
+      <div class="f"><label>Search</label><input id="fSearch" placeholder="Grocery, Leny, coffee..."></div>
+      <div class="f"><label>&nbsp;</label><button class="btn ghost" id="fCsvBtn" style="width:100%">Export ledger CSV</button></div>
+    </div>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="num">In</th><th class="num">Out</th><th>Receipt</th><th>Note</th><th></th></tr></thead>
+      <tbody id="cashBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Import</div>
+    <h2>Load a Finance Spreadsheet</h2>
+    <p class="lead">Takes a CSV in the same shape as your sheet: Date, Description, Debit, Credit. Blank dates carry down from the row above, exactly like the original.</p>
+    <div class="btnrow">
+      <button class="btn ghost" id="fImpBtn">Import CSV</button>
+      <input type="file" id="fImpFile" accept=".csv,text/csv" style="display:none">
+    </div>
+    <div class="note" id="fImpNote">Your sheet from March through July is already loaded: 191 records, IDR 46,400,000 in and IDR 46,995,417 out.</div>
+  </div>
+</section>
+
+<!-- ================= CONTRACT ================= -->
 <section class="panel" id="p-rates">
   <div class="card">
     <div class="seclabel">Contract</div>
@@ -372,37 +608,6 @@ a.lnk{color:var(--maroon);font-size:12px}
     <div class="note"><strong>How the per-reel rate compares:</strong> Ana's rate (IDR 125,000 to 145,000 per video) covers custom production edits that take hours per video and seven years of production skill. Monika's per-reel rate covers template-based assembly at minutes per reel. Edits requiring production skill (multi-scene cuts, motion graphics, complex ad creatives) route to Ana and are not billable under this list.</div>
   </div>
 
-  <div class="card">
-    <div class="seclabel">Section 5</div>
-    <h2>Sales Commission</h2>
-    <p class="lead">Tiered, on Saha Synergy sessions you independently source and close. Commission is additive to everything above.</p>
-    <div class="grid">
-      <div class="stat"><div class="k">Foundation</div><div class="v">10%</div><div class="n">1 to 2 closes per month</div></div>
-      <div class="stat"><div class="k">Growth</div><div class="v">15%</div><div class="n">3 to 4 closes per month</div></div>
-      <div class="stat"><div class="k">Performance</div><div class="v">20%</div><div class="n">5 closes or more</div></div>
-    </div>
-    <div class="note">SPC enrollments use a separate flat-rate commission, agreed separately. Log commission using the <strong>Commission / other</strong> work type on the Log Work tab, then type the amount in manually.</div>
-  </div>
-
-  <div class="card">
-    <div class="seclabel">Section 6</div>
-    <h2>One-Time Backpay</h2>
-    <p class="lead">Closing out the original agreement, February through May 2026. Paid once.</p>
-    <div class="tblwrap"><table class="rsp">
-      <thead><tr><th>Month</th><th class="num">Backpay (IDR)</th><th class="num">USD</th></tr></thead>
-      <tbody>
-        <tr><td data-label="Month">February 2026</td><td class="num rate" data-label="Backpay (IDR)">1,300,000</td><td class="num" data-label="USD">~$72</td></tr>
-        <tr><td data-label="Month">March 2026</td><td class="num rate" data-label="Backpay (IDR)">500,000</td><td class="num" data-label="USD">~$28</td></tr>
-        <tr><td data-label="Month">April 2026</td><td class="num rate" data-label="Backpay (IDR)">1,075,000</td><td class="num" data-label="USD">~$60</td></tr>
-        <tr><td data-label="Month">May 2026</td><td class="num rate" data-label="Backpay (IDR)">600,000</td><td class="num" data-label="USD">~$33</td></tr>
-        <tr style="background:var(--beige)"><td data-label="Month"><strong>Total</strong></td><td class="num rate" data-label="Backpay (IDR)">3,475,000</td><td class="num" data-label="USD">~$193</td></tr>
-      </tbody>
-    </table></div>
-  </div>
-</section>
-
-<!-- ================= RULES ================= -->
-<section class="panel" id="p-rules">
   <div class="card">
     <div class="seclabel">Basis of calculation</div>
     <h2>Which Version This Follows</h2>
@@ -418,6 +623,34 @@ a.lnk{color:var(--maroon);font-size:12px}
       <br><br>
       Worth confirming with Sophia so the document and the actual practice agree.
     </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 5</div>
+    <h2>Sales Commission</h2>
+    <p class="lead">Tiered, on Saha Synergy sessions you independently source and close. Commission is additive to everything above.</p>
+    <div class="grid">
+      <div class="stat olv"><div class="k">Foundation</div><div class="v">10%</div><div class="n">1 to 2 closes per month</div></div>
+      <div class="stat olv"><div class="k">Growth</div><div class="v">15%</div><div class="n">3 to 4 closes per month</div></div>
+      <div class="stat olv"><div class="k">Performance</div><div class="v">20%</div><div class="n">5 closes or more</div></div>
+    </div>
+    <div class="note">SPC enrollments use a separate flat-rate commission, agreed separately. Log commission using the <strong>Commission / other</strong> work type on the Log Work tab, then type the amount in manually.</div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 6</div>
+    <h2>One-Time Backpay</h2>
+    <p class="lead">Closing out the original agreement, February through May 2026. Paid once.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Month</th><th class="num">Backpay (IDR)</th><th class="num">USD</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Month">February 2026</td><td class="num rate" data-label="Backpay (IDR)">1,300,000</td><td class="num" data-label="USD">~$72</td></tr>
+        <tr><td data-label="Month">March 2026</td><td class="num rate" data-label="Backpay (IDR)">500,000</td><td class="num" data-label="USD">~$28</td></tr>
+        <tr><td data-label="Month">April 2026</td><td class="num rate" data-label="Backpay (IDR)">1,075,000</td><td class="num" data-label="USD">~$60</td></tr>
+        <tr><td data-label="Month">May 2026</td><td class="num rate" data-label="Backpay (IDR)">600,000</td><td class="num" data-label="USD">~$33</td></tr>
+        <tr style="background:var(--ivory)"><td data-label="Month"><strong>Total</strong></td><td class="num rate" data-label="Backpay (IDR)">3,475,000</td><td class="num" data-label="USD">~$193</td></tr>
+      </tbody>
+    </table></div>
   </div>
 
   <div class="card">
@@ -450,7 +683,7 @@ a.lnk{color:var(--maroon);font-size:12px}
         <tr><td data-label="Work">Carousels, existing client</td><td data-label="Volume">1 new template + 11 repeats</td><td data-label="Rate">40,000 + 10,000 each</td><td class="num rate" data-label="Total (IDR)">150,000</td></tr>
         <tr><td data-label="Work">Production days</td><td data-label="Volume">2 to 4 full days</td><td data-label="Rate">IDR 350,000/day</td><td class="num rate" data-label="Total (IDR)">700,000 to 1,400,000</td></tr>
         <tr><td data-label="Work">Meetings</td><td data-label="Volume">4 (1 per week)</td><td data-label="Rate">IDR 50,000 each</td><td class="num rate" data-label="Total (IDR)">200,000</td></tr>
-        <tr style="background:var(--beige)"><td colspan="3"><strong>Month total</strong></td><td class="num rate" data-label="Month total">4,650,000 to 7,080,000 (~$258 to 393)</td></tr>
+        <tr style="background:var(--ivory)"><td colspan="3"><strong>Month total</strong></td><td class="num rate" data-label="Month total">4,650,000 to 7,080,000 (~$258 to 393)</td></tr>
       </tbody>
     </table></div>
     <div class="note">Reading this example: a full month with a landing page build, multiple shoot days, and steady content output. The website is a one-off project item. A regular month without a build runs roughly IDR 4,050,000 to 6,480,000. If the carousel template already exists, that line is IDR 120,000.</div>
@@ -464,12 +697,12 @@ a.lnk{color:var(--maroon);font-size:12px}
     <h2>Where Your Data Lives</h2>
     <div class="note warn"><strong>Read this one.</strong> Your data is saved inside the browser on this computer only. It is never sent to the internet, and nobody else can see it, Sophia included.<br><br>
     That means: open this page on your phone or another computer and it will be empty. Clear your browser history and it is gone.<br><br>
-    So at the end of every month, press <strong>Download Backup</strong> below and keep the file. That is your safety net. The backup includes your work log, your payment records, and any transfer screenshots you attached.</div>
+    So at the end of every month, press <strong>Download Backup</strong> below and keep the file. That is your safety net. The backup holds your work log, daily tasks, commitments, salary records, the petty cash ledger, and every attached image.</div>
     <div class="note" id="storeMeter"></div>
     <div class="btnrow">
       <button class="btn" id="expBtn">Download Backup</button>
       <button class="btn ghost" id="impBtn">Restore Backup</button>
-      <button class="btn ghost" id="csvBtn">Download Excel (CSV)</button>
+      <button class="btn ghost" id="csvBtn">Download Work Log (CSV)</button>
       <input type="file" id="impFile" accept="application/json" style="display:none">
     </div>
   </div>
@@ -486,7 +719,7 @@ a.lnk{color:var(--maroon);font-size:12px}
   <div class="card">
     <div class="seclabel">Careful</div>
     <h2>Erase Everything</h2>
-    <p class="lead">Deletes every work record. It cannot be undone. Download a backup before you press this.</p>
+    <p class="lead">Deletes every work record, task, commitment, salary record, and petty cash entry. It cannot be undone. Download a backup before you press this.</p>
     <button class="btn ghost" id="wipeBtn">Erase All Data</button>
   </div>
 </section>
@@ -499,6 +732,8 @@ a.lnk{color:var(--maroon);font-size:12px}
 </div>
 
 <script>
+const FINANCE_SEED=[{"id":"f000","date":"2026-03-09","desc":"Print+laminated","inAmt":0,"outAmt":33505,"note":"","cat":"","link":"","img":null},{"id":"f001","date":"2026-03-10","desc":"Nomeo (boost)","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f002","date":"2026-03-10","desc":"Grab for meeting sisterhood","inAmt":0,"outAmt":16000,"note":"","cat":"","link":"","img":null},{"id":"f003","date":"2026-03-10","desc":"Mac book case","inAmt":0,"outAmt":199460,"note":"","cat":"","link":"","img":null},{"id":"f004","date":"2026-03-10","desc":"Grab for charge and stuff","inAmt":0,"outAmt":14000,"note":"","cat":"","link":"","img":null},{"id":"f005","date":"2026-03-26","desc":"Changed mac case and grab delivery","inAmt":0,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f006","date":"2026-03-26","desc":"Print+laminated qris new and grab","inAmt":0,"outAmt":47000,"note":"","cat":"","link":"","img":null},{"id":"f007","date":"2026-03-26","desc":"girf for sis leny","inAmt":0,"outAmt":434950,"note":"","cat":"","link":"","img":null},{"id":"f008","date":"2026-03-26","desc":"grab gift","inAmt":0,"outAmt":17500,"note":"","cat":"","link":"","img":null},{"id":"f009","date":"2026-03-26","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f010","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":324000,"note":"","cat":"","link":"","img":null},{"id":"f011","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":631451,"note":"","cat":"","link":"","img":null},{"id":"f012","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":174000,"note":"","cat":"","link":"","img":null},{"id":"f013","date":"2026-03-27","desc":"Grocery - Leny","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f014","date":"2026-03-28","desc":"Grocery - Leny","inAmt":0,"outAmt":890000,"note":"","cat":"","link":"","img":null},{"id":"f015","date":"2026-03-30","desc":"Grab to repair the iphone","inAmt":0,"outAmt":15000,"note":"","cat":"","link":"","img":null},{"id":"f016","date":"2026-03-30","desc":"Coffe nude","inAmt":0,"outAmt":183000,"note":"","cat":"","link":"","img":null},{"id":"f017","date":"2026-03-30","desc":"Coffe kota","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f018","date":"2026-03-30","desc":"Repair the iphone camera + grab","inAmt":0,"outAmt":930000,"note":"","cat":"","link":"","img":null},{"id":"f019","date":"2026-03-30","desc":"Repair the lamp","inAmt":0,"outAmt":135500,"note":"","cat":"","link":"","img":null},{"id":"f020","date":"2026-03-30","desc":"Pay the guy to repair the lamp","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f021","date":"2026-03-31","desc":"Stand laptop","inAmt":0,"outAmt":185000,"note":"","cat":"","link":"","img":null},{"id":"f022","date":"2026-03-31","desc":"Coworking (Monika)","inAmt":0,"outAmt":150000,"note":"","cat":"","link":"","img":null},{"id":"f023","date":"2026-03-31","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f024","date":"2026-04-01","desc":"Print + grab for script","inAmt":0,"outAmt":86000,"note":"","cat":"","link":"","img":null},{"id":"f025","date":"2026-04-03","desc":"Boost nomeo","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f026","date":"2026-04-06","desc":"Gas","inAmt":0,"outAmt":280000,"note":"","cat":"","link":"","img":null},{"id":"f027","date":"2026-04-06","desc":"Grocery","inAmt":0,"outAmt":1102507,"note":"","cat":"","link":"","img":null},{"id":"f028","date":"2026-04-06","desc":"Coffee (Ai event)","inAmt":0,"outAmt":131080,"note":"","cat":"","link":"","img":null},{"id":"f029","date":"2026-04-06","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f030","date":"2026-04-06","desc":"pay the guy for the trash","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f031","date":"2026-04-08","desc":"Coffee","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f032","date":"2026-04-08","desc":"grab helmet","inAmt":0,"outAmt":8000,"note":"","cat":"","link":"","img":null},{"id":"f033","date":"2026-04-09","desc":"Coffee","inAmt":0,"outAmt":40000,"note":"","cat":"","link":"","img":null},{"id":"f034","date":"2026-04-09","desc":"knee pads","inAmt":0,"outAmt":77400,"note":"","cat":"","link":"","img":null},{"id":"f035","date":"2026-04-09","desc":"Shower","inAmt":0,"outAmt":136584,"note":"","cat":"","link":"","img":null},{"id":"f036","date":"2026-04-09","desc":"Bike","inAmt":0,"outAmt":308300,"note":"","cat":"","link":"","img":null},{"id":"f037","date":"2026-04-09","desc":"Grocery by leny","inAmt":0,"outAmt":153000,"note":"","cat":"","link":"","img":null},{"id":"f038","date":"2026-04-09","desc":"Ayelash","inAmt":0,"outAmt":492500,"note":"","cat":"","link":"","img":null},{"id":"f039","date":"2026-04-09","desc":"grab glasses","inAmt":0,"outAmt":11500,"note":"","cat":"","link":"","img":null},{"id":"f040","date":"2026-04-09","desc":"Cookies","inAmt":0,"outAmt":172800,"note":"","cat":"","link":"","img":null},{"id":"f041","date":"2026-04-10","desc":"Trash (pick up)","inAmt":0,"outAmt":752500,"note":"3 month","cat":"","link":"","img":null},{"id":"f042","date":"2026-04-10","desc":"Trash 4","inAmt":0,"outAmt":189477,"note":"","cat":"","link":"","img":null},{"id":"f043","date":"2026-04-10","desc":"Flower","inAmt":0,"outAmt":227500,"note":"","cat":"","link":"","img":null},{"id":"f044","date":"2026-04-10","desc":"Dennise birthday","inAmt":0,"outAmt":765050,"note":"","cat":"","link":"","img":null},{"id":"f045","date":"2026-04-10","desc":"Leny grocery","inAmt":0,"outAmt":212762,"note":"","cat":"","link":"","img":null},{"id":"f046","date":"2026-04-10","desc":"Leny grocery","inAmt":0,"outAmt":157247,"note":"","cat":"","link":"","img":null},{"id":"f047","date":"2026-04-10","desc":"Coffee","inAmt":0,"outAmt":40000,"note":"","cat":"","link":"","img":null},{"id":"f048","date":"2026-04-12","desc":"Leny grocery","inAmt":0,"outAmt":422000,"note":"","cat":"","link":"","img":null},{"id":"f049","date":"2026-04-12","desc":"Matcha","inAmt":0,"outAmt":351110,"note":"","cat":"","link":"","img":null},{"id":"f050","date":"2026-04-12","desc":"Leny grocery","inAmt":0,"outAmt":139000,"note":"","cat":"","link":"","img":null},{"id":"f051","date":"2026-04-12","desc":"grab","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f052","date":"2026-04-13","desc":"Flower +  grab","inAmt":0,"outAmt":535500,"note":"","cat":"","link":"","img":null},{"id":"f053","date":"2026-04-13","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f054","date":"2026-04-13","desc":"Coffee","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f055","date":"2026-04-14","desc":"Cake for camie","inAmt":0,"outAmt":550000,"note":"","cat":"","link":"","img":null},{"id":"f056","date":"2026-04-14","desc":"gas","inAmt":0,"outAmt":20000,"note":"","cat":"","link":"","img":null},{"id":"f057","date":"2026-04-14","desc":"Leny grocery","inAmt":0,"outAmt":42000,"note":"","cat":"","link":"","img":null},{"id":"f058","date":"2026-04-15","desc":"Pool - (mei)","inAmt":0,"outAmt":700000,"note":"","cat":"","link":"","img":null},{"id":"f059","date":"2026-04-15","desc":"grab cake","inAmt":0,"outAmt":90000,"note":"","cat":"","link":"","img":null},{"id":"f060","date":"2026-04-15","desc":"wrap","inAmt":0,"outAmt":10000,"note":"","cat":"","link":"","img":null},{"id":"f061","date":"2026-04-16","desc":"Leny grocery","inAmt":0,"outAmt":437698,"note":"","cat":"","link":"","img":null},{"id":"f062","date":"2026-04-19","desc":"Leny (salary in advance)","inAmt":0,"outAmt":350000,"note":"","cat":"","link":"","img":null},{"id":"f063","date":"2026-04-19","desc":"Leny grocery","inAmt":0,"outAmt":571600,"note":"","cat":"","link":"","img":null},{"id":"f064","date":"2026-04-20","desc":"Leny (cleo water 2)","inAmt":0,"outAmt":80000,"note":"","cat":"","link":"","img":null},{"id":"f065","date":"2026-04-20","desc":"Leny (baterai)","inAmt":0,"outAmt":58000,"note":"","cat":"","link":"","img":null},{"id":"f066","date":"2026-04-20","desc":"Coffee","inAmt":0,"outAmt":64735,"note":"","cat":"","link":"","img":null},{"id":"f067","date":"2026-04-21","desc":"Coffee","inAmt":0,"outAmt":64735,"note":"","cat":"","link":"","img":null},{"id":"f068","date":"2026-04-21","desc":"Leny grocery","inAmt":0,"outAmt":466779,"note":"","cat":"","link":"","img":null},{"id":"f069","date":"2026-04-22","desc":"Leny grocery","inAmt":0,"outAmt":268000,"note":"","cat":"","link":"","img":null},{"id":"f070","date":"2026-04-22","desc":"SOPHIA","inAmt":4100000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f071","date":"2026-04-22","desc":"Dresser","inAmt":0,"outAmt":4100000,"note":"","cat":"","link":"","img":null},{"id":"f072","date":"2026-04-22","desc":"pick up dresser to upstairs","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f073","date":"2026-04-27","desc":"White board","inAmt":0,"outAmt":36354,"note":"","cat":"","link":"","img":null},{"id":"f074","date":"2026-04-27","desc":"Pulsa to call the PLN","inAmt":0,"outAmt":13740,"note":"","cat":"","link":"","img":null},{"id":"f075","date":"2026-04-27","desc":"grab","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f076","date":"2026-04-27","desc":"SOPHIA","inAmt":3000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f077","date":"2026-05-05","desc":"pimple patch","inAmt":0,"outAmt":476950,"note":"","cat":"","link":"","img":null},{"id":"f078","date":"2026-05-05","desc":"Bike","inAmt":0,"outAmt":250000,"note":"","cat":"","link":"","img":null},{"id":"f079","date":"2026-05-05","desc":"Sophia coworking","inAmt":0,"outAmt":363040,"note":"","cat":"","link":"","img":null},{"id":"f080","date":"2026-05-06","desc":"wrap","inAmt":0,"outAmt":161700,"note":"","cat":"","link":"","img":null},{"id":"f081","date":"2026-05-06","desc":"head silk wraps","inAmt":0,"outAmt":135002,"note":"","cat":"","link":"","img":null},{"id":"f082","date":"2026-05-06","desc":"Coffee","inAmt":0,"outAmt":116200,"note":"","cat":"","link":"","img":null},{"id":"f083","date":"2026-05-06","desc":"BBM to seminyak","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f084","date":"2026-05-06","desc":"Shocks","inAmt":0,"outAmt":156700,"note":"","cat":"","link":"","img":null},{"id":"f085","date":"2026-05-06","desc":"Baterai and pay the guy to fixed the door and bell","inAmt":0,"outAmt":123000,"note":"","cat":"","link":"","img":null},{"id":"f086","date":"2026-05-07","desc":"Leny Grocery","inAmt":0,"outAmt":30500,"note":"","cat":"","link":"","img":null},{"id":"f087","date":"2026-05-09","desc":"Piara Dalung Vet Care","inAmt":0,"outAmt":402500,"note":"","cat":"","link":"","img":null},{"id":"f088","date":"2026-05-09","desc":"Cinema","inAmt":0,"outAmt":408000,"note":"","cat":"","link":"","img":null},{"id":"f089","date":"2026-05-09","desc":"Cinema","inAmt":0,"outAmt":1224000,"note":"","cat":"","link":"","img":null},{"id":"f090","date":"2026-05-14","desc":"BBM to denpasar","inAmt":0,"outAmt":40000,"note":"","cat":"","link":"","img":null},{"id":"f091","date":"2026-05-15","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f092","date":"2026-05-15","desc":"Flower","inAmt":0,"outAmt":400000,"note":"","cat":"","link":"","img":null},{"id":"f093","date":"2026-05-15","desc":"Tripod","inAmt":0,"outAmt":68000,"note":"","cat":"","link":"","img":null},{"id":"f094","date":"2026-05-15","desc":"Twizzer 1","inAmt":0,"outAmt":85522,"note":"","cat":"","link":"","img":null},{"id":"f095","date":"2026-05-15","desc":"Twizzer 2","inAmt":0,"outAmt":22250,"note":"","cat":"","link":"","img":null},{"id":"f096","date":"2026-05-17","desc":"Leny","inAmt":0,"outAmt":15000,"note":"","cat":"","link":"","img":null},{"id":"f097","date":"2026-05-17","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f098","date":"2026-05-22","desc":"Salary outreach","inAmt":0,"outAmt":2000000,"note":"","cat":"","link":"","img":null},{"id":"f099","date":"2026-05-22","desc":"Sophia-AT06","inAmt":0,"outAmt":287250,"note":"","cat":"","link":"","img":null},{"id":"f100","date":"2026-05-22","desc":"Kota coffee","inAmt":0,"outAmt":148000,"note":"","cat":"","link":"","img":null},{"id":"f101","date":"2026-05-22","desc":"Grab","inAmt":0,"outAmt":22000,"note":"","cat":"","link":"","img":null},{"id":"f102","date":"2026-05-22","desc":"Leny","inAmt":0,"outAmt":35000,"note":"","cat":"","link":"","img":null},{"id":"f103","date":"2026-05-25","desc":"Kota coffee","inAmt":0,"outAmt":71000,"note":"","cat":"","link":"","img":null},{"id":"f104","date":"2026-05-25","desc":"Nomeo (boost)","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f105","date":"2026-05-25","desc":"sophia AT06","inAmt":0,"outAmt":48000,"note":"","cat":"","link":"","img":null},{"id":"f106","date":"2026-05-26","desc":"AT06","inAmt":0,"outAmt":48220,"note":"","cat":"","link":"","img":null},{"id":"f107","date":"2026-05-27","desc":"Print sticker sis amy","inAmt":0,"outAmt":78500,"note":"","cat":"","link":"","img":null},{"id":"f108","date":"2026-05-27","desc":"stick","inAmt":0,"outAmt":17000,"note":"","cat":"","link":"","img":null},{"id":"f109","date":"2026-05-27","desc":"Leny","inAmt":0,"outAmt":20000,"note":"","cat":"","link":"","img":null},{"id":"f110","date":"2026-05-27","desc":"coffee","inAmt":0,"outAmt":49000,"note":"","cat":"","link":"","img":null},{"id":"f111","date":"2026-05-28","desc":"matcha","inAmt":0,"outAmt":71000,"note":"","cat":"","link":"","img":null},{"id":"f112","date":"2026-05-28","desc":"coffee","inAmt":0,"outAmt":80450,"note":"","cat":"","link":"","img":null},{"id":"f113","date":"2026-06-01","desc":"coffee","inAmt":0,"outAmt":42500,"note":"","cat":"","link":"","img":null},{"id":"f114","date":"2026-06-02","desc":"Screen cleaner","inAmt":0,"outAmt":44400,"note":"","cat":"","link":"","img":null},{"id":"f115","date":"2026-06-02","desc":"Leny Grocery","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f116","date":"2026-06-05","desc":"Coffee","inAmt":0,"outAmt":211860,"note":"","cat":"","link":"","img":null},{"id":"f117","date":"2026-06-08","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f118","date":"2026-06-08","desc":"coffee","inAmt":0,"outAmt":204000,"note":"total 264 (-60 monika and lia coffee)","cat":"","link":"","img":null},{"id":"f119","date":"2026-06-08","desc":"Bike payment","inAmt":0,"outAmt":315600,"note":"","cat":"","link":"","img":null},{"id":"f120","date":"2026-06-10","desc":"Leny Grocery","inAmt":0,"outAmt":500000,"note":"","cat":"","link":"","img":null},{"id":"f121","date":"2026-06-11","desc":"coffee","inAmt":0,"outAmt":64735,"note":"","cat":"","link":"","img":null},{"id":"f122","date":"2026-06-08","desc":"Leny Grocery","inAmt":0,"outAmt":37000,"note":"","cat":"","link":"","img":null},{"id":"f123","date":"2026-06-08","desc":"Leny Grocery","inAmt":0,"outAmt":44000,"note":"","cat":"","link":"","img":null},{"id":"f124","date":"2026-06-08","desc":"SOPHIA","inAmt":1000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f125","date":"2026-06-11","desc":"head shower","inAmt":0,"outAmt":121503,"note":"","cat":"","link":"","img":null},{"id":"f126","date":"2026-06-11","desc":"soil tample","inAmt":0,"outAmt":72500,"note":"","cat":"","link":"","img":null},{"id":"f127","date":"2026-06-11","desc":"grab delivery","inAmt":0,"outAmt":10000,"note":"","cat":"","link":"","img":null},{"id":"f128","date":"2026-06-11","desc":"Leny","inAmt":0,"outAmt":148000,"note":"","cat":"","link":"","img":null},{"id":"f129","date":"2026-06-12","desc":"SOPHIA","inAmt":1000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f130","date":"2026-06-12","desc":"Coffee","inAmt":0,"outAmt":48000,"note":"","cat":"","link":"","img":null},{"id":"f131","date":"2026-06-12","desc":"Pool - Jun","inAmt":0,"outAmt":702500,"note":"","cat":"","link":"","img":null},{"id":"f132","date":"2026-06-12","desc":"Repair the sink","inAmt":0,"outAmt":77500,"note":"","cat":"","link":"","img":null},{"id":"f133","date":"2026-06-15","desc":"pay water","inAmt":0,"outAmt":180000,"note":"","cat":"","link":"","img":null},{"id":"f134","date":"2026-06-15","desc":"SOPHIA","inAmt":1000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f135","date":"2026-06-18","desc":"Coffee and bread","inAmt":0,"outAmt":114000,"note":"-Rp170,734","cat":"","link":"","img":null},{"id":"f136","date":"2026-06-18","desc":"Bynora","inAmt":0,"outAmt":183000,"note":"","cat":"","link":"","img":null},{"id":"f137","date":"2026-06-18","desc":"Leny grocery","inAmt":0,"outAmt":400000,"note":"","cat":"","link":"","img":null},{"id":"f138","date":"2026-06-18","desc":"Water","inAmt":0,"outAmt":270000,"note":"","cat":"","link":"","img":null},{"id":"f139","date":"2026-06-18","desc":"Grab to airport","inAmt":0,"outAmt":138000,"note":"","cat":"","link":"","img":null},{"id":"f140","date":"2026-06-25","desc":"Coffee","inAmt":0,"outAmt":65734,"note":"","cat":"","link":"","img":null},{"id":"f141","date":"2026-06-25","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f142","date":"2026-06-29","desc":"Stuff for sis Elliye","inAmt":0,"outAmt":400650,"note":"","cat":"","link":"","img":null},{"id":"f143","date":"2026-06-29","desc":"Coffee","inAmt":0,"outAmt":67750,"note":"","cat":"","link":"","img":null},{"id":"f144","date":"2026-06-29","desc":"Ghee","inAmt":0,"outAmt":760800,"note":"","cat":"","link":"","img":null},{"id":"f145","date":"2026-06-30","desc":"SOPHIA","inAmt":2000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f146","date":"2026-06-30","desc":"Anna Qr payment for eyelash","inAmt":0,"outAmt":334000,"note":"","cat":"","link":"","img":null},{"id":"f147","date":"2026-06-30","desc":"Trash","inAmt":0,"outAmt":502500,"note":"","cat":"","link":"","img":null},{"id":"f148","date":"2026-06-30","desc":"Flower","inAmt":0,"outAmt":174500,"note":"","cat":"","link":"","img":null},{"id":"f149","date":"2026-06-30","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f150","date":"2026-07-01","desc":"Leny Grocery","inAmt":0,"outAmt":150000,"note":"","cat":"","link":"","img":null},{"id":"f151","date":"2026-07-02","desc":"Coffee","inAmt":0,"outAmt":35000,"note":"","cat":"","link":"","img":null},{"id":"f152","date":"2026-07-03","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f153","date":"2026-07-05","desc":"Coffee","inAmt":0,"outAmt":153000,"note":"","cat":"","link":"","img":null},{"id":"f154","date":"2026-07-05","desc":"Leny Grocery","inAmt":0,"outAmt":400000,"note":"","cat":"","link":"","img":null},{"id":"f155","date":"2026-07-05","desc":"Leny Grocery","inAmt":0,"outAmt":150000,"note":"","cat":"","link":"","img":null},{"id":"f156","date":"2026-07-06","desc":"Leny Grocery","inAmt":0,"outAmt":350000,"note":"","cat":"","link":"","img":null},{"id":"f157","date":"2026-07-06","desc":"Monika's bonus","inAmt":0,"outAmt":100000,"note":"","cat":"","link":"","img":null},{"id":"f158","date":"2026-07-06","desc":"Electricy","inAmt":0,"outAmt":1003000,"note":"","cat":"","link":"","img":null},{"id":"f159","date":"2026-07-06","desc":"Gimble","inAmt":0,"outAmt":796120,"note":"","cat":"","link":"","img":null},{"id":"f160","date":"2026-07-06","desc":"Delivery universal plug","inAmt":0,"outAmt":20000,"note":"","cat":"","link":"","img":null},{"id":"f161","date":"2026-07-06","desc":"Universal plug","inAmt":0,"outAmt":53241,"note":"","cat":"","link":"","img":null},{"id":"f162","date":"2026-07-06","desc":"Monitor","inAmt":0,"outAmt":1670800,"note":"","cat":"","link":"","img":null},{"id":"f163","date":"2026-07-06","desc":"Table+chair","inAmt":0,"outAmt":905500,"note":"","cat":"","link":"","img":null},{"id":"f164","date":"2026-07-06","desc":"Sophia's bike","inAmt":0,"outAmt":267000,"note":"","cat":"","link":"","img":null},{"id":"f165","date":"2026-07-06","desc":"Nurhayati","inAmt":0,"outAmt":136000,"note":"","cat":"","link":"","img":null},{"id":"f166","date":"2026-07-06","desc":"Shopee","inAmt":0,"outAmt":53241,"note":"","cat":"","link":"","img":null},{"id":"f167","date":"2026-07-06","desc":"Hanu's food","inAmt":0,"outAmt":542250,"note":"","cat":"","link":"","img":null},{"id":"f168","date":"2026-07-06","desc":"SOPHIA","inAmt":5000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f169","date":"2026-07-06","desc":"SOPHIA","inAmt":3000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f170","date":"2026-07-06","desc":"Coconut after dance trial","inAmt":0,"outAmt":259875,"note":"","cat":"","link":"","img":null},{"id":"f171","date":"2026-07-07","desc":"Coffee","inAmt":0,"outAmt":55850,"note":"","cat":"","link":"","img":null},{"id":"f172","date":"2026-07-07","desc":"Nomeo (boost)","inAmt":0,"outAmt":30000,"note":"","cat":"","link":"","img":null},{"id":"f173","date":"2026-07-07","desc":"Delivery","inAmt":0,"outAmt":18000,"note":"","cat":"","link":"","img":null},{"id":"f174","date":"2026-07-07","desc":"Water (3)","inAmt":0,"outAmt":180000,"note":"","cat":"","link":"","img":null},{"id":"f175","date":"2026-07-07","desc":"Delivery tshirt","inAmt":0,"outAmt":13000,"note":"","cat":"","link":"","img":null},{"id":"f177","date":"2026-07-07","desc":"Dolly","inAmt":0,"outAmt":1252500,"note":"","cat":"","link":"","img":null},{"id":"f178","date":"2026-07-07","desc":"Indomaret (cleanser,cutton bath)","inAmt":0,"outAmt":48900,"note":"","cat":"","link":"","img":null},{"id":"f180","date":"2026-07-08","desc":"Leny Grocery","inAmt":0,"outAmt":800000,"note":"","cat":"","link":"","img":null},{"id":"f181","date":"2026-07-08","desc":"Leny Grocery","inAmt":0,"outAmt":1000000,"note":"","cat":"","link":"","img":null},{"id":"f182","date":"2026-07-08","desc":"cofee for all the team","inAmt":0,"outAmt":401000,"note":"","cat":"","link":"","img":null},{"id":"f183","date":"2026-07-08","desc":"Driver Dolly","inAmt":0,"outAmt":652500,"note":"","cat":"","link":"","img":null},{"id":"f184","date":"2026-07-08","desc":"Leny Grocery","inAmt":0,"outAmt":200000,"note":"","cat":"","link":"","img":null},{"id":"f185","date":"2026-07-08","desc":"SOPHIA","inAmt":3000000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f186","date":"2026-07-08","desc":"SOPHIA (CASH)","inAmt":300000,"outAmt":0,"note":"","cat":"","link":"","img":null},{"id":"f187","date":"2026-07-08","desc":"Extansion cable","inAmt":0,"outAmt":50000,"note":"","cat":"","link":"","img":null},{"id":"f188","date":"2026-07-09","desc":"Driver Elliye","inAmt":0,"outAmt":702500,"note":"","cat":"","link":"","img":null},{"id":"f190","date":"2026-07-10","desc":"Printed","inAmt":0,"outAmt":21500,"note":"","cat":"","link":"","img":null},{"id":"f191","date":"2026-07-10","desc":"Delivery for print","inAmt":0,"outAmt":17000,"note":"","cat":"","link":"","img":null},{"id":"f192","date":"2026-07-10","desc":"Cofee","inAmt":0,"outAmt":91000,"note":"","cat":"","link":"","img":null},{"id":"f193","date":"2026-07-10","desc":"Leny Grocery","inAmt":0,"outAmt":132000,"note":"","cat":"","link":"","img":null}];
+
 const RATES=[
  {id:'admin',cat:'Admin',lbl:'Admin support (per hour)',rate:40000,unit:'hrs',qtyLbl:'Number of hours',
   cond:'All admin and EA tasks. Logged to the nearest 15 minutes. Normal range 15 to 25 hours per week. Hours above 25 per week require Sophia’s written approval in advance.'},
@@ -532,28 +767,60 @@ const RATES=[
   cond:'For sales commission, backpay, or anything outside the list. Type the rate in manually and explain it in the notes.'}
 ];
 const R={};RATES.forEach(r=>R[r.id]=r);
-const KEY='monika_workspace_v1', PKEY='monika_payments_v1';
-let db=load(), pays=loadPays(), editId=null, payEditId=null, pendingImg=null;
 
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
-function loadPays(){try{return JSON.parse(localStorage.getItem(PKEY))||[]}catch(e){return[]}}
+const KEY='monika_workspace_v1', PKEY='monika_payments_v1',
+      TKEY='monika_tasks_v1', FKEY='monika_finance_v1',
+      CKEY='monika_commit_v1', SEEDFLAG='monika_seeded_v1';
+
+function readStore(k,fb){try{const v=JSON.parse(localStorage.getItem(k));return v==null?fb:v}catch(e){return fb}}
 function writeStore(k,v){
   try{localStorage.setItem(k,JSON.stringify(v));return true}
-  catch(e){alert('Storage is full, so that could not be saved. Open Data & Backup, download a backup, then remove some attached screenshots. Links take almost no space.');return false}
+  catch(e){alert('Storage is full, so that could not be saved. Open Data & Backup, download a backup, then remove some attached images. Links take almost no space.');return false}
 }
+
+let db=readStore(KEY,[]), pays=readStore(PKEY,[]),
+    tasks=readStore(TKEY,[]), cash=readStore(FKEY,null), commits=readStore(CKEY,null);
+
+// first run: load the spreadsheet Monika already keeps, and sensible starting commitments
+if(cash===null){cash=FINANCE_SEED.slice();writeStore(FKEY,cash)}
+if(commits===null){
+  commits=[
+    {id:'c1',type:'admin',qty:20,per:'week',due:'5',forWhom:'Saha Synergy',note:'Mid-point of the contracted 15 to 25 hour range.'},
+    {id:'c2',type:'reel_tpl',qty:10,per:'week',due:'5',forWhom:'Sisterhood OS',note:'One batch of 10, reviewed with the Assistant Director before the next batch.'},
+    {id:'c3',type:'reel_custom',qty:2,per:'week',due:'5',forWhom:'Sisterhood OS',note:'Reels that need their own edit outside the batch.'},
+    {id:'c4',type:'car_rep',qty:4,per:'month',due:'last',forWhom:'Sisterhood OS',note:'Repeats from an approved template.'}
+  ];
+  writeStore(CKEY,commits);
+}
+localStorage.setItem(SEEDFLAG,'1');
+
+let editId=null, payEditId=null, taskEditId=null, cashEditId=null, commitEditId=null;
+let pendingImg=null, pendingCashImg=null;
+
 function save(){writeStore(KEY,db);render()}
 function savePays(){writeStore(PKEY,pays);render()}
+function saveTasks(){writeStore(TKEY,tasks);render()}
+function saveCash(){writeStore(FKEY,cash);render()}
+function saveCommits(){writeStore(CKEY,commits);render()}
+
 function fmt(n){return'IDR '+Math.round(n).toLocaleString('en-US')}
+function n0(n){return Math.round(n).toLocaleString('en-US')}
 function usd(n){return'~$'+Math.round(n/(+document.getElementById('fx').value||18000)).toLocaleString('en-US')}
-function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function mkey(d){return(d||'').slice(0,7)}
 const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
-function mname(k){const[y,m]=k.split('-');return MN[+m-1]+' '+y}
-const PAYDAY=2; // Monika is paid on the 2nd of the following month
+const DN=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+function mname(k){const[y,m]=String(k||'').split('-');return MN[+m-1]?MN[+m-1]+' '+y:'Undated'}
+const PAYDAY=2;
 function nextMonth(k){let[y,m]=k.split('-').map(Number);m++;if(m>12){m=1;y++}return y+'-'+String(m).padStart(2,'0')}
 function dueDate(k){return PAYDAY+' '+mname(nextMonth(k))}
 function dueISO(k){return nextMonth(k)+'-'+String(PAYDAY).padStart(2,'0')}
 function total(e){return(+e.qty||0)*(+e.rate||0)}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function mondayOf(iso){const d=new Date(iso+'T00:00:00');if(isNaN(d))return null;
+  const off=(d.getDay()+6)%7,m=new Date(d);m.setDate(d.getDate()-off);
+  return m.getFullYear()+'-'+String(m.getMonth()+1).padStart(2,'0')+'-'+String(m.getDate()).padStart(2,'0')}
+function shortDate(iso){const d=new Date(iso+'T00:00:00');return isNaN(d)?iso:MN[d.getMonth()].slice(0,3)+' '+d.getDate()}
 
 // ---- nav
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
@@ -562,7 +829,26 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.getElementById('p-'+b.dataset.p).classList.add('on');window.scrollTo(0,0);
 });
 
-// ---- form setup
+// ---- shared image shrink
+function shrink(file,cb){
+  const rd=new FileReader();
+  rd.onload=()=>{const im=new Image();
+    im.onload=()=>{const max=1000,sc=Math.min(1,max/Math.max(im.width,im.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      cb(c.toDataURL('image/jpeg',0.65))};
+    im.onerror=()=>cb(null);im.src=rd.result};
+  rd.onerror=()=>cb(null);rd.readAsDataURL(file);
+}
+function openImg(src){
+  const win=window.open();
+  if(!win){alert('Your browser blocked the popup. Allow popups for this page to view the image.');return}
+  win.document.write('<title>Attachment</title><body style="margin:0;background:#362017;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="'+src+'" style="max-width:100%;max-height:100vh"></body>');
+  win.document.close();
+}
+
+// ================= LOG WORK =================
 const iType=document.getElementById('iType');
 let lastCat='';
 RATES.forEach(r=>{
@@ -583,9 +869,6 @@ function calc(){
 }
 iType.onchange=syncType;
 ['iQty','iRate'].forEach(id=>document.getElementById(id).oninput=calc);
-document.getElementById('iDate').value=new Date().toISOString().slice(0,10);
-document.getElementById('yDate').value=new Date().toISOString().slice(0,10);
-syncType();
 
 document.getElementById('saveBtn').onclick=()=>{
   const d=document.getElementById('iDate').value;
@@ -597,7 +880,7 @@ document.getElementById('saveBtn').onclick=()=>{
     link:document.getElementById('iLink').value.trim(),note:document.getElementById('iNote').value.trim()};
   if(editId){db=db.map(x=>x.id===editId?e:x);editId=null;
     document.getElementById('saveBtn').textContent='Save Entry';
-    document.getElementById('cancelBtn').style.display='none';}
+    document.getElementById('cancelBtn').style.display='none'}
   else db.push(e);
   ['iClient','iLink','iNote'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('iQty').value=1;calc();save();
@@ -622,36 +905,145 @@ function edit(id){
 function del(id){if(confirm('Delete this entry?')){db=db.filter(x=>x.id!==id);save()}}
 function setAppr(id,v){db=db.map(x=>x.id===id?{...x,appr:v}:x);save()}
 
-// ---- payments received
+const APPR={tidak:['Not needed','p-neu'],menunggu:['Awaiting Sophia','p-wait'],approved:['Approved','p-ok'],revisi:['Revision asked','p-no']};
+const PAID={belum:['Not invoiced','p-neu'],ditagih:['On invoice','p-wait'],dibayar:['Paid','p-ok']};
+const TST={todo:['To do','p-neu'],doing:['In progress','p-wait'],done:['Done','p-ok'],blocked:['Blocked','p-no']};
+function pill(m,v){const x=m[v]||['-','p-neu'];return'<span class="pill '+x[1]+'">'+x[0]+'</span>'}
+function linkCell(e){return e.link?'<a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">View</a>':'<span style="color:var(--muted)">-</span>'}
+
+// ================= COMMITMENTS =================
+const cType=document.getElementById('cType');
+RATES.filter(r=>r.id!=='other').forEach(r=>{
+  const o=document.createElement('option');o.value=r.id;o.textContent=r.lbl;cType.appendChild(o)});
+const cDue=document.getElementById('cDue');
+function fillDue(){
+  const per=document.getElementById('cPer').value;
+  cDue.innerHTML = per==='week'
+    ? DN.map((d,i)=>'<option value="'+(i+1)+'">'+d+'</option>').join('')
+    : Array.from({length:28},(_,i)=>'<option value="'+(i+1)+'">Day '+(i+1)+'</option>').join('')+'<option value="last">Last day of the month</option>';
+}
+function commitCalc(){
+  const r=R[cType.value],q=+document.getElementById('cQty').value||0;
+  document.getElementById('cCalc').textContent=r?fmt(q*r.rate)+(document.getElementById('cPer').value==='week'?' per week':' per month'):'';
+}
+document.getElementById('cPer').onchange=()=>{fillDue();commitCalc()};
+cType.onchange=commitCalc;
+document.getElementById('cQty').oninput=commitCalc;
+fillDue();commitCalc();
+
+function dueLabel(c){
+  if(c.per==='week')return DN[(+c.due||1)-1]||'Any day';
+  return c.due==='last'?'Last day of the month':'Day '+c.due;
+}
+document.getElementById('cSave').onclick=()=>{
+  const c={id:commitEditId||('k'+Date.now()+Math.random().toString(36).slice(2,7)),
+    type:cType.value,qty:+document.getElementById('cQty').value||0,
+    per:document.getElementById('cPer').value,due:cDue.value,
+    forWhom:document.getElementById('cFor').value.trim(),
+    note:document.getElementById('cNote').value.trim()};
+  if(commitEditId){commits=commits.map(x=>x.id===commitEditId?c:x);commitEditId=null;
+    document.getElementById('cSave').textContent='Save Commitment';
+    document.getElementById('cCancel').style.display='none'}
+  else commits.push(c);
+  document.getElementById('cFor').value='';document.getElementById('cNote').value='';
+  document.getElementById('cQty').value=1;commitCalc();saveCommits();
+};
+document.getElementById('cCancel').onclick=()=>{
+  commitEditId=null;document.getElementById('cSave').textContent='Save Commitment';
+  document.getElementById('cCancel').style.display='none';
+  document.getElementById('cFor').value='';document.getElementById('cNote').value='';
+  document.getElementById('cQty').value=1;commitCalc();
+};
+function commitEdit(id){
+  const c=commits.find(x=>x.id===id);if(!c)return;commitEditId=id;
+  cType.value=c.type;document.getElementById('cQty').value=c.qty;
+  document.getElementById('cPer').value=c.per;fillDue();cDue.value=c.due;
+  document.getElementById('cFor').value=c.forWhom||'';document.getElementById('cNote').value=c.note||'';
+  document.getElementById('cSave').textContent='Save Changes';
+  document.getElementById('cCancel').style.display='inline-block';
+  commitCalc();document.querySelector('nav button[data-p="sched"]').click();
+}
+function commitDel(id){if(confirm('Remove this commitment?')){commits=commits.filter(x=>x.id!==id);saveCommits()}}
+
+// ================= DAILY ADMIN =================
+function taskReset(){
+  taskEditId=null;
+  ['tTitle','tWa','tLink','tWho','tNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('tHrs').value=0;
+  document.getElementById('tStatus').value='todo';
+  document.getElementById('tSave').textContent='Save Task';
+  document.getElementById('tCancel').style.display='none';
+}
+document.getElementById('tCancel').onclick=taskReset;
+document.getElementById('tSave').onclick=()=>{
+  const title=document.getElementById('tTitle').value.trim();
+  const date=document.getElementById('tDate').value;
+  if(!title){alert('Please write what the task is.');return}
+  if(!date){alert('Please pick a date for the task.');return}
+  const t={id:taskEditId||('t'+Date.now()+Math.random().toString(36).slice(2,7)),
+    date,time:document.getElementById('tTime').value,title,
+    cat:document.getElementById('tCat').value,
+    wa:document.getElementById('tWa').value.replace(/[^0-9+]/g,''),
+    link:document.getElementById('tLink').value.trim(),
+    rep:document.getElementById('tRep').value,
+    hrs:+document.getElementById('tHrs').value||0,
+    status:document.getElementById('tStatus').value,
+    who:document.getElementById('tWho').value.trim(),
+    note:document.getElementById('tNote').value.trim(),
+    pushed:taskEditId?(tasks.find(x=>x.id===taskEditId)||{}).pushed||false:false};
+  if(taskEditId)tasks=tasks.map(x=>x.id===taskEditId?t:x);else tasks.push(t);
+  taskReset();saveTasks();
+};
+function taskEdit(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;taskEditId=id;
+  document.getElementById('tDate').value=t.date;document.getElementById('tTime').value=t.time||'';
+  document.getElementById('tTitle').value=t.title;document.getElementById('tCat').value=t.cat||'Other';
+  document.getElementById('tWa').value=t.wa||'';document.getElementById('tLink').value=t.link||'';
+  document.getElementById('tRep').value=t.rep||'none';document.getElementById('tHrs').value=t.hrs||0;
+  document.getElementById('tStatus').value=t.status||'todo';document.getElementById('tWho').value=t.who||'';
+  document.getElementById('tNote').value=t.note||'';
+  document.getElementById('tSave').textContent='Save Changes';
+  document.getElementById('tCancel').style.display='inline-block';
+  document.querySelector('nav button[data-p="daily"]').click();
+}
+function taskDel(id){if(confirm('Delete this task?')){tasks=tasks.filter(x=>x.id!==id);saveTasks()}}
+function taskToggle(id){
+  tasks=tasks.map(x=>x.id===id?{...x,status:x.status==='done'?'todo':'done'}:x);saveTasks();
+}
+document.getElementById('tFilter').onchange=render;
+document.getElementById('tSearch').oninput=render;
+
+// turn finished task hours into one billable admin entry per day
+document.getElementById('tPush').onclick=()=>{
+  const ready=tasks.filter(t=>t.status==='done'&&!t.pushed&&(+t.hrs||0)>0);
+  if(!ready.length){alert('Nothing to send. Tasks need to be marked Done and carry billable hours, and each one is only ever sent once.');return}
+  const byDay={};ready.forEach(t=>{byDay[t.date]=(byDay[t.date]||0)+(+t.hrs||0)});
+  const days=Object.keys(byDay).sort();
+  const totalHrs=days.reduce((s,d)=>s+byDay[d],0);
+  if(!confirm('Send '+totalHrs+' billable hours across '+days.length+' day'+(days.length===1?'':'s')+
+    ' to Log Work as admin entries worth '+fmt(totalHrs*40000)+'?'))return;
+  days.forEach(d=>{
+    const titles=ready.filter(t=>t.date===d).map(t=>t.title);
+    db.push({id:'e'+Date.now()+Math.random().toString(36).slice(2,7),date:d,type:'admin',
+      client:'Saha Synergy',qty:byDay[d],rate:40000,appr:'tidak',paid:'belum',link:'',
+      note:'From daily admin: '+titles.join('; ').slice(0,220)});
+  });
+  const ids=new Set(ready.map(t=>t.id));
+  tasks=tasks.map(t=>ids.has(t.id)?{...t,pushed:true}:t);
+  writeStore(TKEY,tasks);save();
+  alert('Done. '+days.length+' admin entr'+(days.length===1?'y':'ies')+' added to Log Work.');
+};
+
+// ================= SALARY PAID =================
 const yFile=document.getElementById('yFile');
 function showPrev(src){
   const w=document.getElementById('yPrev');
   if(src){document.getElementById('yPrevImg').src=src;w.style.display='block'}
   else{w.style.display='none';document.getElementById('yPrevImg').removeAttribute('src')}
 }
-function shrink(file,cb){
-  const rd=new FileReader();
-  rd.onload=()=>{
-    const im=new Image();
-    im.onload=()=>{
-      const max=1000,sc=Math.min(1,max/Math.max(im.width,im.height));
-      const c=document.createElement('canvas');
-      c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
-      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-      cb(c.toDataURL('image/jpeg',0.65));
-    };
-    im.onerror=()=>cb(null);
-    im.src=rd.result;
-  };
-  rd.onerror=()=>cb(null);
-  rd.readAsDataURL(file);
-}
-yFile.onchange=ev=>{
-  const f=ev.target.files[0];if(!f)return;
-  shrink(f,d=>{if(!d){alert('That image could not be read.');return}pendingImg=d;showPrev(d)});
-};
+yFile.onchange=ev=>{const f=ev.target.files[0];if(!f)return;
+  shrink(f,d=>{if(!d){alert('That image could not be read.');return}pendingImg=d;showPrev(d)})};
 document.getElementById('yClearImg').onclick=()=>{pendingImg=null;yFile.value='';showPrev(null)};
-
 function payReset(){
   payEditId=null;pendingImg=null;yFile.value='';showPrev(null);
   ['yAmt','yNote','yLink','yTime'].forEach(id=>document.getElementById(id).value='');
@@ -669,22 +1061,18 @@ document.getElementById('ySave').onclick=()=>{
     time:document.getElementById('yTime').value,amount:amt,
     via:document.getElementById('yVia').value,note:document.getElementById('yNote').value.trim(),
     link:document.getElementById('yLink').value.trim(),img:pendingImg||null};
-  if(payEditId){
-    const old=pays.find(x=>x.id===payEditId);
+  if(payEditId){const old=pays.find(x=>x.id===payEditId);
     if(!p.img&&old&&old.img)p.img=old.img;
-    pays=pays.map(x=>x.id===payEditId?p:x);
-  } else pays.push(p);
+    pays=pays.map(x=>x.id===payEditId?p:x)}
+  else pays.push(p);
   payReset();savePays();
 };
 function payEdit(id){
   const p=pays.find(x=>x.id===id);if(!p)return;payEditId=id;
-  document.getElementById('yFor').value=p.forMonth;
-  document.getElementById('yDate').value=p.date;
-  document.getElementById('yTime').value=p.time||'';
-  document.getElementById('yAmt').value=p.amount;
+  document.getElementById('yFor').value=p.forMonth;document.getElementById('yDate').value=p.date;
+  document.getElementById('yTime').value=p.time||'';document.getElementById('yAmt').value=p.amount;
   document.getElementById('yVia').value=p.via||'Bank transfer';
-  document.getElementById('yNote').value=p.note||'';
-  document.getElementById('yLink').value=p.link||'';
+  document.getElementById('yNote').value=p.note||'';document.getElementById('yLink').value=p.link||'';
   pendingImg=null;showPrev(p.img||null);
   document.getElementById('ySave').textContent='Save Changes';
   document.getElementById('yCancel').style.display='inline-block';
@@ -693,23 +1081,116 @@ function payEdit(id){
 function payDel(id){if(confirm('Delete this payment record?')){pays=pays.filter(x=>x.id!==id);savePays()}}
 function payDropImg(id){if(confirm('Remove the attached screenshot from this payment? The rest of the record stays.')){
   pays=pays.map(x=>x.id===id?{...x,img:null}:x);savePays()}}
-function viewImg(id){
-  const p=pays.find(x=>x.id===id);if(!p||!p.img)return;
-  const win=window.open();
-  if(!win){alert('Your browser blocked the popup. Allow popups for this page to view the image.');return}
-  win.document.write('<title>Transfer proof</title><body style="margin:0;background:#0E0C0C;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="'+p.img+'" style="max-width:100%;max-height:100vh"></body>');
-  win.document.close();
+function viewImg(id){const p=pays.find(x=>x.id===id);if(p&&p.img)openImg(p.img)}
+
+// ================= PETTY CASH =================
+const fFile=document.getElementById('fFile');
+function showCashPrev(src){
+  const w=document.getElementById('fPrev');
+  if(src){document.getElementById('fPrevImg').src=src;w.style.display='block'}
+  else{w.style.display='none';document.getElementById('fPrevImg').removeAttribute('src')}
 }
+fFile.onchange=ev=>{const f=ev.target.files[0];if(!f)return;
+  shrink(f,d=>{if(!d){alert('That image could not be read.');return}pendingCashImg=d;showCashPrev(d)})};
+document.getElementById('fClearImg').onclick=()=>{pendingCashImg=null;fFile.value='';showCashPrev(null)};
+function cashReset(){
+  cashEditId=null;pendingCashImg=null;fFile.value='';showCashPrev(null);
+  ['fAmt','fDesc','fLink','fNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fCat').value='';
+  document.getElementById('fSave').textContent='Save Record';
+  document.getElementById('fCancel').style.display='none';
+}
+document.getElementById('fCancel').onclick=cashReset;
+document.getElementById('fSave').onclick=()=>{
+  const amt=+document.getElementById('fAmt').value||0;
+  const date=document.getElementById('fDate').value;
+  const desc=document.getElementById('fDesc').value.trim();
+  if(!date){alert('Please pick the date.');return}
+  if(!amt){alert('Please fill in the amount.');return}
+  if(!desc){alert('Please write what it was for.');return}
+  const dir=document.getElementById('fDir').value;
+  const rec={id:cashEditId||('f'+Date.now()+Math.random().toString(36).slice(2,7)),
+    date,desc,inAmt:dir==='in'?amt:0,outAmt:dir==='out'?amt:0,
+    cat:document.getElementById('fCat').value,
+    note:document.getElementById('fNote').value.trim(),
+    link:document.getElementById('fLink').value.trim(),img:pendingCashImg||null};
+  if(cashEditId){const old=cash.find(x=>x.id===cashEditId);
+    if(!rec.img&&old&&old.img)rec.img=old.img;
+    cash=cash.map(x=>x.id===cashEditId?rec:x)}
+  else cash.push(rec);
+  cashReset();saveCash();
+};
+function cashEdit(id){
+  const r=cash.find(x=>x.id===id);if(!r)return;cashEditId=id;
+  document.getElementById('fDate').value=r.date||'';
+  document.getElementById('fDir').value=r.inAmt>0?'in':'out';
+  document.getElementById('fAmt').value=r.inAmt>0?r.inAmt:r.outAmt;
+  document.getElementById('fDesc').value=r.desc||'';
+  document.getElementById('fCat').value=r.cat||'';
+  document.getElementById('fNote').value=r.note||'';
+  document.getElementById('fLink').value=r.link||'';
+  pendingCashImg=null;showCashPrev(r.img||null);
+  document.getElementById('fSave').textContent='Save Changes';
+  document.getElementById('fCancel').style.display='inline-block';
+  document.querySelector('nav button[data-p="cash"]').click();
+}
+function cashDel(id){if(confirm('Delete this petty cash record?')){cash=cash.filter(x=>x.id!==id);saveCash()}}
+function cashViewImg(id){const r=cash.find(x=>x.id===id);if(r&&r.img)openImg(r.img)}
+document.getElementById('fMonth').onchange=render;
+document.getElementById('fSearch').oninput=render;
 
-const APPR={tidak:['Not needed','p-neu'],menunggu:['Awaiting Sophia','p-wait'],approved:['Approved','p-ok'],revisi:['Revision asked','p-no']};
-const PAID={belum:['Not invoiced','p-neu'],ditagih:['On invoice','p-wait'],dibayar:['Paid','p-ok']};
-function pill(m,v){const x=m[v]||['-','p-neu'];return'<span class="pill '+x[1]+'">'+x[0]+'</span>'}
-function linkCell(e){return e.link?'<a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">View</a>':'<span style="color:var(--muted)">-</span>'}
+// CSV import in the exact shape of Monika's sheet
+function parseCSV(t){const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];
+    if(q){if(c==='"'){if(t[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+    else if(c==='"')q=true;
+    else if(c===','){row.push(cur);cur=''}
+    else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur=''}
+    else if(c!=='\r')cur+=c}
+  if(cur||row.length){row.push(cur);rows.push(row)}
+  return rows}
+function money(s){if(!s)return 0;const n=String(s).replace(/[^0-9.-]/g,'');return n?Math.round(parseFloat(n))||0:0}
+function isoDate(s){const m=String(s||'').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  return m?m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'):null}
+document.getElementById('fImpBtn').onclick=()=>document.getElementById('fImpFile').click();
+document.getElementById('fImpFile').onchange=ev=>{
+  const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const rows=parseCSV(rd.result);
+      let cur=null;const add=[];
+      rows.slice(1).forEach((r,i)=>{
+        const d=isoDate(r[0]);if(d)cur=d;
+        const desc=(r[1]||'').trim(),inA=money(r[2]),outA=money(r[3]),note=(r[4]||'').trim();
+        if(!desc&&!inA&&!outA)return;
+        if(!desc&&(inA||outA))return;
+        add.push({id:'f'+Date.now()+i+Math.random().toString(36).slice(2,5),date:cur,desc,
+          inAmt:inA,outAmt:outA,note,cat:'',link:'',img:null});
+      });
+      if(!add.length){alert('No usable rows found. The file needs the columns Date, Description, Debit, Credit.');return}
+      const tin=add.reduce((s,x)=>s+x.inAmt,0),tout=add.reduce((s,x)=>s+x.outAmt,0);
+      if(confirm('Found '+add.length+' records: '+fmt(tin)+' in, '+fmt(tout)+' out.\n\nAdd them to the ledger? Press Cancel to keep things as they are.')){
+        cash=cash.concat(add);saveCash();
+        document.getElementById('fImpNote').innerHTML='Imported '+add.length+' more records just now.';
+      }
+    }catch(e){alert('That file could not be read as a CSV.')}
+  };
+  rd.readAsText(f);ev.target.value='';
+};
+document.getElementById('fCsvBtn').onclick=()=>{
+  const h=['Date','Description','Category','In (IDR)','Out (IDR)','Note','Receipt link','Has image'];
+  const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const lines=[h.join(',')].concat([...cash].sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(r=>
+    [r.date,r.desc,r.cat,r.inAmt,r.outAmt,r.note,r.link,r.img?'yes':'no'].map(q).join(',')));
+  const b=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='monika-petty-cash.csv';a.click();
+};
 
-// ---- render
+// ================= RENDER =================
 function render(){
+  // ---------- month summary ----------
   const months=[...new Set(db.map(e=>mkey(e.date)))].sort().reverse();
-  const cur=new Date().toISOString().slice(0,7);
+  const cur=todayISO().slice(0,7);
   if(!months.includes(cur))months.unshift(cur);
   const sel=document.getElementById('mSel'),keep=sel.value;
   sel.innerHTML=months.map(m=>'<option value="'+m+'">'+mname(m)+'</option>').join('');
@@ -731,18 +1212,13 @@ function render(){
   const hrs=rows.filter(e=>e.type==='admin').reduce((s,e)=>s+(+e.qty||0),0);
   const reels=rows.filter(e=>['reel_tpl','reel_trial','reel_custom','meta_ad'].includes(e.type)).reduce((s,e)=>s+(+e.qty||0),0);
   let g='<div class="stat"><div class="k">Admin hours logged</div><div class="v">'+hrs+' hrs</div><div class="n">'+fmt(hrs*40000)+' · normal range 65 to 108 hrs/month</div></div>'+
-        '<div class="stat"><div class="k">Videos produced</div><div class="v">'+reels+'</div><div class="n">reels, edits, ad videos</div></div>';
-  Object.keys(cats).sort().forEach(c=>{g+='<div class="stat"><div class="k">'+c+'</div><div class="v">'+fmt(cats[c]).replace('IDR ','')+'</div><div class="n">'+usd(cats[c])+'</div></div>'});
+        '<div class="stat olv"><div class="k">Videos produced</div><div class="v">'+reels+'</div><div class="n">reels, edits, ad videos</div></div>';
+  Object.keys(cats).sort().forEach(c=>{g+='<div class="stat"><div class="k">'+c+'</div><div class="v">'+n0(cats[c])+'</div><div class="n">'+usd(cats[c])+'</div></div>'});
   document.getElementById('statGrid').innerHTML=g;
 
-  // admin hours per week, 25 hr/week cap from the signed document
   const wk={};
   rows.filter(e=>e.type==='admin'||e.type==='web_upd').forEach(e=>{
-    const d=new Date(e.date+'T00:00:00');if(isNaN(d))return;
-    const off=(d.getDay()+6)%7,mon=new Date(d);mon.setDate(d.getDate()-off);
-    const k=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
-    wk[k]=(wk[k]||0)+(+e.qty||0);
-  });
+    const k=mondayOf(e.date);if(!k)return;wk[k]=(wk[k]||0)+(+e.qty||0)});
   const wks=Object.keys(wk).sort();
   document.getElementById('weekBody').innerHTML=wks.length?wks.map(k=>{
     const h=wk[k],mon=new Date(k+'T00:00:00'),sun=new Date(mon);sun.setDate(mon.getDate()+6);
@@ -750,34 +1226,113 @@ function render(){
     const p=h>25?'<span class="pill p-no">Over 25 hrs, needs approval</span>'
       :h>=15?'<span class="pill p-ok">Within normal range</span>'
       :'<span class="pill p-wait">Below normal range</span>';
-    return '<tr><td data-label="Week">'+rng+'</td><td class="num" data-label="Admin hours">'+h+' hrs</td><td data-label="Standing">'+p+'</td><td class="num rate" data-label="Value (IDR)">'+(h*40000).toLocaleString('en-US')+'</td></tr>';
+    return '<tr><td data-label="Week">'+rng+'</td><td class="num" data-label="Admin hours">'+h+' hrs</td><td data-label="Standing">'+p+'</td><td class="num rate" data-label="Value (IDR)">'+n0(h*40000)+'</td></tr>';
   }).join(''):'<tr><td colspan="4"><div class="empty"><span class="serif">No admin hours yet</span>Log admin hours on the Log Work tab and they will appear here week by week.</div></td></tr>';
 
   const emptyRow=n=>'<tr><td colspan="'+n+'"><div class="empty"><span class="serif">Nothing logged yet</span>Open the Log Work tab to add your first entry for this month.</div></td></tr>';
   document.getElementById('dashBody').innerHTML=rows.length?rows.map(e=>{
     const r=R[e.type]||{lbl:e.type,unit:''};
     return '<tr><td data-label="Date">'+e.date.slice(8)+'/'+e.date.slice(5,7)+'</td><td data-label="Work">'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
-      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num" data-label="Qty">'+e.qty+' '+esc(r.unit)+'</td><td class="num" data-label="Rate">'+(+e.rate).toLocaleString('en-US')+
-      '</td><td class="num rate" data-label="Total">'+total(e).toLocaleString('en-US')+'</td><td data-label="Approval">'+pill(APPR,e.appr)+'</td><td data-label="Link">'+linkCell(e)+'</td></tr>'}).join('')
-    +'<tr style="background:var(--beige)"><td colspan="5"><strong>Total for '+mname(mk)+'</strong></td><td class="num rate" data-label="Total">'+sum.toLocaleString('en-US')+'</td><td colspan="2">'+usd(sum)+'</td></tr>'
+      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num" data-label="Qty">'+e.qty+' '+esc(r.unit)+'</td><td class="num" data-label="Rate">'+n0(e.rate)+
+      '</td><td class="num rate" data-label="Total">'+n0(total(e))+'</td><td data-label="Approval">'+pill(APPR,e.appr)+'</td><td data-label="Link">'+linkCell(e)+'</td></tr>'}).join('')
+    +'<tr style="background:var(--ivory)"><td colspan="5"><strong>Total for '+mname(mk)+'</strong></td><td class="num rate" data-label="Total">'+n0(sum)+'</td><td colspan="2">'+usd(sum)+'</td></tr>'
     :emptyRow(8);
 
   const all=[...db].sort((a,b)=>b.date.localeCompare(a.date));
   document.getElementById('logBody').innerHTML=all.length?all.map(e=>{
     const r=R[e.type]||{lbl:e.type,unit:''};
-    return '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Work">'+esc(r.lbl)+'</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num" data-label="Qty">'+e.qty+'</td>'+
-      '<td class="num rate" data-label="Total">'+total(e).toLocaleString('en-US')+'</td><td data-label="Approval">'+pill(APPR,e.appr)+'</td><td data-label="Payment">'+pill(PAID,e.paid)+'</td><td data-label="Link">'+linkCell(e)+
+    return '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Work">'+esc(r.lbl)+
+      (e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
+      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num" data-label="Qty">'+e.qty+'</td>'+
+      '<td class="num rate" data-label="Total">'+n0(total(e))+'</td><td data-label="Approval">'+pill(APPR,e.appr)+'</td><td data-label="Payment">'+pill(PAID,e.paid)+'</td><td data-label="Link">'+linkCell(e)+
       '</td><td class="noprint" data-label=""><button class="mini" onclick="edit(\''+e.id+'\')">edit</button><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>'}).join(''):emptyRow(9);
 
   const pend=db.filter(e=>e.appr==='menunggu'||e.appr==='revisi').sort((a,b)=>a.date.localeCompare(b.date));
   document.getElementById('apprBody').innerHTML=pend.length?pend.map(e=>{
     const r=R[e.type]||{lbl:e.type};
     return '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Work">'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
-      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num rate" data-label="Value">'+total(e).toLocaleString('en-US')+'</td><td data-label="Status">'+pill(APPR,e.appr)+'</td><td data-label="Link">'+linkCell(e)+
+      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num rate" data-label="Value">'+n0(total(e))+'</td><td data-label="Status">'+pill(APPR,e.appr)+'</td><td data-label="Link">'+linkCell(e)+
       '</td><td class="noprint" data-label=""><button class="mini" onclick="setAppr(\''+e.id+'\',\'approved\')">mark approved</button></td></tr>'}).join('')
     :'<tr><td colspan="7"><div class="empty"><span class="serif">All clear</span>Nothing is waiting on Sophia right now.</div></td></tr>';
 
-  // ---- payments received
+  // ---------- schedule ----------
+  const monKey=mondayOf(todayISO());
+  const weekEnd=(()=>{const d=new Date(monKey+'T00:00:00');d.setDate(d.getDate()+6);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')})();
+  document.getElementById('schTitle').textContent='Where You Stand, '+shortDate(monKey)+' to '+shortDate(weekEnd);
+
+  const doneWeek={},doneMonth={};
+  db.forEach(e=>{
+    if(mondayOf(e.date)===monKey)doneWeek[e.type]=(doneWeek[e.type]||0)+(+e.qty||0);
+    if(mkey(e.date)===cur)doneMonth[e.type]=(doneMonth[e.type]||0)+(+e.qty||0);
+  });
+  document.getElementById('schCards').innerHTML=commits.length?commits.map(c=>{
+    const r=R[c.type]||{lbl:c.type,unit:'',rate:0};
+    const done=(c.per==='week'?doneWeek[c.type]:doneMonth[c.type])||0;
+    const pct=c.qty>0?Math.min(100,Math.round(done/c.qty*100)):0;
+    const over=done>c.qty;
+    return '<div class="stat'+(done>=c.qty?' olv':'')+'"><div class="k">'+esc(r.lbl)+'</div>'+
+      '<div class="v">'+done+' / '+c.qty+' <span style="font-size:13px;color:var(--muted)">'+esc(r.unit)+'</span></div>'+
+      '<div class="bar"><span class="'+(over?'over':'')+'" style="width:'+pct+'%"></span></div>'+
+      '<div class="n">'+(done>=c.qty?'Target met':'Still '+Math.round((c.qty-done)*100)/100+' to go')+
+      ' · '+fmt(c.qty*r.rate)+' per '+c.per+'</div></div>';
+  }).join(''):'<div class="stat"><div class="k">No commitments set</div><div class="v">-</div><div class="n">Add one below to start tracking.</div></div>';
+
+  document.getElementById('commitBody').innerHTML=commits.length?commits.map(c=>{
+    const r=R[c.type]||{lbl:c.type,unit:'',rate:0};
+    return '<tr><td data-label="Commitment"><strong>'+esc(r.lbl)+'</strong>'+
+      (c.forWhom?'<div style="color:var(--muted);font-size:11.5px">For '+esc(c.forWhom)+'</div>':'')+
+      (c.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(c.note)+'</div>':'')+
+      '</td><td class="num" data-label="Target">'+c.qty+' '+esc(r.unit)+'</td><td data-label="How often">'+(c.per==='week'?'Every week':'Every month')+
+      '</td><td data-label="Due by">'+esc(dueLabel(c))+'</td><td class="num" data-label="Rate">'+n0(r.rate)+
+      '</td><td class="num rate" data-label="Expected pay">'+n0(c.qty*r.rate)+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="commitEdit(\''+c.id+'\')">edit</button><button class="mini" onclick="commitDel(\''+c.id+'\')">remove</button></td></tr>';
+  }).join('')+(()=>{
+    const wkPay=commits.filter(c=>c.per==='week').reduce((s,c)=>s+c.qty*((R[c.type]||{}).rate||0),0);
+    const moPay=commits.filter(c=>c.per==='month').reduce((s,c)=>s+c.qty*((R[c.type]||{}).rate||0),0);
+    return '<tr style="background:var(--ivory)"><td colspan="5"><strong>If you hit every target: '+fmt(wkPay)+' per week plus '+fmt(moPay)+' per month</strong></td>'+
+      '<td class="num rate" data-label="Per month">'+n0(wkPay*4.33+moPay)+'</td><td></td></tr>'})()
+    :'<tr><td colspan="7"><div class="empty"><span class="serif">No commitments yet</span>Add your first one with the form below.</div></td></tr>';
+
+  // ---------- daily admin ----------
+  const filt=document.getElementById('tFilter').value;
+  const q=document.getElementById('tSearch').value.trim().toLowerCase();
+  let tl=[...tasks];
+  if(filt==='today')tl=tl.filter(t=>t.date===todayISO());
+  else if(filt==='week')tl=tl.filter(t=>mondayOf(t.date)===monKey);
+  else if(filt==='open')tl=tl.filter(t=>t.status!=='done');
+  if(q)tl=tl.filter(t=>[t.title,t.note,t.who,t.wa,t.cat,t.link].join(' ').toLowerCase().includes(q));
+  tl.sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
+
+  const tToday=tasks.filter(t=>t.date===todayISO());
+  const tWeek=tasks.filter(t=>mondayOf(t.date)===monKey);
+  const openAll=tasks.filter(t=>t.status!=='done').length;
+  const hrsWeek=tWeek.reduce((s,t)=>s+(+t.hrs||0),0);
+  const unpushed=tasks.filter(t=>t.status==='done'&&!t.pushed&&(+t.hrs||0)>0).reduce((s,t)=>s+(+t.hrs||0),0);
+  const donePct=tToday.length?Math.round(tToday.filter(t=>t.status==='done').length/tToday.length*100):0;
+  document.getElementById('taskStats').innerHTML=
+    '<div class="stat olv"><div class="k">Finished today</div><div class="v">'+tToday.filter(t=>t.status==='done').length+' / '+tToday.length+'</div>'+
+      '<div class="bar"><span style="width:'+donePct+'%"></span></div><div class="n">'+donePct+'% of today’s list</div></div>'+
+    '<div class="stat"><div class="k">Still open</div><div class="v">'+openAll+'</div><div class="n">across every date</div></div>'+
+    '<div class="stat"><div class="k">Hours on this week’s tasks</div><div class="v">'+hrsWeek+' hrs</div><div class="n">'+fmt(hrsWeek*40000)+' at the admin rate</div></div>'+
+    '<div class="stat'+(unpushed>0?' olv':'')+'"><div class="k">Finished, not yet billed</div><div class="v">'+unpushed+' hrs</div><div class="n">'+(unpushed>0?'Press Send hours to Log Work':'Nothing waiting')+'</div></div>';
+
+  document.getElementById('taskBody').innerHTML=tl.length?tl.map(t=>{
+    const wa=t.wa?'<a class="wa" href="https://wa.me/'+esc(t.wa.replace(/[^0-9]/g,''))+'" target="_blank" rel="noopener">'+esc(t.wa)+'</a>':'';
+    const who=t.who?'<div style="color:var(--muted);font-size:11.5px">'+esc(t.who)+'</div>':'';
+    const rep=t.rep&&t.rep!=='none'?' <span class="pill p-neu">'+(t.rep==='daily'?'Daily':'Weekly')+'</span>':'';
+    return '<tr class="'+(t.status==='done'?'done':'')+'"><td data-label="Task"><strong>'+esc(t.title)+'</strong>'+rep+
+      (t.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(t.note)+'</div>':'')+
+      (t.pushed?'<div style="color:var(--olive);font-size:11px">hours already billed</div>':'')+
+      '</td><td data-label="Date">'+esc(t.date)+'</td><td data-label="Time">'+(t.time?esc(t.time):'<span style="color:var(--muted)">-</span>')+
+      '</td><td data-label="Category">'+esc(t.cat||'-')+'</td><td data-label="Contact">'+(wa||who?wa+who:'<span style="color:var(--muted)">-</span>')+
+      '</td><td data-label="Link">'+(t.link?'<a class="lnk" href="'+esc(t.link)+'" target="_blank" rel="noopener">Open</a>':'<span style="color:var(--muted)">-</span>')+
+      '</td><td class="num" data-label="Hrs">'+(t.hrs||0)+'</td><td data-label="Status">'+pill(TST,t.status)+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="taskToggle(\''+t.id+'\')">'+(t.status==='done'?'reopen':'done')+
+      '</button><button class="mini" onclick="taskEdit(\''+t.id+'\')">edit</button><button class="mini" onclick="taskDel(\''+t.id+'\')">delete</button></td></tr>';
+  }).join(''):'<tr><td colspan="9"><div class="empty"><span class="serif">Nothing on this list</span>Add a task above, or change the filter to see other days.</div></td></tr>';
+
+  // ---------- salary ----------
   const yFor=document.getElementById('yFor'),keepFor=yFor.value;
   const payMonths=[...new Set([...months,...pays.map(p=>p.forMonth)])].filter(Boolean).sort().reverse();
   yFor.innerHTML=payMonths.map(m=>'<option value="'+m+'">'+mname(m)+'</option>').join('');
@@ -786,44 +1341,103 @@ function render(){
   const paidBy={};pays.forEach(p=>{paidBy[p.forMonth]=(paidBy[p.forMonth]||0)+(+p.amount||0)});
   const loggedBy={};db.forEach(e=>{const k=mkey(e.date);loggedBy[k]=(loggedBy[k]||0)+total(e)});
   const reconKeys=[...new Set([...Object.keys(loggedBy),...Object.keys(paidBy)])].sort().reverse();
-  const today=new Date().toISOString().slice(0,10);
+  const today=todayISO();
   document.getElementById('reconBody').innerHTML=reconKeys.length?reconKeys.map(k=>{
     const lg=loggedBy[k]||0,pd=paidBy[k]||0,diff=pd-lg;
     let st;
     if(pd===0) st=today>dueISO(k)?'<span class="pill p-no">Overdue, nothing received</span>':'<span class="pill p-neu">Not paid yet</span>';
     else if(Math.abs(diff)<1) st='<span class="pill p-ok">Settled</span>';
-    else if(diff<0) st='<span class="pill p-wait">Short by '+Math.abs(diff).toLocaleString('en-US')+'</span>';
-    else st='<span class="pill p-wait">Overpaid by '+diff.toLocaleString('en-US')+'</span>';
-    return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="You logged">'+lg.toLocaleString('en-US')+
-      '</td><td class="num" data-label="You were paid">'+pd.toLocaleString('en-US')+
-      '</td><td class="num rate" data-label="Difference">'+(diff>0?'+':'')+diff.toLocaleString('en-US')+
+    else if(diff<0) st='<span class="pill p-wait">Short by '+n0(Math.abs(diff))+'</span>';
+    else st='<span class="pill p-wait">Overpaid by '+n0(diff)+'</span>';
+    return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="You logged">'+n0(lg)+
+      '</td><td class="num" data-label="You were paid">'+n0(pd)+
+      '</td><td class="num rate '+(diff<0?'neg':'pos')+'" data-label="Difference">'+(diff>0?'+':'')+n0(diff)+
       '</td><td data-label="Standing">'+st+'</td><td data-label="Due date">'+dueDate(k)+'</td></tr>';
   }).join(''):'<tr><td colspan="6"><div class="empty"><span class="serif">Nothing to compare yet</span>Log some work and record a payment, then this table fills in.</div></td></tr>';
 
   const psorted=[...pays].sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
   document.getElementById('payBody').innerHTML=psorted.length?psorted.map(p=>{
-    let proof='<span style="color:var(--muted)">-</span>';
     const bits=[];
     if(p.link)bits.push('<a class="lnk" href="'+esc(p.link)+'" target="_blank" rel="noopener">Open link</a>');
     if(p.img)bits.push('<a class="lnk" href="javascript:void(0)" onclick="viewImg(\''+p.id+'\')">View image</a>'+
       '<button class="mini" onclick="payDropImg(\''+p.id+'\')">remove</button>');
-    if(bits.length)proof=bits.join('<br>');
     return '<tr><td data-label="For month">'+mname(p.forMonth)+'</td><td data-label="Date">'+esc(p.date)+
       '</td><td data-label="Time">'+(p.time?esc(p.time):'<span style="color:var(--muted)">-</span>')+
-      '</td><td class="num rate" data-label="Amount">'+(+p.amount).toLocaleString('en-US')+
-      '</td><td data-label="Via">'+esc(p.via||'-')+'</td><td data-label="Proof">'+proof+
+      '</td><td class="num rate" data-label="Amount">'+n0(p.amount)+
+      '</td><td data-label="Via">'+esc(p.via||'-')+'</td><td data-label="Proof">'+(bits.length?bits.join('<br>'):'<span style="color:var(--muted)">-</span>')+
       '</td><td data-label="Note">'+esc(p.note||'-')+
       '</td><td class="noprint" data-label=""><button class="mini" onclick="payEdit(\''+p.id+'\')">edit</button>'+
       '<button class="mini" onclick="payDel(\''+p.id+'\')">delete</button></td></tr>';
   }).join(''):'<tr><td colspan="8"><div class="empty"><span class="serif">No payments recorded</span>Add the first one using the form above.</div></td></tr>';
 
+  // ---------- petty cash ----------
+  const cIn=cash.reduce((s,r)=>s+(+r.inAmt||0),0), cOut=cash.reduce((s,r)=>s+(+r.outAmt||0),0);
+  const bal=cIn-cOut;
+  document.getElementById('cashBal').textContent=fmt(bal);
+  document.getElementById('cashHint').textContent = bal<0
+    ? 'You are out of pocket by '+fmt(-bal)+'. Sophia owes you this back.'
+    : bal>0 ? 'Company money still in your hands.' : 'Exactly square.';
+  document.getElementById('cashIn').textContent=fmt(cIn);
+  document.getElementById('cashOut').textContent=fmt(cOut);
+  document.getElementById('cashN').textContent=cash.length;
+  const lastRec=[...cash].filter(r=>r.date).sort((a,b)=>a.date.localeCompare(b.date)).slice(-1)[0];
+  document.getElementById('cashLast').textContent=lastRec?shortDate(lastRec.date):'-';
+
+  const cashMonths=[...new Set(cash.map(r=>mkey(r.date)))].filter(Boolean).sort().reverse();
+  const fSel=document.getElementById('fMonth'),keepF=fSel.value;
+  fSel.innerHTML='<option value="all">All months</option>'+cashMonths.map(m=>'<option value="'+m+'">'+mname(m)+'</option>').join('');
+  fSel.value=(keepF&&(keepF==='all'||cashMonths.includes(keepF)))?keepF:'all';
+
+  let runBal=0;
+  document.getElementById('cashMonthBody').innerHTML=cashMonths.length?[...cashMonths].reverse().map(k=>{
+    const rs=cash.filter(r=>mkey(r.date)===k);
+    const i=rs.reduce((s,r)=>s+(+r.inAmt||0),0),o=rs.reduce((s,r)=>s+(+r.outAmt||0),0);
+    runBal+=i-o;
+    return {k,i,o,net:i-o,run:runBal};
+  }).reverse().map(x=>'<tr><td data-label="Month">'+mname(x.k)+'</td><td class="num pos" data-label="In">'+n0(x.i)+
+    '</td><td class="num neg" data-label="Out">'+n0(x.o)+'</td><td class="num rate '+(x.net<0?'neg':'pos')+'" data-label="Net">'+
+    (x.net>0?'+':'')+n0(x.net)+'</td><td class="num rate '+(x.run<0?'neg':'pos')+'" data-label="Running balance">'+n0(x.run)+'</td></tr>').join('')
+    :'<tr><td colspan="5"><div class="empty"><span class="serif">Ledger is empty</span>Add a record or import a CSV.</div></td></tr>';
+
+  const byCat={};cash.filter(r=>(+r.outAmt||0)>0).forEach(r=>{
+    const c=r.cat||'Not categorised';
+    if(!byCat[c])byCat[c]={n:0,t:0};byCat[c].n++;byCat[c].t+=+r.outAmt||0});
+  const catKeys=Object.keys(byCat).sort((a,b)=>byCat[b].t-byCat[a].t);
+  document.getElementById('cashCatBody').innerHTML=catKeys.length?catKeys.map(c=>
+    '<tr><td data-label="Category">'+esc(c)+'</td><td class="num" data-label="Records">'+byCat[c].n+
+    '</td><td class="num rate" data-label="Total spent">'+n0(byCat[c].t)+
+    '</td><td class="num" data-label="Share">'+(cOut?Math.round(byCat[c].t/cOut*100):0)+'%</td></tr>').join('')
+    :'<tr><td colspan="4"><div class="empty"><span class="serif">Nothing spent yet</span></div></td></tr>';
+
+  const fq=document.getElementById('fSearch').value.trim().toLowerCase();
+  let cl=[...cash];
+  if(fSel.value!=='all')cl=cl.filter(r=>mkey(r.date)===fSel.value);
+  if(fq)cl=cl.filter(r=>[r.desc,r.note,r.cat].join(' ').toLowerCase().includes(fq));
+  cl.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const shown=cl.slice(0,300);
+  document.getElementById('cashBody').innerHTML=shown.length?shown.map(r=>{
+    const proof=[];
+    if(r.link)proof.push('<a class="lnk" href="'+esc(r.link)+'" target="_blank" rel="noopener">Link</a>');
+    if(r.img)proof.push('<img class="thumb" src="'+r.img+'" onclick="cashViewImg(\''+r.id+'\')" alt="Receipt">');
+    return '<tr><td data-label="Date">'+esc(r.date||'-')+'</td><td data-label="Description"><strong>'+esc(r.desc)+'</strong></td>'+
+      '<td data-label="Category">'+(r.cat?esc(r.cat):'<span style="color:var(--muted)">not set</span>')+
+      '</td><td class="num pos" data-label="In">'+(r.inAmt?n0(r.inAmt):'')+
+      '</td><td class="num neg" data-label="Out">'+(r.outAmt?n0(r.outAmt):'')+
+      '</td><td data-label="Receipt">'+(proof.length?proof.join(' '):'<span style="color:var(--muted)">-</span>')+
+      '</td><td data-label="Note">'+esc(r.note||'-')+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="cashEdit(\''+r.id+'\')">edit</button>'+
+      '<button class="mini" onclick="cashDel(\''+r.id+'\')">delete</button></td></tr>';
+  }).join('')+(cl.length>300?'<tr><td colspan="8" style="color:var(--muted)">Showing the 300 most recent of '+cl.length+' records. Narrow it down with the month filter or the search box.</td></tr>':'')
+    :'<tr><td colspan="8"><div class="empty"><span class="serif">No records match</span>Try a different month or clear the search.</div></td></tr>';
+
+  // ---------- all months ----------
   const byM={};db.forEach(e=>{const k=mkey(e.date);(byM[k]=byM[k]||[]).push(e)});
   const ks=Object.keys(byM).sort().reverse();
   document.getElementById('allBody').innerHTML=ks.length?ks.map(k=>{
     const t=byM[k].reduce((s,e)=>s+total(e),0);
     const paid=byM[k].every(e=>e.paid==='dibayar')?'<span class="pill p-ok">Paid in full</span>':
       byM[k].some(e=>e.paid==='dibayar')?'<span class="pill p-wait">Partly paid</span>':'<span class="pill p-neu">Unpaid</span>';
-    return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="Entries">'+byM[k].length+'</td><td class="num rate" data-label="Total (IDR)">'+t.toLocaleString('en-US')+'</td><td class="num" data-label="USD">'+usd(t)+'</td><td data-label="Payment">'+paid+'</td></tr>'}).join('')
+    return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="Entries">'+byM[k].length+'</td><td class="num rate" data-label="Total (IDR)">'+n0(t)+'</td><td class="num" data-label="USD">'+usd(t)+'</td><td data-label="Payment">'+paid+'</td></tr>'}).join('')
     :'<tr><td colspan="5"><div class="empty"><span class="serif">Nothing here yet</span>This summary fills in once you start logging work.</div></td></tr>';
 
   storageMeter();
@@ -835,13 +1449,13 @@ document.getElementById('fx').oninput=render;
 document.getElementById('rateBody').innerHTML=(()=>{let out='',c='';
   RATES.filter(r=>r.id!=='other').forEach(r=>{
     if(r.cat!==c){out+='<tr class="catrow"><td colspan="4">'+r.cat+'</td></tr>';c=r.cat}
-    out+='<tr><td data-label="Work"><strong>'+esc(r.lbl)+'</strong></td><td class="num rate" data-label="Rate (IDR)">'+r.rate.toLocaleString('en-US')+
-      '</td><td class="num" style="color:var(--muted)" data-label="USD">~$'+(r.rate/18000).toFixed(2)+'</td><td style="color:#5C5049;font-size:12.5px" data-label="Conditions">'+esc(r.cond)+'</td></tr>'});
+    out+='<tr><td data-label="Work"><strong>'+esc(r.lbl)+'</strong></td><td class="num rate" data-label="Rate (IDR)">'+n0(r.rate)+
+      '</td><td class="num" style="color:var(--muted)" data-label="USD">~$'+(r.rate/18000).toFixed(2)+'</td><td style="color:#5C4C42;font-size:12.5px" data-label="Conditions">'+esc(r.cond)+'</td></tr>'});
   return out})();
 
-// ---- data tools
+// ---- backup
 document.getElementById('expBtn').onclick=()=>{
-  const payload={format:'monika-workspace',version:2,work:db,payments:pays};
+  const payload={format:'monika-workspace',version:3,work:db,payments:pays,tasks,finance:cash,commitments:commits};
   const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');
   a.href=URL.createObjectURL(b);a.download='workspace-monika-backup.json';a.click();
 };
@@ -849,13 +1463,22 @@ document.getElementById('impBtn').onclick=()=>document.getElementById('impFile')
 document.getElementById('impFile').onchange=ev=>{
   const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{try{const d=JSON.parse(rd.result);
-    let work,pmts;
-    if(Array.isArray(d)){work=d;pmts=null}                       // older backup, work only
-    else if(Array.isArray(d.work)){work=d.work;pmts=Array.isArray(d.payments)?d.payments:[]}
+    let work,pmts=null,tks=null,fin=null,cms=null;
+    if(Array.isArray(d))work=d;
+    else if(Array.isArray(d.work)){work=d.work;
+      pmts=Array.isArray(d.payments)?d.payments:[];
+      tks=Array.isArray(d.tasks)?d.tasks:[];
+      fin=Array.isArray(d.finance)?d.finance:[];
+      cms=Array.isArray(d.commitments)?d.commitments:[]}
     else throw 0;
-    const msg='Restore '+work.length+' work entries'+(pmts?' and '+pmts.length+' payments':'')+
-      '? This replaces what is saved now.';
-    if(confirm(msg)){db=work;if(pmts){pays=pmts;writeStore(PKEY,pays)}save()}
+    const parts=[work.length+' work entries'];
+    if(pmts)parts.push(pmts.length+' payments',tks.length+' tasks',fin.length+' petty cash records',cms.length+' commitments');
+    if(confirm('Restore '+parts.join(', ')+'? This replaces what is saved now.')){
+      db=work;
+      if(pmts){pays=pmts;writeStore(PKEY,pays);tasks=tks;writeStore(TKEY,tasks);
+               cash=fin;writeStore(FKEY,cash);commits=cms;writeStore(CKEY,commits)}
+      save();
+    }
   }catch(e){alert('That file could not be read. Make sure it is the backup file.')}};
   rd.readAsText(f);ev.target.value='';
 };
@@ -869,21 +1492,25 @@ document.getElementById('csvBtn').onclick=()=>{
   a.href=URL.createObjectURL(b);a.download='workspace-monika.csv';a.click();
 };
 document.getElementById('wipeBtn').onclick=()=>{
-  if(confirm('Erase ALL work records and payment records? This cannot be undone.')&&
+  if(confirm('Erase ALL work records, tasks, commitments, salary records and petty cash? This cannot be undone.')&&
      confirm('Are you sure? Have you downloaded a backup?')){
-    db=[];pays=[];writeStore(PKEY,pays);save()}
+    db=[];pays=[];tasks=[];cash=[];commits=[];
+    [PKEY,TKEY,FKEY,CKEY].forEach((k,i)=>writeStore(k,[pays,tasks,cash,commits][i]));
+    save()}
 };
 
-// storage meter, so a full browser store never comes as a surprise
 function storageMeter(){
-  const bytes=((localStorage.getItem(KEY)||'').length+(localStorage.getItem(PKEY)||'').length)*2;
+  let bytes=0;[KEY,PKEY,TKEY,FKEY,CKEY].forEach(k=>bytes+=(localStorage.getItem(k)||'').length*2);
   const kb=Math.round(bytes/1024), pct=Math.min(100,Math.round(bytes/(5*1024*1024)*100));
-  const imgs=pays.filter(p=>p.img).length;
+  const imgs=pays.filter(p=>p.img).length+cash.filter(r=>r.img).length;
   const el=document.getElementById('storeMeter');
-  if(el)el.innerHTML='Using about <strong>'+kb.toLocaleString('en-US')+' KB</strong> of the roughly 5,000 KB this browser allows ('+pct+
-    '%). '+imgs+' attached screenshot'+(imgs===1?'':'s')+'. If it climbs near full, swap some attachments for links.';
+  if(el)el.innerHTML='Using about <strong>'+n0(kb)+' KB</strong> of the roughly 5,000 KB this browser allows ('+pct+
+    '%). '+imgs+' attached image'+(imgs===1?'':'s')+' across salary and petty cash. If it climbs near full, swap some attachments for links.';
 }
 
+// ---- defaults and first paint
+['iDate','yDate','tDate','fDate'].forEach(id=>document.getElementById(id).value=todayISO());
+syncType();
 render();
 </script>
 </body>
