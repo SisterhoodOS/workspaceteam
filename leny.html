@@ -6034,12 +6034,16 @@ document.getElementById('lsyncBack').onclick=async function(){
   await push();
   if(offline){alert('Your latest changes could not be saved to the cloud, so switching now would lose them.');return}
   localStorage.setItem(PROFKEY,'');
+  try{sessionStorage.removeItem('ws_gate')}catch(e){}
   location.href='index.html';
 };
 
-// the password lives on the workspace entry page, so anyone arriving here
-// without a session gets sent back to it
+// the password lives on the workspace entry page. Arriving here without
+// having passed through it in this tab sends you back.
 (async function(){
+  let passed=false;
+  try{passed=sessionStorage.getItem('ws_gate')==='1'}catch(e){}
+  if(!passed){location.replace('index.html');return}
   const {data}=await sb.auth.getSession();
   if(!data||!data.session){location.replace('index.html');return}
   uid=data.session.user.id;

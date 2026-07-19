@@ -1607,6 +1607,9 @@ const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
 // unprefixed, which means her existing records need no migration.
 const PROFILES={MONIKA:'Monika Purba',LIA:'Lia',LENY:'Leny'};
 const PROFKEY='ws_profile';
+// proves the password was entered in this browser tab. sessionStorage, so
+// closing the tab or the browser makes the next visit ask again.
+const GATEFLAG='ws_gate';
 function cloudKey(k){return profile==='MONIKA'?k:profile.toLowerCase()+'__'+k}
 
 const sb=supabase.createClient(SB_URL,SB_KEY);
@@ -1662,10 +1665,12 @@ function wrapWrites(){
 function showPicker(){gate.classList.add('hide');pick.classList.add('show')}
 function chooseProfile(p){
   const last=localStorage.getItem(PROFKEY);
-  // Leny runs a different app entirely, her own hub, on its own page
+  // Leny runs a different app entirely, her own hub, on its own page.
+  // the handoff flag is what proves she came through the password.
   if(p==='LENY'){
     if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
     localStorage.setItem(PROFKEY,'LENY');
+    try{sessionStorage.setItem(GATEFLAG,'1')}catch(e){}
     location.href='leny.html';
     return;
   }
@@ -1768,15 +1773,13 @@ document.getElementById('syncOut').onclick=async function(){
   location.reload();
 };
 
-// ---- already signed in from last time
+// ---- the password is asked for on every visit, and the person is always
+// chosen fresh, so the link never drops straight into someone's records
 (async function(){
+  try{sessionStorage.removeItem(GATEFLAG)}catch(e){}
   const {data}=await sb.auth.getSession();
-  if(!data||!data.session)return;
-  uid=data.session.user.id;
-  const last=localStorage.getItem(PROFKEY);
-  if(last==='LENY'){location.replace('leny.html');return}
-  if(last&&PROFILES[last]){profile=last;pullThenBoot()}
-  else showPicker();
+  if(data&&data.session)uid=data.session.user.id;
+  document.getElementById('gPass').focus();
 })();
 })();
 </script>
