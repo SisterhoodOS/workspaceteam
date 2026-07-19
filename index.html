@@ -159,7 +159,7 @@ a.lnk{color:var(--maroon);font-size:12px}
   <div class="wrap">
     <div class="brand">Saha Synergy Group Ltd</div>
     <h1>Workspace, Monika Purba</h1>
-    <div class="sub">Rate list effective 16 July 2026 · Independent contractor · One monthly invoice, paid by the 5th of the following month</div>
+    <div class="sub">Rate list effective 16 July 2026 · Independent contractor · One monthly invoice, paid on the 2nd of the following month</div>
   </div>
 </header>
 
@@ -168,6 +168,7 @@ a.lnk{color:var(--maroon);font-size:12px}
     <button class="on" data-p="dash">Month Summary</button>
     <button data-p="log">Log Work</button>
     <button data-p="appr">Approvals</button>
+    <button data-p="pay">Payments Received</button>
     <button data-p="rates">Rate List</button>
     <button data-p="rules">Working Terms</button>
     <button data-p="data">Data &amp; Backup</button>
@@ -300,6 +301,64 @@ a.lnk{color:var(--maroon);font-size:12px}
   </div>
 </section>
 
+<!-- ================= PAYMENTS ================= -->
+<section class="panel" id="p-pay">
+  <div class="card">
+    <div class="seclabel">Record a payment</div>
+    <h2>Log What Sophia Paid You</h2>
+    <p class="lead">Every time money lands, record it here with the date, the time, and the transfer proof. This is what settles any question at the end of the month.</p>
+
+    <div class="frow">
+      <div class="f"><label>Payment for which month</label><select id="yFor"></select></div>
+      <div class="f"><label>Date received</label><input type="date" id="yDate"></div>
+      <div class="f"><label>Time received</label><input type="time" id="yTime"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Amount received (IDR)</label><input type="number" id="yAmt" placeholder="3990000"></div>
+      <div class="f"><label>How it was sent</label><select id="yVia">
+        <option>Bank transfer</option><option>Wise</option><option>PayPal</option>
+        <option>Cash</option><option>Other</option>
+      </select></div>
+      <div class="f"><label>Reference / note</label><input id="yNote" placeholder="BCA ref 8891, partial payment, etc"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Link to proof (Drive, Photos, WhatsApp)</label><input id="yLink" placeholder="https://..."></div>
+      <div class="f"><label>Or attach a screenshot of the transfer</label><input type="file" id="yFile" accept="image/*"></div>
+    </div>
+
+    <div id="yPrev" style="display:none;margin:14px 0">
+      <img id="yPrevImg" style="max-width:210px;border:1px solid var(--line);border-radius:8px" alt="Transfer proof preview">
+      <div><button class="mini" id="yClearImg">remove this image</button></div>
+    </div>
+
+    <div class="note">Attached screenshots are shrunk and stored inside this browser along with everything else. A link is lighter than an attachment, so for big receipts prefer pasting a link.</div>
+
+    <div class="btnrow">
+      <button class="btn" id="ySave">Save Payment</button>
+      <button class="btn ghost" id="yCancel" style="display:none">Cancel Edit</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Reconciliation</div>
+    <h2>Logged Versus Paid</h2>
+    <p class="lead">What your work adds up to, next to what actually arrived. Anything not zero is worth a conversation.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Month</th><th class="num">You logged</th><th class="num">You were paid</th><th class="num">Difference</th><th>Standing</th><th>Due date</th></tr></thead>
+      <tbody id="reconBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">History</div>
+    <h2>Every Payment Received</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>For month</th><th>Date</th><th>Time</th><th class="num">Amount</th><th>Via</th><th>Proof</th><th>Note</th><th></th></tr></thead>
+      <tbody id="payBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
 <!-- ================= RATES ================= -->
 <section class="panel" id="p-rates">
   <div class="card">
@@ -354,6 +413,11 @@ a.lnk{color:var(--maroon);font-size:12px}
       <br><br>
       Note: a separate PDF is in circulation stating 15 to 25 hours per <em>month</em>. That version is <strong>not</strong> used here. Every other rate is identical across both, so nothing else changes.
     </div>
+    <div class="note warn">
+      <strong>Payday differs from the contract wording.</strong> Section 8 of the signed document says payment lands by the <strong>5th</strong> of the following month. In practice Monika is paid on the <strong>2nd</strong>, so every due date in this workspace is calculated from the 2nd.
+      <br><br>
+      Worth confirming with Sophia so the document and the actual practice agree.
+    </div>
   </div>
 
   <div class="card">
@@ -400,7 +464,8 @@ a.lnk{color:var(--maroon);font-size:12px}
     <h2>Where Your Data Lives</h2>
     <div class="note warn"><strong>Read this one.</strong> Your data is saved inside the browser on this computer only. It is never sent to the internet, and nobody else can see it, Sophia included.<br><br>
     That means: open this page on your phone or another computer and it will be empty. Clear your browser history and it is gone.<br><br>
-    So at the end of every month, press <strong>Download Backup</strong> below and keep the file. That is your safety net.</div>
+    So at the end of every month, press <strong>Download Backup</strong> below and keep the file. That is your safety net. The backup includes your work log, your payment records, and any transfer screenshots you attached.</div>
+    <div class="note" id="storeMeter"></div>
     <div class="btnrow">
       <button class="btn" id="expBtn">Download Backup</button>
       <button class="btn ghost" id="impBtn">Restore Backup</button>
@@ -467,18 +532,27 @@ const RATES=[
   cond:'For sales commission, backpay, or anything outside the list. Type the rate in manually and explain it in the notes.'}
 ];
 const R={};RATES.forEach(r=>R[r.id]=r);
-const KEY='monika_workspace_v1';
-let db=load(), editId=null;
+const KEY='monika_workspace_v1', PKEY='monika_payments_v1';
+let db=load(), pays=loadPays(), editId=null, payEditId=null, pendingImg=null;
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
-function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function loadPays(){try{return JSON.parse(localStorage.getItem(PKEY))||[]}catch(e){return[]}}
+function writeStore(k,v){
+  try{localStorage.setItem(k,JSON.stringify(v));return true}
+  catch(e){alert('Storage is full, so that could not be saved. Open Data & Backup, download a backup, then remove some attached screenshots. Links take almost no space.');return false}
+}
+function save(){writeStore(KEY,db);render()}
+function savePays(){writeStore(PKEY,pays);render()}
 function fmt(n){return'IDR '+Math.round(n).toLocaleString('en-US')}
 function usd(n){return'~$'+Math.round(n/(+document.getElementById('fx').value||18000)).toLocaleString('en-US')}
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function mkey(d){return(d||'').slice(0,7)}
 const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function mname(k){const[y,m]=k.split('-');return MN[+m-1]+' '+y}
-function dueDate(k){let[y,m]=k.split('-').map(Number);m++;if(m>12){m=1;y++}return'5 '+mname(y+'-'+String(m).padStart(2,'0'))}
+const PAYDAY=2; // Monika is paid on the 2nd of the following month
+function nextMonth(k){let[y,m]=k.split('-').map(Number);m++;if(m>12){m=1;y++}return y+'-'+String(m).padStart(2,'0')}
+function dueDate(k){return PAYDAY+' '+mname(nextMonth(k))}
+function dueISO(k){return nextMonth(k)+'-'+String(PAYDAY).padStart(2,'0')}
 function total(e){return(+e.qty||0)*(+e.rate||0)}
 
 // ---- nav
@@ -510,6 +584,7 @@ function calc(){
 iType.onchange=syncType;
 ['iQty','iRate'].forEach(id=>document.getElementById(id).oninput=calc);
 document.getElementById('iDate').value=new Date().toISOString().slice(0,10);
+document.getElementById('yDate').value=new Date().toISOString().slice(0,10);
 syncType();
 
 document.getElementById('saveBtn').onclick=()=>{
@@ -546,6 +621,85 @@ function edit(id){
 }
 function del(id){if(confirm('Delete this entry?')){db=db.filter(x=>x.id!==id);save()}}
 function setAppr(id,v){db=db.map(x=>x.id===id?{...x,appr:v}:x);save()}
+
+// ---- payments received
+const yFile=document.getElementById('yFile');
+function showPrev(src){
+  const w=document.getElementById('yPrev');
+  if(src){document.getElementById('yPrevImg').src=src;w.style.display='block'}
+  else{w.style.display='none';document.getElementById('yPrevImg').removeAttribute('src')}
+}
+function shrink(file,cb){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const im=new Image();
+    im.onload=()=>{
+      const max=1000,sc=Math.min(1,max/Math.max(im.width,im.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      cb(c.toDataURL('image/jpeg',0.65));
+    };
+    im.onerror=()=>cb(null);
+    im.src=rd.result;
+  };
+  rd.onerror=()=>cb(null);
+  rd.readAsDataURL(file);
+}
+yFile.onchange=ev=>{
+  const f=ev.target.files[0];if(!f)return;
+  shrink(f,d=>{if(!d){alert('That image could not be read.');return}pendingImg=d;showPrev(d)});
+};
+document.getElementById('yClearImg').onclick=()=>{pendingImg=null;yFile.value='';showPrev(null)};
+
+function payReset(){
+  payEditId=null;pendingImg=null;yFile.value='';showPrev(null);
+  ['yAmt','yNote','yLink','yTime'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ySave').textContent='Save Payment';
+  document.getElementById('yCancel').style.display='none';
+}
+document.getElementById('yCancel').onclick=payReset;
+document.getElementById('ySave').onclick=()=>{
+  const amt=+document.getElementById('yAmt').value||0;
+  const dt=document.getElementById('yDate').value;
+  if(!dt){alert('Please fill in the date the money arrived.');return}
+  if(!amt){alert('Please fill in the amount received.');return}
+  const p={id:payEditId||('p'+Date.now()+Math.random().toString(36).slice(2,7)),
+    forMonth:document.getElementById('yFor').value,date:dt,
+    time:document.getElementById('yTime').value,amount:amt,
+    via:document.getElementById('yVia').value,note:document.getElementById('yNote').value.trim(),
+    link:document.getElementById('yLink').value.trim(),img:pendingImg||null};
+  if(payEditId){
+    const old=pays.find(x=>x.id===payEditId);
+    if(!p.img&&old&&old.img)p.img=old.img;
+    pays=pays.map(x=>x.id===payEditId?p:x);
+  } else pays.push(p);
+  payReset();savePays();
+};
+function payEdit(id){
+  const p=pays.find(x=>x.id===id);if(!p)return;payEditId=id;
+  document.getElementById('yFor').value=p.forMonth;
+  document.getElementById('yDate').value=p.date;
+  document.getElementById('yTime').value=p.time||'';
+  document.getElementById('yAmt').value=p.amount;
+  document.getElementById('yVia').value=p.via||'Bank transfer';
+  document.getElementById('yNote').value=p.note||'';
+  document.getElementById('yLink').value=p.link||'';
+  pendingImg=null;showPrev(p.img||null);
+  document.getElementById('ySave').textContent='Save Changes';
+  document.getElementById('yCancel').style.display='inline-block';
+  document.querySelector('nav button[data-p="pay"]').click();
+}
+function payDel(id){if(confirm('Delete this payment record?')){pays=pays.filter(x=>x.id!==id);savePays()}}
+function payDropImg(id){if(confirm('Remove the attached screenshot from this payment? The rest of the record stays.')){
+  pays=pays.map(x=>x.id===id?{...x,img:null}:x);savePays()}}
+function viewImg(id){
+  const p=pays.find(x=>x.id===id);if(!p||!p.img)return;
+  const win=window.open();
+  if(!win){alert('Your browser blocked the popup. Allow popups for this page to view the image.');return}
+  win.document.write('<title>Transfer proof</title><body style="margin:0;background:#0E0C0C;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="'+p.img+'" style="max-width:100%;max-height:100vh"></body>');
+  win.document.close();
+}
 
 const APPR={tidak:['Not needed','p-neu'],menunggu:['Awaiting Sophia','p-wait'],approved:['Approved','p-ok'],revisi:['Revision asked','p-no']};
 const PAID={belum:['Not invoiced','p-neu'],ditagih:['On invoice','p-wait'],dibayar:['Paid','p-ok']};
@@ -623,6 +777,46 @@ function render(){
       '</td><td class="noprint" data-label=""><button class="mini" onclick="setAppr(\''+e.id+'\',\'approved\')">mark approved</button></td></tr>'}).join('')
     :'<tr><td colspan="7"><div class="empty"><span class="serif">All clear</span>Nothing is waiting on Sophia right now.</div></td></tr>';
 
+  // ---- payments received
+  const yFor=document.getElementById('yFor'),keepFor=yFor.value;
+  const payMonths=[...new Set([...months,...pays.map(p=>p.forMonth)])].filter(Boolean).sort().reverse();
+  yFor.innerHTML=payMonths.map(m=>'<option value="'+m+'">'+mname(m)+'</option>').join('');
+  yFor.value=payMonths.includes(keepFor)?keepFor:(payMonths.includes(mk)?mk:payMonths[0]);
+
+  const paidBy={};pays.forEach(p=>{paidBy[p.forMonth]=(paidBy[p.forMonth]||0)+(+p.amount||0)});
+  const loggedBy={};db.forEach(e=>{const k=mkey(e.date);loggedBy[k]=(loggedBy[k]||0)+total(e)});
+  const reconKeys=[...new Set([...Object.keys(loggedBy),...Object.keys(paidBy)])].sort().reverse();
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('reconBody').innerHTML=reconKeys.length?reconKeys.map(k=>{
+    const lg=loggedBy[k]||0,pd=paidBy[k]||0,diff=pd-lg;
+    let st;
+    if(pd===0) st=today>dueISO(k)?'<span class="pill p-no">Overdue, nothing received</span>':'<span class="pill p-neu">Not paid yet</span>';
+    else if(Math.abs(diff)<1) st='<span class="pill p-ok">Settled</span>';
+    else if(diff<0) st='<span class="pill p-wait">Short by '+Math.abs(diff).toLocaleString('en-US')+'</span>';
+    else st='<span class="pill p-wait">Overpaid by '+diff.toLocaleString('en-US')+'</span>';
+    return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="You logged">'+lg.toLocaleString('en-US')+
+      '</td><td class="num" data-label="You were paid">'+pd.toLocaleString('en-US')+
+      '</td><td class="num rate" data-label="Difference">'+(diff>0?'+':'')+diff.toLocaleString('en-US')+
+      '</td><td data-label="Standing">'+st+'</td><td data-label="Due date">'+dueDate(k)+'</td></tr>';
+  }).join(''):'<tr><td colspan="6"><div class="empty"><span class="serif">Nothing to compare yet</span>Log some work and record a payment, then this table fills in.</div></td></tr>';
+
+  const psorted=[...pays].sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
+  document.getElementById('payBody').innerHTML=psorted.length?psorted.map(p=>{
+    let proof='<span style="color:var(--muted)">-</span>';
+    const bits=[];
+    if(p.link)bits.push('<a class="lnk" href="'+esc(p.link)+'" target="_blank" rel="noopener">Open link</a>');
+    if(p.img)bits.push('<a class="lnk" href="javascript:void(0)" onclick="viewImg(\''+p.id+'\')">View image</a>'+
+      '<button class="mini" onclick="payDropImg(\''+p.id+'\')">remove</button>');
+    if(bits.length)proof=bits.join('<br>');
+    return '<tr><td data-label="For month">'+mname(p.forMonth)+'</td><td data-label="Date">'+esc(p.date)+
+      '</td><td data-label="Time">'+(p.time?esc(p.time):'<span style="color:var(--muted)">-</span>')+
+      '</td><td class="num rate" data-label="Amount">'+(+p.amount).toLocaleString('en-US')+
+      '</td><td data-label="Via">'+esc(p.via||'-')+'</td><td data-label="Proof">'+proof+
+      '</td><td data-label="Note">'+esc(p.note||'-')+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="payEdit(\''+p.id+'\')">edit</button>'+
+      '<button class="mini" onclick="payDel(\''+p.id+'\')">delete</button></td></tr>';
+  }).join(''):'<tr><td colspan="8"><div class="empty"><span class="serif">No payments recorded</span>Add the first one using the form above.</div></td></tr>';
+
   const byM={};db.forEach(e=>{const k=mkey(e.date);(byM[k]=byM[k]||[]).push(e)});
   const ks=Object.keys(byM).sort().reverse();
   document.getElementById('allBody').innerHTML=ks.length?ks.map(k=>{
@@ -631,6 +825,8 @@ function render(){
       byM[k].some(e=>e.paid==='dibayar')?'<span class="pill p-wait">Partly paid</span>':'<span class="pill p-neu">Unpaid</span>';
     return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="Entries">'+byM[k].length+'</td><td class="num rate" data-label="Total (IDR)">'+t.toLocaleString('en-US')+'</td><td class="num" data-label="USD">'+usd(t)+'</td><td data-label="Payment">'+paid+'</td></tr>'}).join('')
     :'<tr><td colspan="5"><div class="empty"><span class="serif">Nothing here yet</span>This summary fills in once you start logging work.</div></td></tr>';
+
+  storageMeter();
 }
 document.getElementById('mSel').onchange=render;
 document.getElementById('fx').oninput=render;
@@ -645,15 +841,21 @@ document.getElementById('rateBody').innerHTML=(()=>{let out='',c='';
 
 // ---- data tools
 document.getElementById('expBtn').onclick=()=>{
-  const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');
+  const payload={format:'monika-workspace',version:2,work:db,payments:pays};
+  const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');
   a.href=URL.createObjectURL(b);a.download='workspace-monika-backup.json';a.click();
 };
 document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
 document.getElementById('impFile').onchange=ev=>{
   const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{try{const d=JSON.parse(rd.result);
-    if(!Array.isArray(d))throw 0;
-    if(confirm('Restore '+d.length+' entries? This replaces what is saved now.')){db=d;save()}
+    let work,pmts;
+    if(Array.isArray(d)){work=d;pmts=null}                       // older backup, work only
+    else if(Array.isArray(d.work)){work=d.work;pmts=Array.isArray(d.payments)?d.payments:[]}
+    else throw 0;
+    const msg='Restore '+work.length+' work entries'+(pmts?' and '+pmts.length+' payments':'')+
+      '? This replaces what is saved now.';
+    if(confirm(msg)){db=work;if(pmts){pays=pmts;writeStore(PKEY,pays)}save()}
   }catch(e){alert('That file could not be read. Make sure it is the backup file.')}};
   rd.readAsText(f);ev.target.value='';
 };
@@ -667,8 +869,20 @@ document.getElementById('csvBtn').onclick=()=>{
   a.href=URL.createObjectURL(b);a.download='workspace-monika.csv';a.click();
 };
 document.getElementById('wipeBtn').onclick=()=>{
-  if(confirm('Erase ALL work records? This cannot be undone.')&&confirm('Are you sure? Have you downloaded a backup?')){db=[];save()}
+  if(confirm('Erase ALL work records and payment records? This cannot be undone.')&&
+     confirm('Are you sure? Have you downloaded a backup?')){
+    db=[];pays=[];writeStore(PKEY,pays);save()}
 };
+
+// storage meter, so a full browser store never comes as a surprise
+function storageMeter(){
+  const bytes=((localStorage.getItem(KEY)||'').length+(localStorage.getItem(PKEY)||'').length)*2;
+  const kb=Math.round(bytes/1024), pct=Math.min(100,Math.round(bytes/(5*1024*1024)*100));
+  const imgs=pays.filter(p=>p.img).length;
+  const el=document.getElementById('storeMeter');
+  if(el)el.innerHTML='Using about <strong>'+kb.toLocaleString('en-US')+' KB</strong> of the roughly 5,000 KB this browser allows ('+pct+
+    '%). '+imgs+' attached screenshot'+(imgs===1?'':'s')+'. If it climbs near full, swap some attachments for links.';
+}
 
 render();
 </script>
