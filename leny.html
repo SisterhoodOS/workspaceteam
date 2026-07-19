@@ -5924,9 +5924,19 @@ function renderDateHistory(dateStr){
   justify-content:center;font-family:'Poppins',sans-serif;font-size:.9rem;text-align:center;padding:24px}
 
 /* pay slip, added on top of the hub rather than inside it */
-#payBtn{position:fixed;right:12px;bottom:52px;z-index:600;background:#8b6914;color:#fff;border:0;
+#payBtn,#shopBtn{position:fixed;right:12px;z-index:600;background:#8b6914;color:#fff;border:0;
   border-radius:20px;padding:8px 16px;font-family:'Poppins',sans-serif;font-size:.72rem;font-weight:600;
   cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none}
+#payBtn{bottom:52px}
+#shopBtn{bottom:92px;background:#5b7fa8}
+#payCard .split{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+#payCard .split label{margin-bottom:0}
+#payCard .rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+#payCard .rowbtns button{flex:1;background:#3b0510;color:#fff;border:0;border-radius:10px;padding:10px;
+  font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
+#payCard .rowbtns button.alt{background:#faf8f3;color:#3b0510;border:1px solid #d4c9b0}
+#payCard .bad{background:#fbe6e4;color:#8c2f2a;border-radius:12px;padding:11px 14px;font-size:.78rem;margin-bottom:12px}
+#payCard .del{background:none;border:0;color:#b5453f;cursor:pointer;font-size:.9rem;padding:0 4px}
 #payWrap{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.45);display:none;
   overflow-y:auto;padding:16px;font-family:'Poppins',sans-serif}
 #payWrap.on{display:block}
@@ -5955,6 +5965,7 @@ function renderDateHistory(dateStr){
 <div id="lwait">Loading…</div>
 <div id="lsync"><span class="dot"></span><span id="lsyncTxt">Synced</span><a id="lsyncBack">Switch person</a></div>
 <button id="payBtn">💰 My pay</button>
+<button id="shopBtn">🧾 Belanja rumah</button>
 <div id="payWrap"><div id="payCard">
   <div class="hd">
     <div><div class="t">My pay</div><div class="s" id="paySub"></div></div>
@@ -6000,6 +6011,7 @@ function bootApp(){
   wait.style.display='none';
   bar.style.display='flex';
   document.getElementById('payBtn').style.display='block';
+  document.getElementById('shopBtn').style.display='block';
 }
 
 let timer=null;
@@ -6094,6 +6106,132 @@ function payDraw(){
   save('payRate',document.getElementById('payRate'));
   save('baseSalary',document.getElementById('payBase'));
 }
+/* ---- household shopping, shared with Monika ---------------------
+   Rows go to public.home_expenses, a table only Leny's and Monika's
+   accounts can touch. Everything else in each folder stays private.
+   Leny records what was bought and how it splits between Sophia, Sam
+   and Denise; Monika sees the same rows and the running totals.
+------------------------------------------------------------------ */
+const PEOPLE=[['share_sophia','Sophia'],['share_sam','Sam'],['share_denise','Denise']];
+let shopMonth=null, shopRows=[], shopBusy=false;
+// the hub has its own today(), but this layer must still work if the hub
+// failed to load, so it keeps its own
+function isoToday(){const d=new Date();return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+
+function L(id,en){const st=window.__lenyState&&window.__lenyState();
+  return (st&&st.lang==='id')?id:en}
+
+function shopOpen(){
+  if(!shopMonth){const d=new Date();shopMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+  document.getElementById('payWrap').classList.add('on');
+  document.getElementById('paySub').textContent=L('Belanja rumah','Household shopping');
+  shopLoad();
+}
+async function shopLoad(){
+  document.getElementById('payBody').innerHTML='<div class="none">'+L('Memuat…','Loading…')+'</div>';
+  const from=shopMonth+'-01';
+  const [yy,mm]=shopMonth.split('-').map(Number);
+  const to=new Date(yy,mm,0);
+  const toISO=shopMonth+'-'+String(to.getDate()).padStart(2,'0');
+  const {data,error}=await sb.from('home_expenses').select('*')
+    .gte('spent_on',from).lte('spent_on',toISO).order('spent_on',{ascending:false});
+  if(error){
+    console.error(error);
+    document.getElementById('payBody').innerHTML='<div class="bad">'+
+      L('Tidak bisa memuat. Cek koneksi.','Could not load. Check your connection.')+'</div>';
+    return;
+  }
+  shopRows=data||[];
+  shopDraw();
+}
+function shopDraw(){
+  const total=shopRows.reduce((s,r)=>s+(Number(r.amount)||0),0);
+  const per={};PEOPLE.forEach(p=>per[p[0]]=shopRows.reduce((s,r)=>s+(Number(r[p[0]])||0),0));
+  const [yy,mm]=shopMonth.split('-');
+  const monthName=new Date(+yy,+mm-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  document.getElementById('payBody').innerHTML=
+    '<label><span class="l">'+L('Bulan','Month')+'</span><input type="month" id="shopM" value="'+shopMonth+'"></label>'+
+    '<div class="tot"><div class="big">'+money(total)+'</div>'+
+      '<div class="lil">'+monthName+' · '+shopRows.length+' '+L('catatan','records')+'</div>'+
+      '<div class="lil" style="margin-top:6px">'+
+        PEOPLE.map(p=>p[1]+' '+money(per[p[0]])).join(' · ')+'</div></div>'+
+
+    '<div style="font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8b6914;margin-bottom:8px">'+
+      L('Tambah pengeluaran','Add spending')+'</div>'+
+    '<label><span class="l">'+L('Tanggal','Date')+'</span><input type="date" id="sDate" value="'+isoToday()+'"></label>'+
+    '<label><span class="l">'+L('Beli apa','What was bought')+'</span><input type="text" id="sDesc" placeholder="'+L('Contoh: belanja mingguan','e.g. weekly groceries')+'"></label>'+
+    '<label><span class="l">'+L('Jumlah (Rp)','Amount (Rp)')+'</span><input type="number" id="sAmt" min="0" step="1000" placeholder="0"></label>'+
+    '<div style="font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8b6914;margin:4px 0 6px">'+
+      L('Dibagi untuk siapa','Split between')+'</div>'+
+    '<div class="split">'+PEOPLE.map(p=>
+      '<label><span class="l">'+p[1]+'</span><input type="number" id="s_'+p[0]+'" min="0" step="1000" placeholder="0"></label>').join('')+'</div>'+
+    '<div class="rowbtns" style="margin-top:12px">'+
+      '<button class="alt" id="sThird">'+L('Bagi 3 rata','Split equally')+'</button>'+
+      '<button id="sSave">'+L('Simpan','Save')+'</button>'+
+    '</div>'+
+    '<div id="sMsg"></div>'+
+
+    '<table><thead><tr><th>'+L('Tgl','Date')+'</th><th>'+L('Beli','Item')+'</th><th>'+L('Jumlah','Amount')+'</th>'+
+      '<th>S</th><th>Sam</th><th>D</th><th></th></tr></thead><tbody>'+
+      (shopRows.length?shopRows.map(r=>
+        '<tr data-id="'+r.id+'"><td>'+String(r.spent_on||'').slice(8)+'/'+String(r.spent_on||'').slice(5,7)+'</td>'+
+        '<td>'+String(r.description||'').replace(/[<>&]/g,'')+'</td>'+
+        '<td>'+money(Number(r.amount)||0)+'</td>'+
+        PEOPLE.map(p=>'<td>'+((Number(r[p[0]])||0)?money(r[p[0]]).replace('Rp ',''):'-')+'</td>').join('')+
+        '<td><button class="del" data-del="'+r.id+'">✕</button></td></tr>').join('')
+        :'<tr><td colspan="7" class="none">'+L('Belum ada catatan bulan ini.','Nothing recorded this month yet.')+'</td></tr>')+
+    '</tbody></table>';
+
+  document.getElementById('shopM').onchange=e=>{shopMonth=e.target.value||shopMonth;shopLoad()};
+  document.getElementById('sThird').onclick=()=>{
+    const amt=Number(document.getElementById('sAmt').value)||0;
+    if(!amt){shopMsg(L('Isi jumlahnya dulu.','Enter the amount first.'),true);return}
+    // the leftover rupiah goes to the first person so the split always adds up
+    const base=Math.floor(amt/3/1000)*1000;
+    const vals=[base,base,amt-base*2];
+    PEOPLE.forEach((p,i)=>document.getElementById('s_'+p[0]).value=vals[i]);
+  };
+  document.getElementById('sSave').onclick=shopSave;
+  document.getElementById('payBody').onclick=e=>{
+    const id=e.target.getAttribute('data-del');
+    if(id)shopDelete(id);
+  };
+}
+function shopMsg(t,bad){
+  document.getElementById('sMsg').innerHTML='<div class="'+(bad?'bad':'warn')+'">'+t+'</div>';
+}
+async function shopSave(){
+  if(shopBusy)return;
+  const desc=document.getElementById('sDesc').value.trim();
+  const amt=Number(document.getElementById('sAmt').value)||0;
+  if(!desc){shopMsg(L('Tulis dulu belanja apa.','Say what was bought.'),true);return}
+  if(amt<=0){shopMsg(L('Jumlahnya belum diisi.','The amount is missing.'),true);return}
+  const shares={};let sum=0;
+  PEOPLE.forEach(p=>{const v=Number(document.getElementById('s_'+p[0]).value)||0;shares[p[0]]=v;sum+=v});
+  // a split that does not add up is the whole point of this being written down
+  if(sum!==amt){
+    shopMsg(L('Pembagian '+money(sum)+' tidak sama dengan total '+money(amt)+'. Perbaiki dulu.',
+              'The split of '+money(sum)+' does not match the total of '+money(amt)+'. Fix it first.'),true);
+    return;
+  }
+  shopBusy=true;
+  const row=Object.assign({spent_on:document.getElementById('sDate').value||isoToday(),
+    description:desc,amount:amt,entered_by:'leny'},shares);
+  const {error}=await sb.from('home_expenses').insert(row);
+  shopBusy=false;
+  if(error){console.error(error);shopMsg(L('Gagal disimpan. Coba lagi.','Could not save. Try again.'),true);return}
+  shopLoad();
+}
+async function shopDelete(id){
+  const r=shopRows.find(x=>String(x.id)===String(id));
+  if(!confirm(L('Hapus catatan "'+(r?r.description:'')+'"?','Delete "'+(r?r.description:'')+'"?')))return;
+  const {error}=await sb.from('home_expenses').delete().eq('id',id);
+  if(error){console.error(error);shopMsg(L('Gagal dihapus.','Could not delete.'),true);return}
+  shopLoad();
+}
+document.getElementById('shopBtn').onclick=shopOpen;
+
 document.getElementById('payBtn').onclick=payOpen;
 document.getElementById('payClose').onclick=()=>document.getElementById('payWrap').classList.remove('on');
 document.getElementById('payWrap').onclick=e=>{

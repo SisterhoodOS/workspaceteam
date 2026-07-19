@@ -255,6 +255,7 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
     <button data-p="appr">Approvals</button>
     <button data-p="pay">Salary Paid</button>
     <button data-p="cash">Petty Cash</button>
+    <button data-p="home">Home Spending</button>
     <button data-p="rates">Contract</button>
     <button data-p="data">Data &amp; Backup</button>
   </div>
@@ -669,6 +670,19 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
       <input type="file" id="fImpFile" accept=".csv,text/csv" style="display:none">
     </div>
     <div class="note" id="fImpNote">Your sheet from March through July is already loaded: 191 records, IDR 46,400,000 in and IDR 46,995,417 out.</div>
+  </div>
+</section>
+
+<!-- ================= HOME SPENDING =================
+     Filled in by the sync layer at the bottom of this file, because the
+     rows live in a shared table rather than in this browser. Leny writes
+     them from her own folder; nothing else crosses between folders. -->
+<section class="panel" id="p-home">
+  <div class="card">
+    <div class="seclabel">Household</div>
+    <h2>Home Spending</h2>
+    <p class="lead">What Leny recorded, and how each shop splits between Sophia, Sam and Denise.</p>
+    <div id="homeBody"><div class="note">Loading…</div></div>
   </div>
 </section>
 
@@ -1644,6 +1658,9 @@ function bootApp(){
   bar.style.display='flex';
   const h=document.querySelector('header h1');
   if(h)h.textContent='Workspace, '+PROFILES[profile];
+  // the household rows are not in this browser, so they load on demand
+  document.querySelectorAll('nav button[data-p="home"]').forEach(b=>b.addEventListener('click',loadHome));
+  loadHome();
 }
 
 // ---- every save also goes up, debounced per key
@@ -1801,6 +1818,76 @@ document.getElementById('syncOut').onclick=async function(){
   localStorage.removeItem(PROFKEY);
   location.reload();
 };
+
+// ---- home spending, the one thing shared across folders
+// Leny records each shop and how it splits. These rows come from
+// public.home_expenses, which only her account and Monika's can reach.
+const HOME_PEOPLE=[['share_sophia','Sophia'],['share_sam','Sam'],['share_denise','Denise']];
+let homeMonth=null;
+function rp(n){return 'IDR '+Math.round(Number(n)||0).toLocaleString('en-US')}
+function hesc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+async function loadHome(){
+  const box=document.getElementById('homeBody');
+  if(!box)return;
+  if(!homeMonth){const d=new Date();homeMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+  const [yy,mm]=homeMonth.split('-').map(Number);
+  const last=new Date(yy,mm,0).getDate();
+  const {data,error}=await sb.from('home_expenses').select('*')
+    .gte('spent_on',homeMonth+'-01').lte('spent_on',homeMonth+'-'+String(last).padStart(2,'0'))
+    .order('spent_on',{ascending:false});
+  if(error){
+    console.error(error);
+    box.innerHTML='<div class="note">Could not load the household rows. '+hesc(error.message||'')+'</div>';
+    return;
+  }
+  const rows=data||[];
+  const total=rows.reduce((s,r)=>s+(Number(r.amount)||0),0);
+  const per={};HOME_PEOPLE.forEach(p=>per[p[0]]=rows.reduce((s,r)=>s+(Number(r[p[0]])||0),0));
+  // a shop whose three shares do not add up to its total is worth flagging,
+  // not silently averaging away
+  const unsplit=rows.filter(r=>{
+    const sum=HOME_PEOPLE.reduce((s,p)=>s+(Number(r[p[0]])||0),0);
+    return Math.round(sum)!==Math.round(Number(r.amount)||0);
+  });
+  const monthName=new Date(yy,mm-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  box.innerHTML=
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
+      '<input type="month" id="homeMonthPick" value="'+homeMonth+'" style="max-width:180px;padding:8px 10px;'+
+        'border:1px solid var(--line);border-radius:3px;font-family:inherit">'+
+      '<button id="homeReload" style="padding:8px 16px;border:1px solid var(--line);border-radius:3px;'+
+        'background:#fff;font-family:inherit;font-size:12px;cursor:pointer">Refresh</button>'+
+      '<div style="flex:1"></div>'+
+      '<div style="text-align:right"><strong style="font-size:20px">'+rp(total)+'</strong>'+
+      '<div style="font-size:11.5px;color:var(--muted)">'+rows.length+' shop'+(rows.length===1?'':'s')+
+      ' in '+hesc(monthName)+'</div></div>'+
+    '</div>'+
+    '<div class="tblwrap"><table class="rsp">'+
+      '<thead><tr><th>Date</th><th>What</th><th class="num">Amount</th>'+
+      HOME_PEOPLE.map(p=>'<th class="num">'+p[1]+'</th>').join('')+'</tr></thead><tbody>'+
+      (rows.length?rows.map(r=>{
+        const sum=HOME_PEOPLE.reduce((s,p)=>s+(Number(r[p[0]])||0),0);
+        const bad=Math.round(sum)!==Math.round(Number(r.amount)||0);
+        return '<tr'+(bad?' style="background:#FBEFEA"':'')+'>'+
+          '<td data-label="Date">'+hesc(r.spent_on||'')+'</td>'+
+          '<td data-label="What">'+hesc(r.description||'')+(bad?' <em style="color:#8C2038">(split does not add up)</em>':'')+'</td>'+
+          '<td data-label="Amount" class="num">'+rp(r.amount)+'</td>'+
+          HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num">'+
+            ((Number(r[p[0]])||0)?rp(r[p[0]]):'-')+'</td>').join('')+
+        '</tr>';
+      }).join('')+
+        '<tr><td data-label="Date"></td><td data-label="What"><strong>Total</strong></td>'+
+        '<td data-label="Amount" class="num"><strong>'+rp(total)+'</strong></td>'+
+        HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num"><strong>'+rp(per[p[0]])+'</strong></td>').join('')+'</tr>'
+      :'<tr><td colspan="6" class="empty">Leny has not recorded anything for this month yet.</td></tr>')+
+    '</tbody></table></div>'+
+    (unsplit.length?'<div class="note" style="margin-top:14px">'+unsplit.length+' row'+(unsplit.length===1?'':'s')+
+      ' shaded above do not add up. The three shares do not equal the total. Worth asking Leny about.</div>':'');
+
+  document.getElementById('homeMonthPick').onchange=e=>{homeMonth=e.target.value||homeMonth;loadHome()};
+  document.getElementById('homeReload').onclick=loadHome;
+}
 
 // ---- every visit starts at the name list and asks for that person's
 // password, so the link never drops straight into anyone's records
