@@ -227,7 +227,7 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
     <p class="lede">Each person keeps their own records. Pick yours.</p>
     <button class="who" data-who="MONIKA"><div class="nm">Monika</div><div class="sub">Head of Social Media &amp; Operations</div></button>
     <button class="who" data-who="LIA"><div class="nm">Lia</div><div class="sub">Team member</div></button>
-    <button class="who" data-who="LENY"><div class="nm">Leny</div><div class="sub">Team member</div></button>
+    <button class="who" data-who="LENY"><div class="nm">Leny</div><div class="sub">Home organising, stock, shopping, meals, Hanu</div></button>
   </div>
 </div>
 
@@ -1662,6 +1662,13 @@ function wrapWrites(){
 function showPicker(){gate.classList.add('hide');pick.classList.add('show')}
 function chooseProfile(p){
   const last=localStorage.getItem(PROFKEY);
+  // Leny runs a different app entirely, her own hub, on its own page
+  if(p==='LENY'){
+    if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
+    localStorage.setItem(PROFKEY,'LENY');
+    location.href='leny.html';
+    return;
+  }
   // leaving someone else's folder: clear their records off this device first,
   // they are already in the cloud under their own keys
   if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
@@ -1767,6 +1774,7 @@ document.getElementById('syncOut').onclick=async function(){
   if(!data||!data.session)return;
   uid=data.session.user.id;
   const last=localStorage.getItem(PROFKEY);
+  if(last==='LENY'){location.replace('leny.html');return}
   if(last&&PROFILES[last]){profile=last;pullThenBoot()}
   else showPicker();
 })();
