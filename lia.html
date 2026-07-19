@@ -87,7 +87,8 @@ tbody tr:hover{background:var(--blush-50)}
 .s-pending{background:var(--pink-100);color:var(--ink-soft)}
 .s-contacted{background:var(--purple-200);color:var(--purple-500)}
 
-input[type=text],input[type=url],input[type=date],input[type=time],input[type=datetime-local],select,textarea{
+input[type=text],input[type=url],input[type=date],input[type=time],input[type=datetime-local],
+input[type=month],input[type=number],select,textarea{
   border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 11px;background:#fff;width:100%}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--purple-500)}
 textarea{min-height:110px;resize:vertical;line-height:1.5}
@@ -221,7 +222,43 @@ const TARGET_STATUS_LABELS={pending:'Pending',contacted:'Contacted',response:'Re
   interest:'Interest',booked:'Booked'};
 const SLOTS=50;
 
-const VIEWS=[['today','Today'],['clients','Clients'],['meetings','Meetings'],['insight','Insight']];
+const VIEWS=[['today','Today'],['clients','Clients'],['meetings','Meetings'],
+             ['messages','Messages'],['invoice','Invoice'],['insight','Insight']];
+
+// Lia's agreed terms, as stated by Monika on 20 July 2026.
+const PAY={salary:1000000,currency:'IDR',kpiCalls:15};
+
+// Starting points for outreach, written per business. They are drafts held
+// in the page, not rows in the database. Nothing here is saved until Lia
+// presses Save on one, and the three real reminder templates are separate.
+const WHO={
+  saha_synergy:'Business strategy for founders. Sophia’s parent company.',
+  bfp:'Social media content strategy, music video and film production.',
+  bwb:'Dog walking and pet care in Los Angeles.'
+};
+const SUGGESTED={
+  saha_synergy:[
+    {t:'First message',b:'Hi {{name}}, I came across your work and the way you talk about building the business rather than just running it stood out.\n\nI work with Sophia at Saha Synergy. She sits down with founders who are past the scrappy stage and helps them get the structure right, so the business stops depending on them being in every room.\n\nIs that something you are thinking about at the moment?'},
+    {t:'Follow up, no reply',b:'Hi {{name}}, just floating this back up in case it slipped past.\n\nNo pressure at all. If the timing is wrong, tell me and I will leave it. If it is more that you are curious but busy, I can send one paragraph on what a first conversation looks like.'},
+    {t:'They showed interest',b:'That is good to hear, {{name}}.\n\nThe first call is 30 minutes and it is genuinely just Sophia asking questions. Where the business is, what is taking your time, what you want it to look like in a year. No slides, nothing to prepare.\n\nWhat does your week look like? I will work around you.'},
+    {t:'Booking the call',b:'Lovely. I have put you down for {{time}}.\n\nYou will get a calendar invite with the link. If something comes up, just message me here and we will move it, no awkwardness.'},
+    {t:'Warm, not now',b:'Completely understood, {{name}}. Timing matters more than interest.\n\nI will leave it with you. If things shift in a few months, message me here and we will pick it up. In the meantime I hope the quarter treats you well.'}
+  ],
+  bfp:[
+    {t:'First message',b:'Hi {{name}}, I have been watching what you are putting out and the ideas are there. The reach is the part that looks like it is fighting you.\n\nI work with Best Friend Production. We handle content strategy, and we also shoot properly when something needs to be shot, music video or film.\n\nWho is looking after your content right now?'},
+    {t:'Follow up, no reply',b:'Hi {{name}}, no worries if this is not the moment.\n\nOne thing I will leave you with. Most accounts we pick up are not short of ideas, they are short of a shape to put them in. If you ever want a second pair of eyes on that, I am here.'},
+    {t:'They showed interest',b:'Great, {{name}}.\n\nBefore we talk, send me two or three pieces you are proud of and one that flopped. The flop usually tells us more.\n\nThe call is 30 minutes and we will walk through what your feed is actually saying versus what you want it to say.'},
+    {t:'Production enquiry',b:'Thanks {{name}}, that helps.\n\nSo I bring the right people to the call, a few quick things. Roughly what are we shooting, when do you need it live, and is there a budget range you are working inside?\n\nHonest answers are fine, even if the answer is that you are still working it out.'},
+    {t:'Booking the call',b:'Booked in for {{time}}.\n\nThe invite is on its way. Bring the links, we will look at them together on the call.'}
+  ],
+  bwb:[
+    {t:'First message',b:'Hi {{name}}, are you still looking for someone to walk your dog?\n\nI am with BWB. We walk dogs across LA, same walker each time so your dog knows who is coming through the door, and you get photos from the walk.\n\nWhereabouts are you, and what is your dog like?'},
+    {t:'Follow up, no reply',b:'Hi {{name}}, just checking back once.\n\nIf you have already sorted someone, that is genuinely fine, tell me and I will stop messaging. If you are still looking, I can tell you who covers your area and what the days look like.'},
+    {t:'They showed interest',b:'Happy to hear it, {{name}}.\n\nA few things so I can match the right walker. What is your dog’s name and age, how is she with other dogs, and which days were you thinking?\n\nIf she is nervous or reactive, say so plainly. It changes who we send, not whether we come.'},
+    {t:'Meet and greet',b:'Before the first proper walk we do a short meet and greet, free, about 15 minutes. The walker comes to you, meets your dog, and you get to decide if it feels right.\n\nDoes {{time}} work for that?'},
+    {t:'Booking the call',b:'Set for {{time}}.\n\nIf your dog is home at that time, even better. Easier to introduce them in their own space.'}
+  ]
+};
 
 const state={project:'saha_synergy',view:'today',clients:[],notifs:[],
   targets:[],session:null,targetDate:null,readonly:false};
@@ -349,7 +386,131 @@ function renderView(){
   if(state.view==='today')renderToday();
   else if(state.view==='clients')renderClients();
   else if(state.view==='meetings')renderMeetings();
+  else if(state.view==='messages')renderMessages();
+  else if(state.view==='invoice')renderInvoice();
   else renderInsight();
+}
+
+// ===========================================================
+//  MESSAGES  ·  drafts per business, plus the real saved templates
+// ===========================================================
+function renderMessages(){
+  const list=SUGGESTED[state.project]||[];
+  $('view').innerHTML=
+    '<div class="card">'+
+      '<h2>'+esc(PROJECT_LABELS[state.project])+'</h2>'+
+      '<div class="sub">'+esc(WHO[state.project]||'')+'</div>'+
+      '<div class="locked" style="margin-bottom:16px">Starting points, not rules. Change the wording to sound like you, '+
+        'and use {{name}} and {{time}} where the details go. Nothing here is saved until you press Save on one.</div>'+
+      list.map((s,i)=>
+        '<div class="sect" style="'+(i===0?'border-top:0;margin-top:0;padding-top:0':'')+'">'+
+          '<h3>'+esc(s.t)+'</h3>'+
+          '<textarea data-sug="'+i+'" style="min-height:150px">'+esc(s.b)+'</textarea>'+
+          '<div class="acts" style="margin-top:9px">'+
+            '<button class="btn btn-sm" data-copy="'+i+'">Copy</button>'+
+            '<button class="btn btn-sm btn-ghost" data-save="'+i+'">Save to my templates</button>'+
+            '<span class="savenote" data-note="'+i+'"></span>'+
+          '</div>'+
+        '</div>').join('')+
+    '</div>'+
+    '<div class="card"><h2>Saved templates</h2>'+
+      '<div class="sub">The reminder messages already in the system. These are the real ones.</div>'+
+      '<div id="savedTpl"><div class="empty">Loading…</div></div></div>';
+
+  $('view').onclick=async e=>{
+    const ci=e.target.getAttribute('data-copy'), si=e.target.getAttribute('data-save');
+    const idx=ci!==null?ci:si; if(idx===null)return;
+    const box=document.querySelector('textarea[data-sug="'+idx+'"]');
+    const note=document.querySelector('[data-note="'+idx+'"]');
+    if(ci!==null){
+      if(navigator.clipboard)await navigator.clipboard.writeText(box.value);
+      note.textContent='Copied';note.className='savenote ok';
+      return;
+    }
+    note.textContent='Saving…';note.className='savenote busy';
+    const row=await db.insert('effi_templates',
+      {project:state.project,kind:'outreach_'+idx,body:box.value},'template');
+    note.textContent=row?'Saved':'Not saved';note.className='savenote '+(row?'ok':'bad');
+    if(row)loadSavedTemplates();
+  };
+  loadSavedTemplates();
+}
+async function loadSavedTemplates(){
+  const rows=await db.rows('effi_templates',{});
+  const box=$('savedTpl'); if(!box)return;
+  if(!rows){box.innerHTML='<div class="empty">Could not load them.</div>';return}
+  const mine=rows.filter(r=>!r.project||r.project===state.project);
+  if(!mine.length){box.innerHTML='<div class="empty">Nothing saved yet.</div>';return}
+  box.innerHTML=mine.map(r=>
+    '<div class="sect"><h3>'+esc(r.kind)+(r.project?'':' · shared default')+'</h3>'+
+    '<pre class="report">'+esc(r.body||'')+'</pre></div>').join('');
+}
+
+// ===========================================================
+//  INVOICE  ·  agreed pay against what the real rows show
+// ===========================================================
+function fmtIDR(n){return PAY.currency+' '+Math.round(n).toLocaleString('en-US')}
+let invMonth=null;
+function renderInvoice(){
+  if(!invMonth)invMonth=todayISO().slice(0,7);
+  const [y,m]=invMonth.split('-').map(Number);
+  const inMonth=c=>{
+    if(!c.meeting_at)return false;
+    const d=new Date(c.meeting_at);
+    return d.getFullYear()===y&&d.getMonth()+1===m;
+  };
+  // counted from the real client rows, nothing modelled
+  const calls=state.clients.filter(c=>(c.status||'')==='booked'&&inMonth(c))
+    .sort((a,b)=>new Date(a.meeting_at)-new Date(b.meeting_at));
+  const hit=calls.length;
+  const pct=Math.min(100,Math.round(hit/PAY.kpiCalls*100));
+  const monthName=new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  $('view').innerHTML=
+    '<div class="card">'+
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:6px">'+
+        '<div><h2>Invoice · '+esc(monthName)+'</h2>'+
+        '<div class="sub" style="margin:0">Lia · '+esc(PROJECT_LABELS[state.project])+'</div></div>'+
+        '<div style="flex:1"></div>'+
+        '<input type="month" id="invMonth" value="'+esc(invMonth)+'" style="max-width:180px">'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="stats">'+
+      '<div class="stat"><div class="n">'+esc(fmtIDR(PAY.salary))+'</div><div class="l">MONTHLY SALARY</div><div class="hint">Agreed rate</div></div>'+
+      '<div class="stat"><div class="n">'+hit+' / '+PAY.kpiCalls+'</div><div class="l">BOOKED CALLS</div><div class="hint">'+pct+'% of target</div></div>'+
+      '<div class="stat"><div class="n">'+Math.max(0,PAY.kpiCalls-hit)+'</div><div class="l">STILL TO BOOK</div></div>'+
+    '</div>'+
+
+    '<div class="card"><h2>The calls behind that number</h2>'+
+      '<div class="sub">Every client marked booked with a meeting in '+esc(monthName)+', in '+esc(PROJECT_LABELS[state.project])+'.</div>'+
+      (calls.length?
+        '<div class="scroller"><table style="min-width:560px"><thead><tr><th>#</th><th>When</th><th>Name</th><th>Platform</th></tr></thead><tbody>'+
+        calls.map((c,i)=>'<tr data-id="'+esc(c.id)+'"><td class="disp" style="color:var(--purple-500)">'+(i+1)+'</td>'+
+          '<td>'+esc(fmtDateTime(c.meeting_at))+'</td>'+
+          '<td class="disp">'+esc(c.name||'(no name)')+'</td>'+
+          '<td class="mini">'+esc(PLATFORM_LABELS[c.source]||c.source||'-')+'</td></tr>').join('')+
+        '</tbody></table></div>'
+        :'<div class="empty">No calls booked in this month yet.</div>')+
+    '</div>'+
+
+    '<div class="card"><h2>Terms</h2>'+
+      '<div class="sub">Set by Monika on 20 July 2026.</div>'+
+      '<table><tbody>'+
+        '<tr><td>Salary</td><td><strong>'+esc(fmtIDR(PAY.salary))+' per month</strong></td></tr>'+
+        '<tr><td>Target</td><td><strong>'+PAY.kpiCalls+' booked calls per month</strong></td></tr>'+
+        '<tr><td>Counted from</td><td>Clients marked <em>Booked</em> whose meeting falls inside the month</td></tr>'+
+      '</tbody></table>'+
+      '<div class="locked" style="margin-top:14px">The target counts this project only. Switch tabs at the top to see another one. '+
+        'If the salary or the target is wrong, say so and it will be corrected here.</div>'+
+    '</div>';
+
+  $('invMonth').onchange=e=>{invMonth=e.target.value||invMonth;renderInvoice()};
+  const tb=document.querySelector('#view tbody');
+  if(tb)tb.onclick=e=>{
+    const tr=e.target.closest('tr'); if(!tr||!tr.dataset.id)return;
+    clientDetail(state.clients.find(c=>String(c.id)===String(tr.dataset.id)));
+  };
 }
 
 // ===========================================================

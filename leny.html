@@ -5778,51 +5778,10 @@ loadState();
 renderAll();
 
 // ─── NETLIFY SYNC ────────────────────────────────────────────────────────────
-(function(){
-  const API = '/api/sync';
-  let _lastTs = 0;
-
-  function applyCloudState(cloudData){
-    if(!cloudData || !cloudData.state) return;
-    const section = state.activeSection;
-    state = {...state, ...cloudData.state, activeSection: section};
-    _lastTs = cloudData.ts || 0;
-    try{ localStorage.setItem('leny_hub_v2', JSON.stringify(state)); }catch(e){}
-    renderAll();
-  }
-
-  async function syncFromCloud(){
-    try{
-      const r = await fetch(API);
-      if(!r.ok) return;
-      const d = await r.json();
-      if(d.ts && d.ts > _lastTs) applyCloudState(d);
-    }catch(e){}
-  }
-
-  async function pushToCloud(){
-    try{
-      await fetch(API, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({state, ts: Date.now()})
-      });
-    }catch(e){}
-  }
-
-  // Wrap saveState to also push to cloud
-  const _origSave = saveState;
-  saveState = function(){ _origSave(); pushToCloud(); };
-
-  // Pull on load
-  syncFromCloud();
-
-  // Poll every 15 seconds while page is visible
-  setInterval(()=>{ if(!document.hidden) syncFromCloud(); }, 15000);
-
-  // Sync immediately when user comes back to the app
-  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) syncFromCloud(); });
-})();
+// Removed. It called /api/sync, a Netlify function that does not exist on this
+// host, so it polled a 404 every 15 seconds. Worse, applyCloudState reassigned
+// state and wrote localStorage behind saveState's back, which would have fought
+// the Supabase sync that replaced it.
 
 // Prevent zoom on double tap
 let lastTouch = 0;
@@ -5963,9 +5922,46 @@ function renderDateHistory(dateStr){
 #lsync a{color:#d8c8bc;text-decoration:underline;cursor:pointer;flex:none}
 #lwait{position:fixed;inset:0;z-index:700;background:#3b0510;color:#f4f4f1;display:flex;align-items:center;
   justify-content:center;font-family:'Poppins',sans-serif;font-size:.9rem;text-align:center;padding:24px}
+
+/* pay slip, added on top of the hub rather than inside it */
+#payBtn{position:fixed;right:12px;bottom:52px;z-index:600;background:#8b6914;color:#fff;border:0;
+  border-radius:20px;padding:8px 16px;font-family:'Poppins',sans-serif;font-size:.72rem;font-weight:600;
+  cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none}
+#payWrap{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.45);display:none;
+  overflow-y:auto;padding:16px;font-family:'Poppins',sans-serif}
+#payWrap.on{display:block}
+#payCard{background:#fff;border-radius:20px;max-width:520px;margin:0 auto;overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,.25)}
+#payCard .hd{background:#3b0510;color:#f4f4f1;padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+#payCard .hd .t{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700}
+#payCard .hd .s{font-size:.72rem;opacity:.8;margin-top:2px}
+#payCard .hd button{background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:50%;
+  width:32px;height:32px;font-size:1.1rem;cursor:pointer}
+#payCard .bd{padding:18px 20px}
+#payCard label{display:block;margin-bottom:14px}
+#payCard label .l{display:block;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:#8a7378;margin-bottom:4px}
+#payCard input,#payCard select{width:100%;padding:10px 13px;border:1px solid #d4c9b0;border-radius:10px;
+  font-family:inherit;font-size:.92rem;background:#faf8f3}
+#payCard .tot{background:#faf8f3;border-radius:14px;padding:16px 18px;margin:4px 0 16px}
+#payCard .tot .big{font-family:'Playfair Display',serif;font-size:1.9rem;color:#3b0510;line-height:1.15}
+#payCard .tot .lil{font-size:.74rem;color:#8a7378;margin-top:3px}
+#payCard table{width:100%;border-collapse:collapse;font-size:.82rem}
+#payCard th{text-align:left;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#8b6914;
+  padding:7px 8px;border-bottom:2px solid #f0ebe0}
+#payCard td{padding:7px 8px;border-bottom:1px solid #f0ebe0}
+#payCard .none{text-align:center;color:#8a7378;padding:22px;font-size:.85rem}
+#payCard .warn{background:#fdf3e0;border-radius:12px;padding:12px 14px;font-size:.78rem;color:#7a5a1a;margin-bottom:14px}
 </style>
 <div id="lwait">Loading…</div>
 <div id="lsync"><span class="dot"></span><span id="lsyncTxt">Synced</span><a id="lsyncBack">Switch person</a></div>
+<button id="payBtn">💰 My pay</button>
+<div id="payWrap"><div id="payCard">
+  <div class="hd">
+    <div><div class="t">My pay</div><div class="s" id="paySub"></div></div>
+    <button id="payClose">×</button>
+  </div>
+  <div class="bd" id="payBody"></div>
+</div></div>
 <script>
 /* ---------------------------------------------------------------
    Leny's Hub, moved off Netlify and onto the shared workspace link.
@@ -5992,10 +5988,18 @@ function bootApp(){
     s.textContent=src.textContent;
     document.body.appendChild(s);
   });
+  // the hub declares `let state`, which lives in the global lexical scope and
+  // never becomes a property of window. A bridge script, injected after it,
+  // shares that scope and can hand the object out.
+  const bridge=document.createElement('script');
+  bridge.textContent='window.__lenyState=function(){return state};'+
+                     'window.__lenySave=function(){saveState()};';
+  document.body.appendChild(bridge);
   const orig=window.saveState;
   window.saveState=function(){const r=orig.apply(this,arguments);queuePush();return r};
   wait.style.display='none';
   bar.style.display='flex';
+  document.getElementById('payBtn').style.display='block';
 }
 
 let timer=null;
@@ -6027,6 +6031,74 @@ async function pullThenBoot(){
   if(data&&data.value!=null)status('Synced');
   else queuePush();
 }
+
+/* ---- pay slip -------------------------------------------------
+   Leny is paid by the hour. Her clock in and clock out already write
+   {date, timeIn, timeOut, duration} into state.workHours.entries, so
+   the hours are real and this only multiplies them by her rate. The
+   rate and the base salary are blank on purpose. Nobody has told me
+   what they are, and a guessed number on a pay slip is worse than an
+   empty box.
+---------------------------------------------------------------- */
+const money=n=>'Rp '+Math.round(n).toLocaleString('en-US');
+let payMonth=null;
+
+function payOpen(){
+  if(!payMonth){const d=new Date();payMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+  payDraw();
+  document.getElementById('payWrap').classList.add('on');
+}
+function payDraw(){
+  const st=(window.__lenyState&&window.__lenyState())||{};
+  const wh=st.workHours||{};
+  const entries=(wh.entries||[]).filter(e=>String(e.date||'').slice(0,7)===payMonth)
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const hours=entries.reduce((s,e)=>s+(Number(e.duration)||0),0);
+  const rate=Number(st.payRate)||0;
+  const base=Number(st.baseSalary)||0;
+  const earned=hours*rate;
+  const [yy,mm]=payMonth.split('-');
+  const monthName=new Date(+yy,+mm-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  document.getElementById('paySub').textContent=monthName;
+  document.getElementById('payBody').innerHTML=
+    (rate?'':'<div class="warn">Your hourly rate has not been filled in yet, so the total stays at zero. '+
+      'Ask Monika what it is and type it below. Your hours are already being counted either way.</div>')+
+    '<label><span class="l">Month</span><input type="month" id="payM" value="'+payMonth+'"></label>'+
+    '<div class="tot"><div class="big">'+money(earned+base)+'</div>'+
+      '<div class="lil">'+hours.toFixed(2)+' hours worked'+(rate?' × '+money(rate)+' per hour':'')+
+      (base?', plus '+money(base)+' base':'')+'</div></div>'+
+    '<label><span class="l">Rate per hour</span><input type="number" id="payRate" min="0" step="1000" '+
+      'value="'+(rate||'')+'" placeholder="Not set yet"></label>'+
+    '<label><span class="l">Base salary per month</span><input type="number" id="payBase" min="0" step="1000" '+
+      'value="'+(base||'')+'" placeholder="Not set yet"></label>'+
+    '<table><thead><tr><th>Day</th><th>In</th><th>Out</th><th>Hours</th><th>Pay</th></tr></thead><tbody>'+
+      (entries.length?entries.map(e=>
+        '<tr><td>'+String(e.date||'').slice(8)+'/'+String(e.date||'').slice(5,7)+'</td>'+
+        '<td>'+(e.timeIn||'-')+'</td><td>'+(e.timeOut||'-')+'</td>'+
+        '<td>'+(Number(e.duration)||0).toFixed(2)+'</td>'+
+        '<td>'+(rate?money((Number(e.duration)||0)*rate):'-')+'</td></tr>').join('')
+        :'<tr><td colspan="5" class="none">No hours logged in this month yet.</td></tr>')+
+    '</tbody></table>';
+
+  document.getElementById('payM').onchange=e=>{payMonth=e.target.value||payMonth;payDraw()};
+  const save=(field,el)=>{
+    el.onchange=()=>{
+      const cur=window.__lenyState&&window.__lenyState();
+      if(!cur)return;
+      cur[field]=el.value===''?null:Number(el.value);
+      if(window.__lenySave)window.__lenySave();
+      payDraw();
+    };
+  };
+  save('payRate',document.getElementById('payRate'));
+  save('baseSalary',document.getElementById('payBase'));
+}
+document.getElementById('payBtn').onclick=payOpen;
+document.getElementById('payClose').onclick=()=>document.getElementById('payWrap').classList.remove('on');
+document.getElementById('payWrap').onclick=e=>{
+  if(e.target.id==='payWrap')document.getElementById('payWrap').classList.remove('on');
+};
 
 document.getElementById('lsyncBack').onclick=async function(){
   status('Saving before switching…','busy');
