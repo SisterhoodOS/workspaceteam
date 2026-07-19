@@ -1,34 +1,38 @@
 # Workspace Monika
 
-Pencatat kerja dan penghasilan untuk Monika Purba, kontraktor independen di Saha Synergy Group Ltd.
+Work and earnings tracker for Monika Purba, independent contractor at Saha Synergy Group Ltd.
 
 **Live:** https://sisterhoodos.github.io/workspaceteam/
 
-## Isinya
+## Tabs
 
-- **Ringkasan Bulan** — total yang didapat bulan ini, dipisah antara yang sudah di-approve dan yang masih menunggu, plus pemantau jam admin per minggu terhadap batas 25 jam
-- **Catat Kerja** — form input, tarif terisi otomatis begitu jenis pekerjaan dipilih, ada kolom link hasil kerja dan status approval
-- **Approval** — daftar pekerjaan yang belum beres approval Sophia
-- **Daftar Tarif** — seluruh rate card dari kontrak
-- **Aturan Kerja** — syarat kontrak, contoh bulan penuh
-- **Data & Backup** — unduh cadangan JSON dan CSV
+- **Month Summary** — what you earn this month, split between approved and awaiting approval, plus an admin-hours-per-week check against the 25 hr cap
+- **Log Work** — entry form, rate fills in automatically from the work type, with fields for the link to the work and approval status
+- **Approvals** — everything still waiting on Sophia's sign-off
+- **Rate List** — the full rate card from the contract
+- **Working Terms** — contract terms and the example month
+- **Data & Backup** — JSON backup and CSV export
 
-## Dasar perhitungan
+## Basis of calculation
 
-Mengikuti dokumen yang ditanda tangani 16 Juli 2026, versi dengan jam admin 15-25 jam per minggu. Kurs referensi 18.000 IDR per USD.
+Follows the document signed 16 July 2026, the version with admin hours at 15 to 25 per week. Reference rate 18,000 IDR per USD.
 
 ## Data
 
-Tersimpan di `localStorage` browser, kunci `monika_workspace_v1`. Tidak dikirim ke server mana pun. Data hanya ada di komputer yang dipakai membuka halaman ini, jadi unduh cadangan secara berkala.
+Saved in browser `localStorage` under the key `monika_workspace_v1`. Never sent to a server. It only exists on the machine used to open the page, so download a backup regularly.
 
-## Cara mengubah
+## Layout
 
-Edit `index.html`, lalu:
+Responsive. On phones the tables restack as labelled cards rather than scrolling sideways. Verified with no horizontal overflow at 390px, 768px, and 1280px.
+
+## Making changes
+
+Edit `index.html`, then:
 
 ```
 git add -A
-git commit -m "pesan perubahan"
+git commit -m "your message"
 git push
 ```
 
-GitHub Pages menayangkan branch `main` dari root. Perubahan muncul kira-kira satu menit setelah push.
+GitHub Pages serves branch `main` from root. Changes appear about a minute after the push.

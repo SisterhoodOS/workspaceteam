@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -94,7 +94,62 @@ a.lnk{color:var(--maroon);font-size:12px}
 .foot{text-align:center;padding:30px 0;color:var(--muted);font-size:11px;border-top:1px solid var(--line);margin-top:40px}
 .foot em{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:13px}
 .catrow td{background:var(--beige);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--maroon);font-weight:600}
-@media(max-width:640px){header h1{font-size:28px}.hero .big{font-size:38px}.card{padding:20px 17px}}
+/* ---------- mobile ---------- */
+@media(max-width:760px){
+  .wrap{padding:0 14px}
+  header{padding:28px 0 22px}
+  header h1{font-size:26px;line-height:1.15}
+  header .sub{font-size:11.5px}
+  nav button{padding:13px 14px;font-size:11px;letter-spacing:1px}
+  main{padding:22px 0 60px}
+  .card{padding:19px 16px;border-radius:9px}
+  .card h2{font-size:21px}
+  .hero{padding:24px 20px}
+  .hero .big{font-size:36px}
+  .hero .split{gap:18px 22px;margin-top:19px;padding-top:18px}
+  .hero .split div{min-width:calc(50% - 11px)}
+  .grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat{padding:14px 15px}
+  .stat .v{font-size:22px}
+  .stat .n{font-size:10.5px}
+  .frow{grid-template-columns:1fr;gap:12px}
+  .btnrow{gap:8px}
+  button.btn{padding:12px 18px;flex:1 1 auto;min-width:140px}
+
+  /* tables become stacked cards, no side-scrolling */
+  .tblwrap{border:0;border-radius:0;overflow:visible}
+  table.rsp{font-size:13px}
+  table.rsp thead{display:none}
+  table.rsp tbody{display:block}
+  table.rsp tr{display:block;background:#fff;border:1px solid var(--line);border-radius:8px;
+    padding:6px 0;margin-bottom:10px}
+  table.rsp tr:hover{background:#fff}
+  table.rsp td{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    border:0;padding:6px 14px;text-align:right}
+  table.rsp td::before{content:attr(data-label);flex:0 0 42%;text-align:left;
+    font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.rsp td:empty{display:none}
+  table.rsp td.num,table.rsp td.rate{white-space:normal}
+  table.rsp td[data-label=""]::before{display:none}
+  table.rsp td[colspan]{justify-content:flex-start;text-align:left}
+  table.rsp td[colspan]::before{display:none}
+  /* long prose cells stack their label above the text instead of squeezing beside it */
+  table.rsp td[data-label="Conditions"],table.rsp td[data-label="Detail"],
+  table.rsp td[data-label="Guidance"],table.rsp td[data-label="Sign-off"],
+  table.rsp td[data-label="Work"],table.rsp td[data-label="Volume"]{
+    flex-direction:column;align-items:flex-start;text-align:left;gap:3px}
+  table.rsp td[data-label="Conditions"]::before,table.rsp td[data-label="Detail"]::before,
+  table.rsp td[data-label="Guidance"]::before,table.rsp td[data-label="Sign-off"]::before,
+  table.rsp td[data-label="Work"]::before,table.rsp td[data-label="Volume"]::before{flex:none}
+  table.rsp tr.catrow{background:var(--beige);border-color:var(--beige-dp);padding:0;margin-bottom:8px}
+  table.rsp tr.catrow td{padding:9px 14px;justify-content:flex-start}
+  table.rsp .empty{padding:30px 14px}
+}
+@media(max-width:400px){
+  .grid{grid-template-columns:1fr}
+  .hero .split div{min-width:100%}
+  .hero .big{font-size:31px}
+}
 @media print{nav,.noprint{display:none!important}body{background:#fff}}
 </style>
 </head>
@@ -103,18 +158,18 @@ a.lnk{color:var(--maroon);font-size:12px}
 <header>
   <div class="wrap">
     <div class="brand">Saha Synergy Group Ltd</div>
-    <h1>Workspace Monika Purba</h1>
-    <div class="sub">Rate List efektif 16 Juli 2026 · Independent Contractor · Invoice bulanan, dibayar tanggal 5 bulan berikutnya</div>
+    <h1>Workspace, Monika Purba</h1>
+    <div class="sub">Rate list effective 16 July 2026 · Independent contractor · One monthly invoice, paid by the 5th of the following month</div>
   </div>
 </header>
 
 <nav>
   <div class="wrap">
-    <button class="on" data-p="dash">Ringkasan Bulan</button>
-    <button data-p="log">Catat Kerja</button>
-    <button data-p="appr">Approval</button>
-    <button data-p="rates">Daftar Tarif</button>
-    <button data-p="rules">Aturan Kerja</button>
+    <button class="on" data-p="dash">Month Summary</button>
+    <button data-p="log">Log Work</button>
+    <button data-p="appr">Approvals</button>
+    <button data-p="rates">Rate List</button>
+    <button data-p="rules">Working Terms</button>
     <button data-p="data">Data &amp; Backup</button>
   </div>
 </nav>
@@ -124,44 +179,44 @@ a.lnk{color:var(--maroon);font-size:12px}
 <!-- ================= DASHBOARD ================= -->
 <section class="panel on" id="p-dash">
   <div class="frow noprint" style="max-width:430px">
-    <div class="f"><label>Bulan</label><select id="mSel"></select></div>
-    <div class="f"><label>Kurs (IDR per USD)</label><input type="number" id="fx" value="18000"></div>
+    <div class="f"><label>Month</label><select id="mSel"></select></div>
+    <div class="f"><label>Exchange rate (IDR per USD)</label><input type="number" id="fx" value="18000"></div>
   </div>
 
   <div class="hero">
-    <div class="lbl">Total yang kamu dapat bulan ini</div>
+    <div class="lbl">What you earn this month</div>
     <div class="big" id="hTotal">IDR 0</div>
     <div class="usd" id="hUsd">~$0</div>
     <div class="split">
-      <div><div class="k">Sudah di-approve</div><div class="v" id="hOk">IDR 0</div></div>
-      <div><div class="k">Menunggu approval</div><div class="v" id="hWait">IDR 0</div></div>
-      <div><div class="k">Jumlah entri</div><div class="v" id="hCount">0</div></div>
-      <div><div class="k">Jatuh tempo bayar</div><div class="v" id="hDue">-</div></div>
+      <div><div class="k">Approved</div><div class="v" id="hOk">IDR 0</div></div>
+      <div><div class="k">Awaiting approval</div><div class="v" id="hWait">IDR 0</div></div>
+      <div><div class="k">Entries</div><div class="v" id="hCount">0</div></div>
+      <div><div class="k">Payment due</div><div class="v" id="hDue">-</div></div>
     </div>
   </div>
 
   <div class="grid" id="statGrid"></div>
 
   <div class="card">
-    <div class="seclabel">Batas Kontrak</div>
-    <h2>Jam Admin Per Minggu</h2>
-    <p class="lead">Kisaran normal 15–25 jam per minggu. Di atas 25 jam perlu approval tertulis Sophia lebih dulu, kalau tidak jamnya bisa tidak dibayar.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Minggu</th><th class="num">Jam admin</th><th>Posisi</th><th class="num">Nilai (IDR)</th></tr></thead>
+    <div class="seclabel">Contract limit</div>
+    <h2>Admin Hours Per Week</h2>
+    <p class="lead">Normal range is 15 to 25 hours per week. Anything above 25 needs Sophia's written approval in advance, otherwise those hours may not be billable.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Week</th><th class="num">Admin hours</th><th>Standing</th><th class="num">Value (IDR)</th></tr></thead>
       <tbody id="weekBody"></tbody>
     </table></div>
   </div>
 
   <div class="card">
-    <div class="seclabel">Rincian</div>
-    <h2>Semua Pekerjaan Bulan Ini</h2>
-    <p class="lead">Setiap baris adalah uang. Kalau tidak ada di sini, tidak terhitung.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Klien</th><th class="num">Jml</th><th class="num">Tarif</th><th class="num">Total</th><th>Approval</th><th>Link</th></tr></thead>
+    <div class="seclabel">Breakdown</div>
+    <h2>Everything Logged This Month</h2>
+    <p class="lead">Every row is money. If it is not here, it does not get counted.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Date</th><th>Work</th><th>Client</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Total</th><th>Approval</th><th>Link</th></tr></thead>
       <tbody id="dashBody"></tbody>
     </table></div>
     <div class="btnrow noprint" style="margin-top:16px">
-      <button class="btn dark" onclick="window.print()">Cetak / Simpan PDF Invoice</button>
+      <button class="btn dark" onclick="window.print()">Print / Save Invoice PDF</button>
     </div>
   </div>
 </section>
@@ -170,49 +225,49 @@ a.lnk{color:var(--maroon);font-size:12px}
 <section class="panel" id="p-log">
   <div class="card">
     <div class="seclabel">Input</div>
-    <h2>Catat Pekerjaan</h2>
-    <p class="lead">Pilih jenis pekerjaan, tarifnya terisi otomatis. Isi setiap selesai kerja, jangan ditumpuk sampai akhir bulan.</p>
+    <h2>Log Work</h2>
+    <p class="lead">Pick the work type and the rate fills in for you. Log it the day you finish, not at the end of the month.</p>
 
     <div class="frow">
-      <div class="f"><label>Tanggal</label><input type="date" id="iDate"></div>
-      <div class="f"><label>Jenis pekerjaan</label><select id="iType"></select></div>
-      <div class="f"><label>Klien / untuk siapa</label><input id="iClient" placeholder="Sisterhood OS, Rania, Sheree..."></div>
+      <div class="f"><label>Date</label><input type="date" id="iDate"></div>
+      <div class="f"><label>Work type</label><select id="iType"></select></div>
+      <div class="f"><label>Client / who it is for</label><input id="iClient" placeholder="Sisterhood OS, Rania, Sheree..."></div>
     </div>
     <div class="frow">
-      <div class="f"><label id="lQty">Jumlah</label><input type="number" id="iQty" value="1" min="0" step="0.25"></div>
-      <div class="f"><label>Tarif per unit (IDR)</label><input type="number" id="iRate"></div>
-      <div class="f"><label>Status approval Sophia</label><select id="iAppr">
-        <option value="tidak">Tidak perlu approval</option>
-        <option value="menunggu">Menunggu approval</option>
-        <option value="approved">Sudah di-approve</option>
-        <option value="revisi">Diminta revisi</option>
+      <div class="f"><label id="lQty">Quantity</label><input type="number" id="iQty" value="1" min="0" step="0.25"></div>
+      <div class="f"><label>Rate per unit (IDR)</label><input type="number" id="iRate"></div>
+      <div class="f"><label>Sophia's approval</label><select id="iAppr">
+        <option value="tidak">No approval needed</option>
+        <option value="menunggu">Awaiting approval</option>
+        <option value="approved">Approved</option>
+        <option value="revisi">Revision requested</option>
       </select></div>
     </div>
     <div class="frow">
-      <div class="f"><label>Link hasil kerja (video / halaman)</label><input id="iLink" placeholder="https://..."></div>
-      <div class="f"><label>Status bayar</label><select id="iPaid">
-        <option value="belum">Belum ditagih</option>
-        <option value="ditagih">Sudah masuk invoice</option>
-        <option value="dibayar">Sudah dibayar</option>
+      <div class="f"><label>Link to the work (video / page)</label><input id="iLink" placeholder="https://..."></div>
+      <div class="f"><label>Payment status</label><select id="iPaid">
+        <option value="belum">Not invoiced yet</option>
+        <option value="ditagih">On the invoice</option>
+        <option value="dibayar">Paid</option>
       </select></div>
     </div>
-    <div class="frow"><div class="f" style="grid-column:1/-1"><label>Catatan</label><input id="iNote" placeholder="Batch 10 reel Juli, revisi ke-2, dsb"></div></div>
+    <div class="frow"><div class="f" style="grid-column:1/-1"><label>Notes</label><input id="iNote" placeholder="July batch of 10 reels, second revision, and so on"></div></div>
 
     <div id="hintBox" class="note" style="display:none"></div>
 
     <div class="btnrow">
-      <button class="btn" id="saveBtn">Simpan Entri</button>
-      <button class="btn ghost" id="cancelBtn" style="display:none">Batal Edit</button>
+      <button class="btn" id="saveBtn">Save Entry</button>
+      <button class="btn ghost" id="cancelBtn" style="display:none">Cancel Edit</button>
       <span id="liveCalc" class="serif" style="font-size:19px;color:var(--maroon)"></span>
     </div>
   </div>
 
   <div class="card">
-    <div class="seclabel">Riwayat</div>
-    <h2>Semua Entri Tersimpan</h2>
-    <p class="lead">Klik ubah untuk memperbaiki, hapus untuk membuang.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Klien</th><th class="num">Jml</th><th class="num">Total</th><th>Approval</th><th>Bayar</th><th>Link</th><th></th></tr></thead>
+    <div class="seclabel">History</div>
+    <h2>Every Entry Saved</h2>
+    <p class="lead">Click edit to correct something, delete to remove it.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Date</th><th>Work</th><th>Client</th><th class="num">Qty</th><th class="num">Total</th><th>Approval</th><th>Payment</th><th>Link</th><th></th></tr></thead>
       <tbody id="logBody"></tbody>
     </table></div>
   </div>
@@ -221,25 +276,25 @@ a.lnk{color:var(--maroon);font-size:12px}
 <!-- ================= APPROVAL ================= -->
 <section class="panel" id="p-appr">
   <div class="card">
-    <div class="seclabel">Perlu Perhatian</div>
-    <h2>Menunggu Approval Sophia</h2>
-    <p class="lead">Aturan kontrak: pekerjaan project (batch reel, website, production day) harus disetujui tertulis sebelum dikerjakan. Yang di bawah ini belum beres approval-nya.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Tanggal</th><th>Pekerjaan</th><th>Klien</th><th class="num">Nilai</th><th>Status</th><th>Link</th><th></th></tr></thead>
+    <div class="seclabel">Needs attention</div>
+    <h2>Awaiting Sophia's Approval</h2>
+    <p class="lead">Contract rule: project work (reel batches, builds, production days) is commissioned in writing before it begins. These are the items still unsettled.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Date</th><th>Work</th><th>Client</th><th class="num">Value</th><th>Status</th><th>Link</th><th></th></tr></thead>
       <tbody id="apprBody"></tbody>
     </table></div>
   </div>
 
   <div class="card">
-    <div class="seclabel">Referensi</div>
-    <h2>Siapa Approve Apa</h2>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Jenis pekerjaan</th><th>Arahan</th><th>Yang menyetujui</th></tr></thead>
+    <div class="seclabel">Reference</div>
+    <h2>Who Signs Off On What</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Work type</th><th>Guidance</th><th>Review and sign-off</th></tr></thead>
       <tbody>
-        <tr><td>Website &amp; portal, desain UI</td><td>Sophia mengarahkan dari awal sampai akhir</td><td>Sophia approve sebelum live</td></tr>
-        <tr><td>Meta ad video edit</td><td>Kerja sendiri, tanpa arahan</td><td>Sophia review tiap video sebelum launch</td></tr>
-        <tr><td>Batch reel</td><td>Kerja sendiri, berbasis template</td><td>Assistant Director. Sophia ikut untuk klien baru</td></tr>
-        <tr><td>Admin, rumah tangga, vendor</td><td>Kerja mandiri</td><td>Log mingguan terperinci</td></tr>
+        <tr><td data-label="Work type">Website and portal builds, UI design</td><td data-label="Guidance">Sophia guides throughout</td><td data-label="Sign-off">Sophia approves before anything goes live</td></tr>
+        <tr><td data-label="Work type">Meta ad video edits</td><td data-label="Guidance">Independent, no guidance</td><td data-label="Sign-off">Sophia reviews every ad video before launch</td></tr>
+        <tr><td data-label="Work type">Reel batches</td><td data-label="Guidance">Independent, template-based</td><td data-label="Sign-off">Assistant Director. Sophia joins for new clients</td></tr>
+        <tr><td data-label="Work type">Admin, household, vendor work</td><td data-label="Guidance">Self-directed</td><td data-label="Sign-off">Itemized weekly log</td></tr>
       </tbody>
     </table></div>
   </div>
@@ -248,40 +303,40 @@ a.lnk{color:var(--maroon);font-size:12px}
 <!-- ================= RATES ================= -->
 <section class="panel" id="p-rates">
   <div class="card">
-    <div class="seclabel">Kontrak</div>
-    <h2>Daftar Tarif Lengkap</h2>
-    <p class="lead">Persis seperti dokumen yang kamu tanda tangan 16 Juli 2026. Kurs referensi 18.000 IDR per USD, ditinjau tiap 3 bulan.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Pekerjaan</th><th class="num">Tarif (IDR)</th><th class="num">USD</th><th>Syarat</th></tr></thead>
+    <div class="seclabel">Contract</div>
+    <h2>Full Rate List</h2>
+    <p class="lead">Exactly as in the document signed 16 July 2026. Reference rate 18,000 IDR per USD, reviewed quarterly.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Work</th><th class="num">Rate (IDR)</th><th class="num">USD</th><th>Conditions</th></tr></thead>
       <tbody id="rateBody"></tbody>
     </table></div>
-    <div class="note"><strong>Perbandingan tarif reel:</strong> Tarif Ana (IDR 125.000–145.000 per video) untuk edit produksi custom yang makan waktu berjam-jam. Tarif reel Monika untuk perakitan berbasis template, hitungan menit per reel. Edit yang butuh skill produksi (multi-scene, motion graphics, ad creative kompleks) masuk ke Ana, bukan ke daftar ini.</div>
+    <div class="note"><strong>How the per-reel rate compares:</strong> Ana's rate (IDR 125,000 to 145,000 per video) covers custom production edits that take hours per video and seven years of production skill. Monika's per-reel rate covers template-based assembly at minutes per reel. Edits requiring production skill (multi-scene cuts, motion graphics, complex ad creatives) route to Ana and are not billable under this list.</div>
   </div>
 
   <div class="card">
     <div class="seclabel">Section 5</div>
-    <h2>Komisi Penjualan</h2>
-    <p class="lead">Bertingkat, dihitung dari closing yang kamu dapat dan tutup sendiri. Komisi ini tambahan, di luar semua tarif di atas.</p>
+    <h2>Sales Commission</h2>
+    <p class="lead">Tiered, on Saha Synergy sessions you independently source and close. Commission is additive to everything above.</p>
     <div class="grid">
-      <div class="stat"><div class="k">Foundation</div><div class="v">10%</div><div class="n">1–2 closing per bulan</div></div>
-      <div class="stat"><div class="k">Growth</div><div class="v">15%</div><div class="n">3–4 closing per bulan</div></div>
-      <div class="stat"><div class="k">Performance</div><div class="v">20%</div><div class="n">5 closing atau lebih</div></div>
+      <div class="stat"><div class="k">Foundation</div><div class="v">10%</div><div class="n">1 to 2 closes per month</div></div>
+      <div class="stat"><div class="k">Growth</div><div class="v">15%</div><div class="n">3 to 4 closes per month</div></div>
+      <div class="stat"><div class="k">Performance</div><div class="v">20%</div><div class="n">5 closes or more</div></div>
     </div>
-    <div class="note">Komisi SPC enrollment memakai tarif flat terpisah, disepakati sendiri. Catat komisi lewat jenis pekerjaan <strong>Komisi / lainnya</strong> di tab Catat Kerja, lalu isi nominalnya manual.</div>
+    <div class="note">SPC enrollments use a separate flat-rate commission, agreed separately. Log commission using the <strong>Commission / other</strong> work type on the Log Work tab, then type the amount in manually.</div>
   </div>
 
   <div class="card">
     <div class="seclabel">Section 6</div>
-    <h2>Backpay Sekali Bayar</h2>
-    <p class="lead">Pelunasan kontrak lama, Februari sampai Mei 2026. Dibayar satu kali.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Bulan</th><th class="num">Backpay (IDR)</th><th class="num">USD</th></tr></thead>
+    <h2>One-Time Backpay</h2>
+    <p class="lead">Closing out the original agreement, February through May 2026. Paid once.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Month</th><th class="num">Backpay (IDR)</th><th class="num">USD</th></tr></thead>
       <tbody>
-        <tr><td>Februari 2026</td><td class="num rate">1.300.000</td><td class="num">~$72</td></tr>
-        <tr><td>Maret 2026</td><td class="num rate">500.000</td><td class="num">~$28</td></tr>
-        <tr><td>April 2026</td><td class="num rate">1.075.000</td><td class="num">~$60</td></tr>
-        <tr><td>Mei 2026</td><td class="num rate">600.000</td><td class="num">~$33</td></tr>
-        <tr style="background:var(--beige)"><td><strong>Total</strong></td><td class="num rate">3.475.000</td><td class="num">~$193</td></tr>
+        <tr><td data-label="Month">February 2026</td><td class="num rate" data-label="Backpay (IDR)">1,300,000</td><td class="num" data-label="USD">~$72</td></tr>
+        <tr><td data-label="Month">March 2026</td><td class="num rate" data-label="Backpay (IDR)">500,000</td><td class="num" data-label="USD">~$28</td></tr>
+        <tr><td data-label="Month">April 2026</td><td class="num rate" data-label="Backpay (IDR)">1,075,000</td><td class="num" data-label="USD">~$60</td></tr>
+        <tr><td data-label="Month">May 2026</td><td class="num rate" data-label="Backpay (IDR)">600,000</td><td class="num" data-label="USD">~$33</td></tr>
+        <tr style="background:var(--beige)"><td data-label="Month"><strong>Total</strong></td><td class="num rate" data-label="Backpay (IDR)">3,475,000</td><td class="num" data-label="USD">~$193</td></tr>
       </tbody>
     </table></div>
   </div>
@@ -290,84 +345,84 @@ a.lnk{color:var(--maroon);font-size:12px}
 <!-- ================= RULES ================= -->
 <section class="panel" id="p-rules">
   <div class="card">
-    <div class="seclabel">Dasar Perhitungan</div>
-    <h2>Versi Yang Dipakai</h2>
+    <div class="seclabel">Basis of calculation</div>
+    <h2>Which Version This Follows</h2>
     <div class="note">
-      Workspace ini mengikuti <strong>dokumen yang kamu tanda tangan tanggal 16 Juli 2026</strong>, yaitu versi dengan jam admin <strong>15–25 jam per minggu</strong>.
+      This workspace follows the <strong>document signed on 16 July 2026</strong>, the version stating admin hours of <strong>15 to 25 hours per week</strong>.
       <br><br>
-      Artinya: kisaran normal admin kira-kira 65–108 jam per bulan, atau IDR 2.600.000–4.330.000 per bulan. Jam di atas 25 per minggu perlu approval tertulis Sophia lebih dulu.
+      That works out to roughly 65 to 108 hours a month, or IDR 2,600,000 to 4,330,000 per month in admin. Hours above 25 per week require Sophia's written approval in advance.
       <br><br>
-      Catatan kecil: ada versi PDF lain yang beredar dan menulis 15–25 jam per <em>bulan</em>. Versi itu <strong>tidak</strong> dipakai di sini. Semua tarif lainnya sama persis di kedua versi, jadi tidak ada yang berubah selain bagian jam admin ini.
+      Note: a separate PDF is in circulation stating 15 to 25 hours per <em>month</em>. That version is <strong>not</strong> used here. Every other rate is identical across both, so nothing else changes.
     </div>
   </div>
 
   <div class="card">
     <div class="seclabel">Section 8</div>
-    <h2>Aturan Umum</h2>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Hal</th><th>Aturan</th></tr></thead>
+    <h2>General Terms</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Term</th><th>Detail</th></tr></thead>
       <tbody>
-        <tr><td><strong>Catat jam</strong></td><td>Log mingguan terperinci, dibagikan ke Sophia. Setiap entri harus menjelaskan apa yang dikerjakan, bukan cuma jumlah jam. Jam yang tidak dicatat atau tidak dijelaskan tidak bisa ditagih.</td></tr>
-        <tr><td><strong>Approval</strong></td><td>Pekerjaan project (batch, website, production day) harus dipesan tertulis sebelum mulai dikerjakan.</td></tr>
-        <tr><td><strong>Pembayaran</strong></td><td>Satu invoice per bulan, gabungan jam kerja dan deliverable. Dibayar tanggal 5 bulan berikutnya.</td></tr>
-        <tr><td><strong>Tinjauan tarif</strong></td><td>Tiap 3 bulan, atau kalau kurs IDR terhadap USD bergerak lebih dari 10% selama 60 hari.</td></tr>
-        <tr><td><strong>Batas tugas</strong></td><td>Tidak mengelola orang. Kiriman dan postingan ke klien harus disetujui Sophia.</td></tr>
-        <tr><td><strong>Aturan scope build</strong></td><td>Build di-quote dan disepakati tertulis sebelum mulai. Copywriting, desain brand, dan strategi tidak termasuk. Waktu belajar tool baru sudah termasuk harga project, tidak ditagih per jam.</td></tr>
-        <tr><td><strong>Tanpa dobel tagih</strong></td><td>Production day tidak ditambah jam admin. Meeting di dalam jam admin tidak ditagih terpisah.</td></tr>
+        <tr><td data-label="Term"><strong>Hours tracking</strong></td><td data-label="Detail">Weekly itemized log shared with Sophia. Every entry states what was done, not just the hours. Untracked or undescribed hours are not billable.</td></tr>
+        <tr><td data-label="Term"><strong>Approval</strong></td><td data-label="Detail">Project work (batches, builds, production days) is commissioned in writing before it begins.</td></tr>
+        <tr><td data-label="Term"><strong>Payment</strong></td><td data-label="Detail">One monthly invoice combining hours and deliverables, paid by the 5th of the following month.</td></tr>
+        <tr><td data-label="Term"><strong>Rate review</strong></td><td data-label="Detail">Quarterly, or if IDR to USD moves more than 10% sustained over 60 days.</td></tr>
+        <tr><td data-label="Term"><strong>Scope</strong></td><td data-label="Detail">No people management. Client-facing sends and posts require Sophia's approval.</td></tr>
+        <tr><td data-label="Term"><strong>Build scope rule</strong></td><td data-label="Detail">A build is quoted and agreed in writing before work starts. Copywriting, brand design, and strategy are not included. Time spent learning a new platform or tool is included in the fixed project rate and is never billed as hours.</td></tr>
+        <tr><td data-label="Term"><strong>No double billing</strong></td><td data-label="Detail">Production days are not billed hourly on top. Meetings inside logged admin hours are not billed separately.</td></tr>
       </tbody>
     </table></div>
   </div>
 
   <div class="card">
     <div class="seclabel">Section 9</div>
-    <h2>Contoh Bulan Penuh</h2>
-    <p class="lead">Ilustrasi dari dokumen, memakai beban kerja Juli 2026.</p>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Pekerjaan</th><th>Volume</th><th>Tarif</th><th class="num">Total (IDR)</th></tr></thead>
+    <h2>Example Month, July 2026</h2>
+    <p class="lead">An illustration of how the rates come together in a full working month, using the actual July workload.</p>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Work</th><th>Volume</th><th>Rate</th><th class="num">Total (IDR)</th></tr></thead>
       <tbody>
-        <tr><td>Jam admin</td><td>15–25 jam/minggu (~65–108 jam)</td><td>IDR 40.000/jam</td><td class="num rate">2.600.000–4.330.000</td></tr>
-        <tr><td>Website (Rania)</td><td>1 landing page</td><td>IDR 600.000 flat</td><td class="num rate">600.000</td></tr>
-        <tr><td>Meta ad edit (Sheree)</td><td>10 edit</td><td>IDR 40.000/edit</td><td class="num rate">400.000</td></tr>
-        <tr><td>Carousel klien lama</td><td>1 template baru + 11 ulangan</td><td>40.000 + 10.000 each</td><td class="num rate">150.000</td></tr>
-        <tr><td>Production day</td><td>2–4 hari penuh</td><td>IDR 350.000/hari</td><td class="num rate">700.000–1.400.000</td></tr>
-        <tr><td>Meeting</td><td>4 (1 per minggu)</td><td>IDR 50.000 each</td><td class="num rate">200.000</td></tr>
-        <tr style="background:var(--beige)"><td colspan="3"><strong>Total bulan</strong></td><td class="num rate">4.650.000–7.080.000 (~$258–393)</td></tr>
+        <tr><td data-label="Work">Admin hours</td><td data-label="Volume">15 to 25 hrs/week (~65 to 108 hrs)</td><td data-label="Rate">IDR 40,000/hr</td><td class="num rate" data-label="Total (IDR)">2,600,000 to 4,330,000</td></tr>
+        <tr><td data-label="Work">Website build (Rania)</td><td data-label="Volume">1 landing page</td><td data-label="Rate">IDR 600,000 flat</td><td class="num rate" data-label="Total (IDR)">600,000</td></tr>
+        <tr><td data-label="Work">Meta ad edits (Sheree)</td><td data-label="Volume">10 edits</td><td data-label="Rate">IDR 40,000/edit</td><td class="num rate" data-label="Total (IDR)">400,000</td></tr>
+        <tr><td data-label="Work">Carousels, existing client</td><td data-label="Volume">1 new template + 11 repeats</td><td data-label="Rate">40,000 + 10,000 each</td><td class="num rate" data-label="Total (IDR)">150,000</td></tr>
+        <tr><td data-label="Work">Production days</td><td data-label="Volume">2 to 4 full days</td><td data-label="Rate">IDR 350,000/day</td><td class="num rate" data-label="Total (IDR)">700,000 to 1,400,000</td></tr>
+        <tr><td data-label="Work">Meetings</td><td data-label="Volume">4 (1 per week)</td><td data-label="Rate">IDR 50,000 each</td><td class="num rate" data-label="Total (IDR)">200,000</td></tr>
+        <tr style="background:var(--beige)"><td colspan="3"><strong>Month total</strong></td><td class="num rate" data-label="Month total">4,650,000 to 7,080,000 (~$258 to 393)</td></tr>
       </tbody>
     </table></div>
-    <div class="note">Cara membaca contoh ini: bulan penuh dengan satu build landing page, beberapa hari syuting, dan output konten yang stabil. Website itu item sekali jalan. Bulan biasa tanpa build kira-kira IDR 4.050.000–6.480.000. Kalau template carousel sudah ada, baris carousel jadi IDR 120.000.</div>
+    <div class="note">Reading this example: a full month with a landing page build, multiple shoot days, and steady content output. The website is a one-off project item. A regular month without a build runs roughly IDR 4,050,000 to 6,480,000. If the carousel template already exists, that line is IDR 120,000.</div>
   </div>
 </section>
 
 <!-- ================= DATA ================= -->
 <section class="panel" id="p-data">
   <div class="card">
-    <div class="seclabel">Penting</div>
-    <h2>Data Tersimpan Di Mana</h2>
-    <div class="note warn"><strong>Baca ini.</strong> Data kamu tersimpan di dalam browser komputer ini saja. Tidak terkirim ke internet, dan tidak ada orang lain yang bisa melihatnya, termasuk Sophia.<br><br>
-    Artinya: kalau kamu buka halaman ini dari HP atau komputer lain, datanya kosong. Kalau riwayat browser dibersihkan, datanya hilang.<br><br>
-    Jadi tiap akhir bulan, tekan tombol <strong>Unduh Cadangan</strong> di bawah dan simpan filenya. Itu pengaman kamu.</div>
+    <div class="seclabel">Important</div>
+    <h2>Where Your Data Lives</h2>
+    <div class="note warn"><strong>Read this one.</strong> Your data is saved inside the browser on this computer only. It is never sent to the internet, and nobody else can see it, Sophia included.<br><br>
+    That means: open this page on your phone or another computer and it will be empty. Clear your browser history and it is gone.<br><br>
+    So at the end of every month, press <strong>Download Backup</strong> below and keep the file. That is your safety net.</div>
     <div class="btnrow">
-      <button class="btn" id="expBtn">Unduh Cadangan</button>
-      <button class="btn ghost" id="impBtn">Muat Cadangan</button>
-      <button class="btn ghost" id="csvBtn">Unduh Excel (CSV)</button>
+      <button class="btn" id="expBtn">Download Backup</button>
+      <button class="btn ghost" id="impBtn">Restore Backup</button>
+      <button class="btn ghost" id="csvBtn">Download Excel (CSV)</button>
       <input type="file" id="impFile" accept="application/json" style="display:none">
     </div>
   </div>
 
   <div class="card">
-    <div class="seclabel">Total Sepanjang Waktu</div>
-    <h2>Rekap Semua Bulan</h2>
-    <div class="tblwrap"><table>
-      <thead><tr><th>Bulan</th><th class="num">Entri</th><th class="num">Total (IDR)</th><th class="num">USD</th><th>Status bayar</th></tr></thead>
+    <div class="seclabel">All time</div>
+    <h2>Every Month So Far</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Month</th><th class="num">Entries</th><th class="num">Total (IDR)</th><th class="num">USD</th><th>Payment</th></tr></thead>
       <tbody id="allBody"></tbody>
     </table></div>
   </div>
 
   <div class="card">
-    <div class="seclabel">Hati-hati</div>
-    <h2>Hapus Semua</h2>
-    <p class="lead">Menghapus seluruh catatan kerja. Tidak bisa dikembalikan. Unduh cadangan dulu sebelum menekan ini.</p>
-    <button class="btn ghost" id="wipeBtn">Hapus Semua Data</button>
+    <div class="seclabel">Careful</div>
+    <h2>Erase Everything</h2>
+    <p class="lead">Deletes every work record. It cannot be undone. Download a backup before you press this.</p>
+    <button class="btn ghost" id="wipeBtn">Erase All Data</button>
   </div>
 </section>
 
@@ -380,36 +435,36 @@ a.lnk{color:var(--maroon);font-size:12px}
 
 <script>
 const RATES=[
- {id:'admin',cat:'Admin',lbl:'Admin support (per jam)',rate:40000,unit:'jam',qtyLbl:'Jumlah jam',
-  cond:'Semua tugas admin dan EA. Dicatat per 15 menit. Kisaran normal 15-25 jam per minggu. Jam di atas 25 per minggu perlu approval tertulis Sophia lebih dulu.'},
- {id:'reel_tpl',cat:'Konten',lbl:'Reel dari template (per reel)',rate:10000,unit:'reel',qtyLbl:'Jumlah reel',
-  cond:'Perakitan cepat berbasis template, dikirim sebagai postingan harian. Dipesan dalam batch 10 reel (IDR 100.000 per batch). Direview Assistant Director sebelum batch berikutnya.'},
- {id:'reel_trial',cat:'Konten',lbl:'Reel klien baru, trial batch (per reel)',rate:15000,unit:'reel',qtyLbl:'Jumlah reel',
-  cond:'Batch pertama 10 reel untuk klien baru (IDR 150.000 per batch), mencakup setup dan template. Direview bersama Sophia.'},
- {id:'meta_ad',cat:'Konten',lbl:'Meta ad video edit (per edit)',rate:40000,unit:'edit',qtyLbl:'Jumlah edit',
-  cond:'Dihitung custom reel, bukan template reel. Dikerjakan mandiri tanpa arahan Sophia. Setiap video ad direview Sophia sebelum tayang.'},
- {id:'reel_custom',cat:'Konten',lbl:'Custom reel, edit sendiri (per reel)',rate:40000,unit:'reel',qtyLbl:'Jumlah reel',
-  cond:'Reel di luar alur batch yang butuh edit tersendiri, kira-kira satu jam kerja. Flat per reel berapa pun waktu yang terpakai.'},
- {id:'car_new',cat:'Konten',lbl:'Carousel, template baru',rate:40000,unit:'template',qtyLbl:'Jumlah template',
-  cond:'Mendesain template carousel baru di Canva, termasuk carousel pertama yang sudah jadi dan caption-nya.'},
- {id:'car_rep',cat:'Konten',lbl:'Carousel dari template lama',rate:10000,unit:'carousel',qtyLbl:'Jumlah carousel',
-  cond:'Mengulang template yang sudah disetujui dengan konten baru, caption termasuk. Turnaround cepat, tarif sama dengan reel.'},
- {id:'prod_full',cat:'Produksi',lbl:'Production day, sehari penuh',rate:350000,unit:'hari',qtyLbl:'Jumlah hari',
-  cond:'Sampai 10 jam di lokasi atau di set: setup, koordinasi, bantu syuting, ambil BTS. Tidak ditambah tagihan jam admin.'},
- {id:'prod_half',cat:'Produksi',lbl:'Production day, setengah hari',rate:200000,unit:'hari',qtyLbl:'Jumlah setengah hari',
-  cond:'Sampai 5 jam.'},
- {id:'meeting',cat:'Produksi',lbl:'Menghadiri meeting',rate:50000,unit:'meeting',qtyLbl:'Jumlah meeting',
-  cond:'Per meeting, sampai 90 menit, tatap muka atau video call, selama tidak berada di dalam jam admin yang sudah dicatat. Tidak boleh dobel tagih.'},
- {id:'web_land',cat:'Web',lbl:'Landing page satu halaman',rate:600000,unit:'project',qtyLbl:'Jumlah project',
-  cond:'Satu halaman di platform yang disepakati (Wix, Circle.so, atau sejenis), dari copy dan aset brand yang diberikan. Termasuk 3 putaran revisi.'},
- {id:'web_std',cat:'Web',lbl:'Website sampai 5 halaman',rate:1600000,unit:'project',qtyLbl:'Jumlah project',
-  cond:'Home ditambah sampai 4 halaman dalam, sudah dicek di HP, form dan link terpasang. Termasuk 3 putaran revisi.'},
- {id:'web_page',cat:'Web',lbl:'Halaman tambahan di atas 5',rate:120000,unit:'halaman',qtyLbl:'Jumlah halaman',
-  cond:'Per halaman, scope sama.'},
- {id:'web_upd',cat:'Web',lbl:'Update halaman yang sudah ada (per jam)',rate:40000,unit:'jam',qtyLbl:'Jumlah jam',
-  cond:'Edit kecil, penggantian, dan perawatan masuk jam admin, bukan tarif project.'},
- {id:'other',cat:'Lainnya',lbl:'Komisi / lainnya (isi nominal manual)',rate:0,unit:'item',qtyLbl:'Jumlah',
-  cond:'Untuk komisi penjualan, backpay, atau hal di luar daftar. Isi tarifnya manual, lalu jelaskan di catatan.'}
+ {id:'admin',cat:'Admin',lbl:'Admin support (per hour)',rate:40000,unit:'hrs',qtyLbl:'Number of hours',
+  cond:'All admin and EA tasks. Logged to the nearest 15 minutes. Normal range 15 to 25 hours per week. Hours above 25 per week require Sophia’s written approval in advance.'},
+ {id:'reel_tpl',cat:'Content',lbl:'Reel, template-based (per reel)',rate:10000,unit:'reels',qtyLbl:'Number of reels',
+  cond:'Quick template-based assembly, delivered as daily posts. Commissioned in trial batches of 10 (IDR 100,000 per batch). Reviewed with the Assistant Director before the next batch.'},
+ {id:'reel_trial',cat:'Content',lbl:'Reel, new client trial batch (per reel)',rate:15000,unit:'reels',qtyLbl:'Number of reels',
+  cond:'First batch of 10 for a new client (IDR 150,000 per batch), covering setup and templates. Reviewed together with Sophia.'},
+ {id:'meta_ad',cat:'Content',lbl:'Meta ad video edit (per edit)',rate:40000,unit:'edits',qtyLbl:'Number of edits',
+  cond:'Classified as a custom reel, not a template reel. Worked independently, no guidance from Sophia. Every ad video is reviewed by Sophia before it goes live.'},
+ {id:'reel_custom',cat:'Content',lbl:'Custom reel, individual edit (per reel)',rate:40000,unit:'reels',qtyLbl:'Number of reels',
+  cond:'A reel outside the batch workflow that needs its own edit, roughly an hour of work. Flat per reel regardless of time spent.'},
+ {id:'car_new',cat:'Content',lbl:'Carousel, new template creation',rate:40000,unit:'templates',qtyLbl:'Number of templates',
+  cond:'Designing a new carousel template in Canva, including the first finished carousel and caption.'},
+ {id:'car_rep',cat:'Content',lbl:'Carousel from existing template',rate:10000,unit:'carousels',qtyLbl:'Number of carousels',
+  cond:'Repeating an approved template with new content, caption included. Quick turnaround, same unit rate as reels.'},
+ {id:'prod_full',cat:'Production',lbl:'Production day, full day',rate:350000,unit:'days',qtyLbl:'Number of days',
+  cond:'Up to 10 hours on set or on location: setup, coordination, filming assistance, BTS capture. Not billed hourly on top.'},
+ {id:'prod_half',cat:'Production',lbl:'Production day, half day',rate:200000,unit:'days',qtyLbl:'Number of half days',
+  cond:'Up to 5 hours.'},
+ {id:'meeting',cat:'Production',lbl:'Meeting attendance',rate:50000,unit:'meetings',qtyLbl:'Number of meetings',
+  cond:'Per meeting, up to 90 minutes, in person or video call, when not inside logged admin hours. No double billing.'},
+ {id:'web_land',cat:'Web',lbl:'Single landing page',rate:600000,unit:'projects',qtyLbl:'Number of projects',
+  cond:'One page built in the agreed platform (Wix, Circle.so, or similar), from provided copy and brand assets. Includes three revision rounds.'},
+ {id:'web_std',cat:'Web',lbl:'Standard website, up to 5 pages',rate:1600000,unit:'projects',qtyLbl:'Number of projects',
+  cond:'Home plus up to 4 inner pages, mobile checked, forms and links wired. Includes three revision rounds.'},
+ {id:'web_page',cat:'Web',lbl:'Additional page beyond 5',rate:120000,unit:'pages',qtyLbl:'Number of pages',
+  cond:'Per page, same scope.'},
+ {id:'web_upd',cat:'Web',lbl:'Updates to existing pages (per hour)',rate:40000,unit:'hrs',qtyLbl:'Number of hours',
+  cond:'Small edits, swaps, and maintenance fall under admin hours, not project rates.'},
+ {id:'other',cat:'Other',lbl:'Commission / other (type amount manually)',rate:0,unit:'items',qtyLbl:'Quantity',
+  cond:'For sales commission, backpay, or anything outside the list. Type the rate in manually and explain it in the notes.'}
 ];
 const R={};RATES.forEach(r=>R[r.id]=r);
 const KEY='monika_workspace_v1';
@@ -417,11 +472,12 @@ let db=load(), editId=null;
 
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
-function fmt(n){return'IDR '+Math.round(n).toLocaleString('id-ID')}
+function fmt(n){return'IDR '+Math.round(n).toLocaleString('en-US')}
 function usd(n){return'~$'+Math.round(n/(+document.getElementById('fx').value||18000)).toLocaleString('en-US')}
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function mkey(d){return(d||'').slice(0,7)}
-function mname(k){const[y,m]=k.split('-');return['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][+m-1]+' '+y}
+const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function mname(k){const[y,m]=k.split('-');return MN[+m-1]+' '+y}
 function dueDate(k){let[y,m]=k.split('-').map(Number);m++;if(m>12){m=1;y++}return'5 '+mname(y+'-'+String(m).padStart(2,'0'))}
 function total(e){return(+e.qty||0)*(+e.rate||0)}
 
@@ -444,7 +500,7 @@ function syncType(){
   const r=R[iType.value];
   document.getElementById('iRate').value=r.rate;
   document.getElementById('lQty').textContent=r.qtyLbl;
-  const h=document.getElementById('hintBox');h.style.display='block';h.innerHTML='<strong>Syarat:</strong> '+esc(r.cond);
+  const h=document.getElementById('hintBox');h.style.display='block';h.innerHTML='<strong>Conditions:</strong> '+esc(r.cond);
   calc();
 }
 function calc(){
@@ -458,21 +514,21 @@ syncType();
 
 document.getElementById('saveBtn').onclick=()=>{
   const d=document.getElementById('iDate').value;
-  if(!d){alert('Isi tanggalnya dulu.');return}
+  if(!d){alert('Please fill in the date first.');return}
   const e={id:editId||('e'+Date.now()+Math.random().toString(36).slice(2,7)),
     date:d,type:iType.value,client:document.getElementById('iClient').value.trim(),
     qty:+document.getElementById('iQty').value||0,rate:+document.getElementById('iRate').value||0,
     appr:document.getElementById('iAppr').value,paid:document.getElementById('iPaid').value,
     link:document.getElementById('iLink').value.trim(),note:document.getElementById('iNote').value.trim()};
   if(editId){db=db.map(x=>x.id===editId?e:x);editId=null;
-    document.getElementById('saveBtn').textContent='Simpan Entri';
+    document.getElementById('saveBtn').textContent='Save Entry';
     document.getElementById('cancelBtn').style.display='none';}
   else db.push(e);
   ['iClient','iLink','iNote'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('iQty').value=1;calc();save();
 };
 document.getElementById('cancelBtn').onclick=()=>{
-  editId=null;document.getElementById('saveBtn').textContent='Simpan Entri';
+  editId=null;document.getElementById('saveBtn').textContent='Save Entry';
   document.getElementById('cancelBtn').style.display='none';
   ['iClient','iLink','iNote'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('iQty').value=1;syncType();
@@ -484,17 +540,17 @@ function edit(id){
   document.getElementById('iRate').value=e.rate;document.getElementById('iAppr').value=e.appr;
   document.getElementById('iPaid').value=e.paid;document.getElementById('iLink').value=e.link||'';
   document.getElementById('iNote').value=e.note||'';
-  document.getElementById('saveBtn').textContent='Simpan Perubahan';
+  document.getElementById('saveBtn').textContent='Save Changes';
   document.getElementById('cancelBtn').style.display='inline-block';
   document.querySelector('nav button[data-p="log"]').click();calc();
 }
-function del(id){if(confirm('Hapus entri ini?')){db=db.filter(x=>x.id!==id);save()}}
+function del(id){if(confirm('Delete this entry?')){db=db.filter(x=>x.id!==id);save()}}
 function setAppr(id,v){db=db.map(x=>x.id===id?{...x,appr:v}:x);save()}
 
-const APPR={tidak:['Tidak perlu','p-neu'],menunggu:['Menunggu Sophia','p-wait'],approved:['Approved','p-ok'],revisi:['Minta revisi','p-no']};
-const PAID={belum:['Belum ditagih','p-neu'],ditagih:['Masuk invoice','p-wait'],dibayar:['Sudah dibayar','p-ok']};
+const APPR={tidak:['Not needed','p-neu'],menunggu:['Awaiting Sophia','p-wait'],approved:['Approved','p-ok'],revisi:['Revision asked','p-no']};
+const PAID={belum:['Not invoiced','p-neu'],ditagih:['On invoice','p-wait'],dibayar:['Paid','p-ok']};
 function pill(m,v){const x=m[v]||['-','p-neu'];return'<span class="pill '+x[1]+'">'+x[0]+'</span>'}
-function linkCell(e){return e.link?'<a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">Lihat</a>':'<span style="color:var(--muted)">-</span>'}
+function linkCell(e){return e.link?'<a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">View</a>':'<span style="color:var(--muted)">-</span>'}
 
 // ---- render
 function render(){
@@ -517,15 +573,15 @@ function render(){
   document.getElementById('hCount').textContent=rows.length;
   document.getElementById('hDue').textContent=dueDate(mk);
 
-  const cats={};rows.forEach(e=>{const c=R[e.type]?R[e.type].cat:'Lainnya';cats[c]=(cats[c]||0)+total(e)});
+  const cats={};rows.forEach(e=>{const c=R[e.type]?R[e.type].cat:'Other';cats[c]=(cats[c]||0)+total(e)});
   const hrs=rows.filter(e=>e.type==='admin').reduce((s,e)=>s+(+e.qty||0),0);
   const reels=rows.filter(e=>['reel_tpl','reel_trial','reel_custom','meta_ad'].includes(e.type)).reduce((s,e)=>s+(+e.qty||0),0);
-  let g='<div class="stat"><div class="k">Jam admin tercatat</div><div class="v">'+hrs+' jam</div><div class="n">'+fmt(hrs*40000)+' · kisaran normal 65-108 jam/bulan</div></div>'+
-        '<div class="stat"><div class="k">Total video dibuat</div><div class="v">'+reels+'</div><div class="n">reel, edit, ad video</div></div>';
+  let g='<div class="stat"><div class="k">Admin hours logged</div><div class="v">'+hrs+' hrs</div><div class="n">'+fmt(hrs*40000)+' · normal range 65 to 108 hrs/month</div></div>'+
+        '<div class="stat"><div class="k">Videos produced</div><div class="v">'+reels+'</div><div class="n">reels, edits, ad videos</div></div>';
   Object.keys(cats).sort().forEach(c=>{g+='<div class="stat"><div class="k">'+c+'</div><div class="v">'+fmt(cats[c]).replace('IDR ','')+'</div><div class="n">'+usd(cats[c])+'</div></div>'});
   document.getElementById('statGrid').innerHTML=g;
 
-  // jam admin per minggu, batas 25 jam per minggu sesuai dokumen yang ditanda tangani
+  // admin hours per week, 25 hr/week cap from the signed document
   const wk={};
   rows.filter(e=>e.type==='admin'||e.type==='web_upd').forEach(e=>{
     const d=new Date(e.date+'T00:00:00');if(isNaN(d))return;
@@ -536,45 +592,45 @@ function render(){
   const wks=Object.keys(wk).sort();
   document.getElementById('weekBody').innerHTML=wks.length?wks.map(k=>{
     const h=wk[k],mon=new Date(k+'T00:00:00'),sun=new Date(mon);sun.setDate(mon.getDate()+6);
-    const rng=mon.getDate()+'/'+(mon.getMonth()+1)+' sampai '+sun.getDate()+'/'+(sun.getMonth()+1);
-    const p=h>25?'<span class="pill p-no">Lewat 25 jam, perlu approval</span>'
-      :h>=15?'<span class="pill p-ok">Dalam kisaran normal</span>'
-      :'<span class="pill p-wait">Di bawah kisaran</span>';
-    return '<tr><td>'+rng+'</td><td class="num">'+h+' jam</td><td>'+p+'</td><td class="num rate">'+(h*40000).toLocaleString('id-ID')+'</td></tr>';
-  }).join(''):'<tr><td colspan="4"><div class="empty"><span class="serif">Belum ada jam admin</span>Catat jam admin di tab Catat Kerja, nanti muncul di sini per minggu.</div></td></tr>';
+    const rng=MN[mon.getMonth()].slice(0,3)+' '+mon.getDate()+' to '+MN[sun.getMonth()].slice(0,3)+' '+sun.getDate();
+    const p=h>25?'<span class="pill p-no">Over 25 hrs, needs approval</span>'
+      :h>=15?'<span class="pill p-ok">Within normal range</span>'
+      :'<span class="pill p-wait">Below normal range</span>';
+    return '<tr><td data-label="Week">'+rng+'</td><td class="num" data-label="Admin hours">'+h+' hrs</td><td data-label="Standing">'+p+'</td><td class="num rate" data-label="Value (IDR)">'+(h*40000).toLocaleString('en-US')+'</td></tr>';
+  }).join(''):'<tr><td colspan="4"><div class="empty"><span class="serif">No admin hours yet</span>Log admin hours on the Log Work tab and they will appear here week by week.</div></td></tr>';
 
-  const emptyRow=n=>'<tr><td colspan="'+n+'"><div class="empty"><span class="serif">Belum ada catatan</span>Buka tab Catat Kerja untuk menambah pekerjaan pertama bulan ini.</div></td></tr>';
+  const emptyRow=n=>'<tr><td colspan="'+n+'"><div class="empty"><span class="serif">Nothing logged yet</span>Open the Log Work tab to add your first entry for this month.</div></td></tr>';
   document.getElementById('dashBody').innerHTML=rows.length?rows.map(e=>{
     const r=R[e.type]||{lbl:e.type,unit:''};
-    return '<tr><td>'+e.date.slice(8)+'/'+e.date.slice(5,7)+'</td><td>'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
-      '</td><td>'+esc(e.client||'-')+'</td><td class="num">'+e.qty+' '+esc(r.unit)+'</td><td class="num">'+(+e.rate).toLocaleString('id-ID')+
-      '</td><td class="num rate">'+total(e).toLocaleString('id-ID')+'</td><td>'+pill(APPR,e.appr)+'</td><td>'+linkCell(e)+'</td></tr>'}).join('')
-    +'<tr style="background:var(--beige)"><td colspan="5"><strong>Total '+mname(mk)+'</strong></td><td class="num rate">'+sum.toLocaleString('id-ID')+'</td><td colspan="2">'+usd(sum)+'</td></tr>'
+    return '<tr><td data-label="Date">'+e.date.slice(8)+'/'+e.date.slice(5,7)+'</td><td data-label="Work">'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
+      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num" data-label="Qty">'+e.qty+' '+esc(r.unit)+'</td><td class="num" data-label="Rate">'+(+e.rate).toLocaleString('en-US')+
+      '</td><td class="num rate" data-label="Total">'+total(e).toLocaleString('en-US')+'</td><td data-label="Approval">'+pill(APPR,e.appr)+'</td><td data-label="Link">'+linkCell(e)+'</td></tr>'}).join('')
+    +'<tr style="background:var(--beige)"><td colspan="5"><strong>Total for '+mname(mk)+'</strong></td><td class="num rate" data-label="Total">'+sum.toLocaleString('en-US')+'</td><td colspan="2">'+usd(sum)+'</td></tr>'
     :emptyRow(8);
 
   const all=[...db].sort((a,b)=>b.date.localeCompare(a.date));
   document.getElementById('logBody').innerHTML=all.length?all.map(e=>{
     const r=R[e.type]||{lbl:e.type,unit:''};
-    return '<tr><td>'+esc(e.date)+'</td><td>'+esc(r.lbl)+'</td><td>'+esc(e.client||'-')+'</td><td class="num">'+e.qty+'</td>'+
-      '<td class="num rate">'+total(e).toLocaleString('id-ID')+'</td><td>'+pill(APPR,e.appr)+'</td><td>'+pill(PAID,e.paid)+'</td><td>'+linkCell(e)+
-      '</td><td class="noprint"><button class="mini" onclick="edit(\''+e.id+'\')">ubah</button><button class="mini" onclick="del(\''+e.id+'\')">hapus</button></td></tr>'}).join(''):emptyRow(9);
+    return '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Work">'+esc(r.lbl)+'</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num" data-label="Qty">'+e.qty+'</td>'+
+      '<td class="num rate" data-label="Total">'+total(e).toLocaleString('en-US')+'</td><td data-label="Approval">'+pill(APPR,e.appr)+'</td><td data-label="Payment">'+pill(PAID,e.paid)+'</td><td data-label="Link">'+linkCell(e)+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="edit(\''+e.id+'\')">edit</button><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>'}).join(''):emptyRow(9);
 
   const pend=db.filter(e=>e.appr==='menunggu'||e.appr==='revisi').sort((a,b)=>a.date.localeCompare(b.date));
   document.getElementById('apprBody').innerHTML=pend.length?pend.map(e=>{
     const r=R[e.type]||{lbl:e.type};
-    return '<tr><td>'+esc(e.date)+'</td><td>'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
-      '</td><td>'+esc(e.client||'-')+'</td><td class="num rate">'+total(e).toLocaleString('id-ID')+'</td><td>'+pill(APPR,e.appr)+'</td><td>'+linkCell(e)+
-      '</td><td class="noprint"><button class="mini" onclick="setAppr(\''+e.id+'\',\'approved\')">tandai approved</button></td></tr>'}).join('')
-    :'<tr><td colspan="7"><div class="empty"><span class="serif">Semua beres</span>Tidak ada yang menunggu approval Sophia.</div></td></tr>';
+    return '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Work">'+esc(r.lbl)+(e.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(e.note)+'</div>':'')+
+      '</td><td data-label="Client">'+esc(e.client||'-')+'</td><td class="num rate" data-label="Value">'+total(e).toLocaleString('en-US')+'</td><td data-label="Status">'+pill(APPR,e.appr)+'</td><td data-label="Link">'+linkCell(e)+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="setAppr(\''+e.id+'\',\'approved\')">mark approved</button></td></tr>'}).join('')
+    :'<tr><td colspan="7"><div class="empty"><span class="serif">All clear</span>Nothing is waiting on Sophia right now.</div></td></tr>';
 
   const byM={};db.forEach(e=>{const k=mkey(e.date);(byM[k]=byM[k]||[]).push(e)});
   const ks=Object.keys(byM).sort().reverse();
   document.getElementById('allBody').innerHTML=ks.length?ks.map(k=>{
     const t=byM[k].reduce((s,e)=>s+total(e),0);
-    const paid=byM[k].every(e=>e.paid==='dibayar')?'<span class="pill p-ok">Lunas</span>':
-      byM[k].some(e=>e.paid==='dibayar')?'<span class="pill p-wait">Sebagian</span>':'<span class="pill p-neu">Belum</span>';
-    return '<tr><td>'+mname(k)+'</td><td class="num">'+byM[k].length+'</td><td class="num rate">'+t.toLocaleString('id-ID')+'</td><td class="num">'+usd(t)+'</td><td>'+paid+'</td></tr>'}).join('')
-    :'<tr><td colspan="5"><div class="empty"><span class="serif">Belum ada data</span>Rekap muncul setelah kamu mencatat pekerjaan.</div></td></tr>';
+    const paid=byM[k].every(e=>e.paid==='dibayar')?'<span class="pill p-ok">Paid in full</span>':
+      byM[k].some(e=>e.paid==='dibayar')?'<span class="pill p-wait">Partly paid</span>':'<span class="pill p-neu">Unpaid</span>';
+    return '<tr><td data-label="Month">'+mname(k)+'</td><td class="num" data-label="Entries">'+byM[k].length+'</td><td class="num rate" data-label="Total (IDR)">'+t.toLocaleString('en-US')+'</td><td class="num" data-label="USD">'+usd(t)+'</td><td data-label="Payment">'+paid+'</td></tr>'}).join('')
+    :'<tr><td colspan="5"><div class="empty"><span class="serif">Nothing here yet</span>This summary fills in once you start logging work.</div></td></tr>';
 }
 document.getElementById('mSel').onchange=render;
 document.getElementById('fx').oninput=render;
@@ -583,26 +639,26 @@ document.getElementById('fx').oninput=render;
 document.getElementById('rateBody').innerHTML=(()=>{let out='',c='';
   RATES.filter(r=>r.id!=='other').forEach(r=>{
     if(r.cat!==c){out+='<tr class="catrow"><td colspan="4">'+r.cat+'</td></tr>';c=r.cat}
-    out+='<tr><td><strong>'+esc(r.lbl)+'</strong></td><td class="num rate">'+r.rate.toLocaleString('id-ID')+
-      '</td><td class="num" style="color:var(--muted)">~$'+(r.rate/18000).toFixed(2)+'</td><td style="color:#5C5049;font-size:12.5px">'+esc(r.cond)+'</td></tr>'});
+    out+='<tr><td data-label="Work"><strong>'+esc(r.lbl)+'</strong></td><td class="num rate" data-label="Rate (IDR)">'+r.rate.toLocaleString('en-US')+
+      '</td><td class="num" style="color:var(--muted)" data-label="USD">~$'+(r.rate/18000).toFixed(2)+'</td><td style="color:#5C5049;font-size:12.5px" data-label="Conditions">'+esc(r.cond)+'</td></tr>'});
   return out})();
 
 // ---- data tools
 document.getElementById('expBtn').onclick=()=>{
   const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');
-  a.href=URL.createObjectURL(b);a.download='cadangan-workspace-monika.json';a.click();
+  a.href=URL.createObjectURL(b);a.download='workspace-monika-backup.json';a.click();
 };
 document.getElementById('impBtn').onclick=()=>document.getElementById('impFile').click();
 document.getElementById('impFile').onchange=ev=>{
   const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
   rd.onload=()=>{try{const d=JSON.parse(rd.result);
     if(!Array.isArray(d))throw 0;
-    if(confirm('Muat '+d.length+' entri? Data yang sekarang akan diganti.')){db=d;save()}
-  }catch(e){alert('File tidak terbaca. Pastikan file cadangan yang benar.')}};
+    if(confirm('Restore '+d.length+' entries? This replaces what is saved now.')){db=d;save()}
+  }catch(e){alert('That file could not be read. Make sure it is the backup file.')}};
   rd.readAsText(f);ev.target.value='';
 };
 document.getElementById('csvBtn').onclick=()=>{
-  const h=['Tanggal','Pekerjaan','Klien','Jumlah','Tarif','Total','Approval','Bayar','Link','Catatan'];
+  const h=['Date','Work','Client','Quantity','Rate','Total','Approval','Payment','Link','Notes'];
   const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
   const lines=[h.join(',')].concat([...db].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>{
     const r=R[e.type]||{lbl:e.type};
@@ -611,7 +667,7 @@ document.getElementById('csvBtn').onclick=()=>{
   a.href=URL.createObjectURL(b);a.download='workspace-monika.csv';a.click();
 };
 document.getElementById('wipeBtn').onclick=()=>{
-  if(confirm('Hapus SEMUA catatan kerja? Tidak bisa dikembalikan.')&&confirm('Yakin? Sudah unduh cadangan?')){db=[];save()}
+  if(confirm('Erase ALL work records? This cannot be undone.')&&confirm('Are you sure? Have you downloaded a backup?')){db=[];save()}
 };
 
 render();
