@@ -180,6 +180,20 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
 #gate .msg.ok{color:var(--olive)}
 #gate .foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.5}
 
+#picker{position:fixed;inset:0;z-index:890;background:linear-gradient(135deg,var(--choc) 0%,#4A121F 55%,var(--burg) 100%);
+  display:none;align-items:center;justify-content:center;padding:24px}
+#picker.show{display:flex}
+#picker .card{background:var(--cream);border-radius:4px;padding:34px 30px;width:100%;max-width:430px;
+  box-shadow:0 18px 50px rgba(0,0,0,.34)}
+#picker .brand{color:var(--olive);font-size:10px;letter-spacing:3.5px;text-transform:uppercase;margin-bottom:10px}
+#picker h2{font-size:27px;color:var(--burg);margin-bottom:6px}
+#picker p.lede{color:var(--muted);font-size:12.5px;margin-bottom:22px}
+#picker .who{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid var(--line);
+  border-radius:3px;padding:15px 17px;margin-bottom:11px;cursor:pointer;font-family:inherit;transition:.18s}
+#picker .who:hover{border-color:var(--olive);background:var(--olive-pale)}
+#picker .who .nm{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;color:var(--burg);letter-spacing:.4px}
+#picker .who .sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+
 #syncbar{position:fixed;right:14px;bottom:14px;z-index:400;background:var(--choc);color:var(--ivory);
   border-radius:20px;padding:8px 15px;font-size:11.5px;letter-spacing:.4px;box-shadow:0 6px 20px rgba(0,0,0,.22);
   display:flex;align-items:center;gap:9px;max-width:calc(100vw - 28px)}
@@ -206,7 +220,18 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
   </div>
 </div>
 
-<div id="syncbar" style="display:none"><span class="dot"></span><span id="syncTxt">Synced</span><a id="syncOut">Sign out</a></div>
+<div id="picker">
+  <div class="card">
+    <div class="brand">Saha Synergy Group Ltd</div>
+    <h2>Whose workspace?</h2>
+    <p class="lede">Each person keeps their own records. Pick yours.</p>
+    <button class="who" data-who="MONIKA"><div class="nm">Monika</div><div class="sub">Head of Social Media &amp; Operations</div></button>
+    <button class="who" data-who="LIA"><div class="nm">Lia</div><div class="sub">Team member</div></button>
+    <button class="who" data-who="LENY"><div class="nm">Leny</div><div class="sub">Team member</div></button>
+  </div>
+</div>
+
+<div id="syncbar" style="display:none"><span class="dot"></span><span id="syncTxt">Synced</span><a id="syncWho">Switch person</a><a id="syncOut">Sign out</a></div>
 
 <header>
   <div class="wrap">
@@ -1577,11 +1602,19 @@ const ACCOUNT_EMAIL='purbamonika610@gmail.com';
 const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
             'monika_finance_v1','monika_commit_v1','monika_seeded_v1'];
 
+// everyone shares one login, so each person's records are kept apart by a
+// prefix on the cloud key. Monika's rows predate the folders and stay
+// unprefixed, which means her existing records need no migration.
+const PROFILES={MONIKA:'Monika Purba',LIA:'Lia',LENY:'Leny'};
+const PROFKEY='ws_profile';
+function cloudKey(k){return profile==='MONIKA'?k:profile.toLowerCase()+'__'+k}
+
 const sb=supabase.createClient(SB_URL,SB_KEY);
-const gate=document.getElementById('gate'), bar=document.getElementById('syncbar'),
+const gate=document.getElementById('gate'), pick=document.getElementById('picker'),
+      bar=document.getElementById('syncbar'),
       txt=document.getElementById('syncTxt'), msg=document.getElementById('gMsg'),
       btn=document.getElementById('gBtn');
-let uid=null, booted=false, offline=false;
+let uid=null, booted=false, offline=false, profile=null;
 
 function readLocal(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
 function status(s,cls){txt.textContent=s;bar.className=cls||''}
@@ -1595,7 +1628,10 @@ function bootApp(){
   document.body.appendChild(s);
   wrapWrites();
   gate.classList.add('hide');
+  pick.classList.remove('show');
   bar.style.display='flex';
+  const h=document.querySelector('header h1');
+  if(h)h.textContent='Workspace, '+PROFILES[profile];
 }
 
 // ---- every save also goes up, debounced per key
@@ -1611,7 +1647,7 @@ async function pushKey(k){
   if(raw==null)return;
   let val;try{val=JSON.parse(raw)}catch(e){return}
   const {error}=await sb.from('workspace_state')
-    .upsert({user_id:uid,key:k,value:val,updated_at:new Date().toISOString()},{onConflict:'user_id,key'});
+    .upsert({user_id:uid,key:cloudKey(k),value:val,updated_at:new Date().toISOString()},{onConflict:'user_id,key'});
   if(error){offline=true;status('Not saved to cloud','off');console.error(error)}
   else status('Saved to cloud');
 }
@@ -1622,10 +1658,40 @@ function wrapWrites(){
   if(localStorage.getItem('monika_seeded_v1'))queuePush('monika_seeded_v1');
 }
 
+// ---- choosing a person
+function showPicker(){gate.classList.add('hide');pick.classList.add('show')}
+function chooseProfile(p){
+  const last=localStorage.getItem(PROFKEY);
+  // leaving someone else's folder: clear their records off this device first,
+  // they are already in the cloud under their own keys
+  if(last&&last!==p)KEYS.forEach(k=>localStorage.removeItem(k));
+  profile=p;
+  localStorage.setItem(PROFKEY,p);
+  pullThenBoot();
+}
+Array.prototype.forEach.call(document.querySelectorAll('#picker .who'),b=>{
+  b.onclick=()=>chooseProfile(b.getAttribute('data-who'));
+});
+document.getElementById('syncWho').onclick=async function(){
+  // switching wipes this folder off the device, so every pending save has to
+  // land in the cloud first. If any of them fails, stay put.
+  status('Saving before switching…','busy');
+  const pending=Object.keys(timers);
+  pending.forEach(k=>clearTimeout(timers[k]));
+  for(const k of pending)await pushKey(k);
+  if(offline){
+    alert('Your latest changes could not be saved to the cloud, so switching now would lose them.\n\nCheck your connection and try again.');
+    return;
+  }
+  localStorage.setItem(PROFKEY,'');
+  location.reload();
+};
+
 // ---- pull, then boot
 async function pullThenBoot(){
   status('Loading your records…','busy');
-  const {data,error}=await sb.from('workspace_state').select('key,value');
+  const want=KEYS.map(cloudKey);
+  const {data,error}=await sb.from('workspace_state').select('key,value').in('key',want);
   if(error){
     offline=true;
     console.error(error);
@@ -1633,7 +1699,10 @@ async function pullThenBoot(){
     status('Offline. Saving on this device only.','off');
     return;
   }
-  const remote=new Map((data||[]).map(r=>[r.key,r.value]));
+  // cloud keys come back prefixed, fold them back to the names the app reads
+  const byLocal=new Map();
+  KEYS.forEach(k=>byLocal.set(cloudKey(k),k));
+  const remote=new Map((data||[]).filter(r=>byLocal.has(r.key)).map(r=>[byLocal.get(r.key),r.value]));
   const missing=[];
   // safety: never silently replace a fuller local list with a thinner cloud one.
   // that would happen if a blank device synced first and overwrote the real records.
@@ -1655,6 +1724,13 @@ async function pullThenBoot(){
     if(remote.has(k))localStorage.setItem(k,JSON.stringify(remote.get(k)));
     else if(localStorage.getItem(k)!=null)missing.push(k);
   });
+  // the app seeds Monika's own petty cash and commitments when those keys are
+  // absent. Start the other folders empty instead of handing them her figures.
+  if(profile!=='MONIKA'){
+    ['monika_finance_v1','monika_commit_v1'].forEach(k=>{
+      if(localStorage.getItem(k)==null)localStorage.setItem(k,'[]');
+    });
+  }
   bootApp();
   // first ever sign in, or a key this account has never uploaded: send it up
   if(remote.size===0)KEYS.forEach(k=>queuePush(k));
@@ -1671,8 +1747,8 @@ btn.onclick=async function(){
   btn.disabled=false;
   if(error){say('That password did not work. Check it and try again.','err');return}
   uid=data.user.id;
-  say('Signed in.','ok');
-  pullThenBoot();
+  say('');
+  showPicker();
 };
 document.getElementById('gPass').addEventListener('keydown',e=>{if(e.key==='Enter')btn.click()});
 
@@ -1681,13 +1757,18 @@ document.getElementById('syncOut').onclick=async function(){
   if(!confirm('Sign out of this device? Anything not yet saved to the cloud will be lost.'))return;
   await sb.auth.signOut();
   KEYS.forEach(k=>localStorage.removeItem(k));
+  localStorage.removeItem(PROFKEY);
   location.reload();
 };
 
 // ---- already signed in from last time
 (async function(){
   const {data}=await sb.auth.getSession();
-  if(data&&data.session){uid=data.session.user.id;pullThenBoot()}
+  if(!data||!data.session)return;
+  uid=data.session.user.id;
+  const last=localStorage.getItem(PROFKEY);
+  if(last&&PROFILES[last]){profile=last;pullThenBoot()}
+  else showPicker();
 })();
 })();
 </script>
