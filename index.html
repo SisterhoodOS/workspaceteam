@@ -156,6 +156,37 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
 @media(max-width:400px){
   .grid{grid-template-columns:1fr}.hero .split div{min-width:100%}.hero .big{font-size:31px}
 }
+/* the three people a household shop splits between */
+.who-sophia{color:#C2477E}
+.who-sam{color:#1F3A6E}
+.who-denise{color:#8B6BB5}
+th.who-sophia,th.who-sam,th.who-denise{font-weight:700}
+.whodot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot-sophia{background:#E88FB4}
+.dot-sam{background:#1F3A6E}
+.dot-denise{background:#B79BDB}
+.whocard{border-radius:4px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-top:4px solid}
+.whocard.sophia{border-top-color:#E88FB4}
+.whocard.sam{border-top-color:#1F3A6E}
+.whocard.denise{border-top-color:#B79BDB}
+.whocard .k{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
+.whocard .v{font-family:'Cormorant Garamond',Georgia,serif;font-size:25px;margin-top:3px}
+
+/* the three areas of work, colour coded as Monika asked */
+.area{display:inline-block;border-radius:999px;padding:2px 10px;font-size:10.5px;font-weight:600;
+  letter-spacing:.4px;white-space:nowrap;margin-left:6px;vertical-align:middle}
+.area-sisterhood{background:#F7D9E5;color:#9B3A5E}
+.area-home{background:#D8E8F4;color:#3A6A8C}
+.area-finance{background:var(--burg);color:#F6E7EB}
+tr.ar-sisterhood td:first-child{box-shadow:inset 4px 0 0 #E9A7C0}
+tr.ar-home td:first-child{box-shadow:inset 4px 0 0 #8FB9D6}
+tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
+@media(max-width:760px){
+  tr.ar-sisterhood{border-left:4px solid #E9A7C0}
+  tr.ar-home{border-left:4px solid #8FB9D6}
+  tr.ar-finance{border-left:4px solid var(--burg)}
+  tr.ar-sisterhood td:first-child,tr.ar-home td:first-child,tr.ar-finance td:first-child{box-shadow:none}
+}
 @media print{nav,.noprint{display:none!important}body{background:#fff}}
 
 /* ---- sign in gate + cloud sync ---- */
@@ -377,6 +408,11 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
         <option>General organizing</option>
         <option>Other</option>
       </select></div>
+      <div class="f"><label>Area</label><select id="tArea">
+        <option value="sisterhood">Sisterhood admin</option>
+        <option value="home">Household</option>
+        <option value="finance">Finance</option>
+      </select></div>
     </div>
     <div class="frow">
       <div class="f" style="grid-column:1/-1"><label>What is the task</label><input id="tTitle" placeholder="Follow up with the venue for the August circle"></div>
@@ -385,9 +421,11 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
       <div class="f"><label>WhatsApp number</label><input id="tWa" placeholder="62812xxxxxxx"></div>
       <div class="f"><label>Link</label><input id="tLink" placeholder="https://..."></div>
       <div class="f"><label>Repeats</label><select id="tRep">
+        <option value="unset">Not decided yet</option>
         <option value="none">One time only</option>
         <option value="daily">Every day</option>
         <option value="weekly">Every week</option>
+        <option value="monthly">Every month</option>
       </select></div>
     </div>
     <div class="frow">
@@ -729,6 +767,35 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
   </div>
 
   <div class="card">
+    <div class="seclabel">Section 1</div>
+    <h2>What the Admin Hours Cover</h2>
+    <p class="lead">The scope, word for word from the signed document.</p>
+    <p style="margin-bottom:12px">Monika is engaged part time for administrative and executive support across business and household. In scope:
+      calendar and scheduling, communications follow-up, Notion task tracking, document organisation, event and
+      workshop logistics, systems management (MailerLite, Circle.so, Calendly, Canva, Notion), client portal builds
+      and UI design (guided by Sophia), Claude coding sessions, household management, vendor management,
+      general organizing, and day-to-day coordination of household staff (Leny). Hours are logged weekly in a shared
+      tracker and billed monthly.</p>
+    <div class="note">Every item on that list is already sitting on your <strong>Daily Admin</strong> tab, waiting for you
+      to say how often each one runs. Add your own on top, and delete anything that does not belong.</div>
+    <div class="note">Hours above 25 per week need Sophia’s written approval in advance.</div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 7</div>
+    <h2>Who Guides What, Who Signs It Off</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Work type</th><th>Guidance</th><th>Review and sign-off</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Work type">Website and portal builds, UI design</td><td data-label="Guidance">Sophia guides throughout</td><td data-label="Review and sign-off">Sophia approves before anything goes live</td></tr>
+        <tr><td data-label="Work type">Meta ad video edits</td><td data-label="Guidance">Independent, no guidance</td><td data-label="Review and sign-off">Sophia reviews every ad video before launch</td></tr>
+        <tr><td data-label="Work type">Reel batches</td><td data-label="Guidance">Independent, template-based</td><td data-label="Review and sign-off">Assistant Director; Sophia joins for new clients</td></tr>
+        <tr><td data-label="Work type">Admin, household, vendor work</td><td data-label="Guidance">Self-directed</td><td data-label="Review and sign-off">Itemized weekly log</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
     <div class="seclabel">Section 6</div>
     <h2>One-Time Backpay</h2>
     <p class="lead">Closing out the original agreement, February through May 2026. Paid once.</p>
@@ -778,6 +845,29 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
       </tbody>
     </table></div>
     <div class="note">Reading this example: a full month with a landing page build, multiple shoot days, and steady content output. The website is a one-off project item. A regular month without a build runs roughly IDR 4,050,000 to 6,480,000. If the carousel template already exists, that line is IDR 120,000.</div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Section 10</div>
+    <h2>Acceptance</h2>
+    <p style="margin-bottom:12px">By signing, both parties agree that: (1) this rate list governs Monika’s engagement with Saha Synergy
+      Group Ltd from the effective date; (2) the one-time backpay of IDR 3,475,000 in Section 6 fully honors and
+      closes the original agreement, which no longer stands; (3) all prior arrangements, written or verbal, are
+      superseded by this document together with the signed Executive Assistant Engagement Agreement; and (4)
+      rates are reviewed quarterly as set out in Section 8.</p>
+    <div class="tblwrap"><table class="rsp">
+      <tbody>
+        <tr><td data-label="Company"><strong>Company</strong><br>Sophia Lee Fox<br><span style="color:var(--muted)">Founder, Saha Synergy Group Ltd</span></td>
+            <td data-label="Contractor"><strong>Contractor</strong><br>Monika Purba<br><span style="color:var(--muted)">Independent Contractor</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note" style="border-left-color:var(--olive)">
+      <strong>Signed.</strong> Monika Purba, purbamonika610@gmail.com, Thursday 16 July 2026 at 06:20 GMT, from IP 149.22.84.32.<br>
+      <span style="font-size:11px;word-break:break-all;color:var(--muted)">Document SHA-256: aa525d7d3405407442d7f510a2487c78b5eece38bfd5dac8acbc15c3aaa387af</span>
+    </div>
+    <div class="note">One difference worth knowing about. Section 8 of the signed document says the invoice is paid
+      <strong>by the 5th</strong> of the following month. This workspace counts the payday as the <strong>2nd</strong>,
+      because that is what actually happens. The document has not been changed, only the app follows practice.</div>
   </div>
 </section>
 
@@ -860,6 +950,17 @@ const RATES=[
 ];
 const R={};RATES.forEach(r=>R[r.id]=r);
 
+// ---- the three areas of work, colour coded. Every task carries its own
+// area so it can be moved; this map only supplies the first guess.
+const AREA_LABEL={sisterhood:'Sisterhood',home:'Household',finance:'Finance'};
+const AREA_OF_CAT={
+  'Household management':'home',
+  'Vendor management':'home',
+  'Purchase or payment':'finance'
+};
+function areaOf(cat){return AREA_OF_CAT[cat]||'sisterhood'}
+const REP_LABEL={unset:'How often?',daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
+
 const KEY='monika_workspace_v1', PKEY='monika_payments_v1',
       TKEY='monika_tasks_v1', FKEY='monika_finance_v1',
       CKEY='monika_commit_v1', SEEDFLAG='monika_seeded_v1';
@@ -883,6 +984,35 @@ if(commits===null){
     {id:'c4',type:'car_rep',qty:4,per:'month',due:'last',forWhom:'Sisterhood OS',note:'Repeats from an approved template.'}
   ];
   writeStore(CKEY,commits);
+}
+// The admin scope named in Section 1 of the signed rate list, put in as
+// tasks so Monika can set how often each one runs. The wording is the
+// contract's, not mine. Seeded once, and only into an empty list, so it
+// can never appear twice or sit on top of real tasks.
+const SCOPE_SEEDED='monika_scope_v1';
+if(!tasks.length&&!localStorage.getItem(SCOPE_SEEDED)){
+  const SCOPE=[
+    ['Calendar and scheduling','Calendar & scheduling'],
+    ['Communications follow-up','Communications follow-up'],
+    ['Notion task tracking','Notion task tracking'],
+    ['Document organisation','Document organisation'],
+    ['Event and workshop logistics','Event & workshop logistics'],
+    ['Systems management (MailerLite, Circle.so, Calendly, Canva, Notion)','Systems (MailerLite, Circle, Calendly, Canva)'],
+    ['Client portal builds and UI design (guided by Sophia)','Client portal & UI'],
+    ['Claude coding sessions','Claude coding session'],
+    ['Household management','Household management'],
+    ['Vendor management','Vendor management'],
+    ['General organizing','General organizing'],
+    ['Day-to-day coordination of household staff (Leny)','Household management']
+  ];
+  tasks=SCOPE.map((s,i)=>({
+    id:'scope'+i,date:todayISO(),time:'',title:s[0],cat:s[1],area:areaOf(s[1]),
+    wa:'',link:'',rep:'unset',hrs:0,status:'todo',who:'',
+    note:'From Section 1 of the rate list signed 16 July 2026. Set how often it repeats, or delete it.',
+    pushed:false
+  }));
+  writeStore(TKEY,tasks);
+  localStorage.setItem(SCOPE_SEEDED,'1');
 }
 localStorage.setItem(SEEDFLAG,'1');
 
@@ -1075,6 +1205,7 @@ document.getElementById('tSave').onclick=()=>{
   const t={id:taskEditId||('t'+Date.now()+Math.random().toString(36).slice(2,7)),
     date,time:document.getElementById('tTime').value,title,
     cat:document.getElementById('tCat').value,
+    area:document.getElementById('tArea').value,
     wa:document.getElementById('tWa').value.replace(/[^0-9+]/g,''),
     link:document.getElementById('tLink').value.trim(),
     rep:document.getElementById('tRep').value,
@@ -1090,6 +1221,7 @@ function taskEdit(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;taskEditId=id;
   document.getElementById('tDate').value=t.date;document.getElementById('tTime').value=t.time||'';
   document.getElementById('tTitle').value=t.title;document.getElementById('tCat').value=t.cat||'Other';
+  document.getElementById('tArea').value=t.area||areaOf(t.cat);
   document.getElementById('tWa').value=t.wa||'';document.getElementById('tLink').value=t.link||'';
   document.getElementById('tRep').value=t.rep||'none';document.getElementById('tHrs').value=t.hrs||0;
   document.getElementById('tStatus').value=t.status||'todo';document.getElementById('tWho').value=t.who||'';
@@ -1412,8 +1544,10 @@ function render(){
   document.getElementById('taskBody').innerHTML=tl.length?tl.map(t=>{
     const wa=t.wa?'<a class="wa" href="https://wa.me/'+esc(t.wa.replace(/[^0-9]/g,''))+'" target="_blank" rel="noopener">'+esc(t.wa)+'</a>':'';
     const who=t.who?'<div style="color:var(--muted);font-size:11.5px">'+esc(t.who)+'</div>':'';
-    const rep=t.rep&&t.rep!=='none'?' <span class="pill p-neu">'+(t.rep==='daily'?'Daily':'Weekly')+'</span>':'';
-    return '<tr class="'+(t.status==='done'?'done':'')+'"><td data-label="Task"><strong>'+esc(t.title)+'</strong>'+rep+
+    const rep=t.rep&&t.rep!=='none'?' <span class="pill p-neu">'+(REP_LABEL[t.rep]||t.rep)+'</span>':'';
+    const ar=t.area||areaOf(t.cat);
+    const arTag=' <span class="area area-'+esc(ar)+'">'+esc(AREA_LABEL[ar]||ar)+'</span>';
+    return '<tr class="ar-'+esc(ar)+' '+(t.status==='done'?'done':'')+'"><td data-label="Task"><strong>'+esc(t.title)+'</strong>'+arTag+rep+
       (t.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(t.note)+'</div>':'')+
       (t.pushed?'<div style="color:var(--olive);font-size:11px">hours already billed</div>':'')+
       '</td><td data-label="Date">'+esc(t.date)+'</td><td data-label="Time">'+(t.time?esc(t.time):'<span style="color:var(--muted)">-</span>')+
@@ -1618,7 +1752,7 @@ const SB_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
 const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
 // one shared team account, so the gate only ever asks for a password
 const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
-            'monika_finance_v1','monika_commit_v1','monika_seeded_v1'];
+            'monika_finance_v1','monika_commit_v1','monika_seeded_v1','monika_scope_v1'];
 
 // each person signs in to her own account with her own password, so the
 // separation is enforced by row level security in the database, not by the
@@ -1822,7 +1956,7 @@ document.getElementById('syncOut').onclick=async function(){
 // ---- home spending, the one thing shared across folders
 // Leny records each shop and how it splits. These rows come from
 // public.home_expenses, which only her account and Monika's can reach.
-const HOME_PEOPLE=[['share_sophia','Sophia'],['share_sam','Sam'],['share_denise','Denise']];
+const HOME_PEOPLE=[['share_sophia','Sophia','sophia'],['share_sam','Sam','sam'],['share_denise','Denise','denise']];
 let homeMonth=null;
 function rp(n){return 'IDR '+Math.round(Number(n)||0).toLocaleString('en-US')}
 function hesc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -1863,9 +1997,13 @@ async function loadHome(){
       '<div style="font-size:11.5px;color:var(--muted)">'+rows.length+' shop'+(rows.length===1?'':'s')+
       ' in '+hesc(monthName)+'</div></div>'+
     '</div>'+
+    '<div class="grid" style="margin-bottom:16px">'+HOME_PEOPLE.map(p=>
+      '<div class="whocard '+p[2]+'"><div class="k"><span class="whodot dot-'+p[2]+'"></span>'+p[1]+' owes</div>'+
+      '<div class="v who-'+p[2]+'">'+rp(per[p[0]])+'</div></div>').join('')+'</div>'+
     '<div class="tblwrap"><table class="rsp">'+
       '<thead><tr><th>Date</th><th>What</th><th class="num">Amount</th>'+
-      HOME_PEOPLE.map(p=>'<th class="num">'+p[1]+'</th>').join('')+'</tr></thead><tbody>'+
+      HOME_PEOPLE.map(p=>'<th class="num who-'+p[2]+'"><span class="whodot dot-'+p[2]+'"></span>'+p[1]+'</th>').join('')+
+      '</tr></thead><tbody>'+
       (rows.length?rows.map(r=>{
         const sum=HOME_PEOPLE.reduce((s,p)=>s+(Number(r[p[0]])||0),0);
         const bad=Math.round(sum)!==Math.round(Number(r.amount)||0);
@@ -1873,13 +2011,13 @@ async function loadHome(){
           '<td data-label="Date">'+hesc(r.spent_on||'')+'</td>'+
           '<td data-label="What">'+hesc(r.description||'')+(bad?' <em style="color:#8C2038">(split does not add up)</em>':'')+'</td>'+
           '<td data-label="Amount" class="num">'+rp(r.amount)+'</td>'+
-          HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num">'+
+          HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num who-'+p[2]+'">'+
             ((Number(r[p[0]])||0)?rp(r[p[0]]):'-')+'</td>').join('')+
         '</tr>';
       }).join('')+
-        '<tr><td data-label="Date"></td><td data-label="What"><strong>Total</strong></td>'+
+        '<tr style="background:var(--ivory)"><td data-label="Date"></td><td data-label="What"><strong>Total</strong></td>'+
         '<td data-label="Amount" class="num"><strong>'+rp(total)+'</strong></td>'+
-        HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num"><strong>'+rp(per[p[0]])+'</strong></td>').join('')+'</tr>'
+        HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num who-'+p[2]+'"><strong>'+rp(per[p[0]])+'</strong></td>').join('')+'</tr>'
       :'<tr><td colspan="6" class="empty">Leny has not recorded anything for this month yet.</td></tr>')+
     '</tbody></table></div>'+
     (unsplit.length?'<div class="note" style="margin-top:14px">'+unsplit.length+' row'+(unsplit.length===1?'':'s')+

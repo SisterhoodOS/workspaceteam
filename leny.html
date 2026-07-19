@@ -5937,6 +5937,19 @@ function renderDateHistory(dateStr){
 #payCard .rowbtns button.alt{background:#faf8f3;color:#3b0510;border:1px solid #d4c9b0}
 #payCard .bad{background:#fbe6e4;color:#8c2f2a;border-radius:12px;padding:11px 14px;font-size:.78rem;margin-bottom:12px}
 #payCard .del{background:none;border:0;color:#b5453f;cursor:pointer;font-size:.9rem;padding:0 4px}
+/* one colour per person so the split is readable at a glance */
+#payCard .w-sophia{color:#C2477E}
+#payCard .w-sam{color:#1F3A6E}
+#payCard .w-denise{color:#8B6BB5}
+#payCard .wdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+#payCard .d-sophia{background:#E88FB4}
+#payCard .d-sam{background:#1F3A6E}
+#payCard .d-denise{background:#B79BDB}
+#payCard .split label.p-sophia input{border-color:#E88FB4;background:#FDF1F6}
+#payCard .split label.p-sam input{border-color:#1F3A6E;background:#EEF2F9}
+#payCard .split label.p-denise input{border-color:#B79BDB;background:#F5F1FB}
+#payCard .wholine{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+#payCard .wholine span{font-size:.76rem;font-weight:600}
 #payWrap{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.45);display:none;
   overflow-y:auto;padding:16px;font-family:'Poppins',sans-serif}
 #payWrap.on{display:block}
@@ -6112,7 +6125,7 @@ function payDraw(){
    Leny records what was bought and how it splits between Sophia, Sam
    and Denise; Monika sees the same rows and the running totals.
 ------------------------------------------------------------------ */
-const PEOPLE=[['share_sophia','Sophia'],['share_sam','Sam'],['share_denise','Denise']];
+const PEOPLE=[['share_sophia','Sophia','sophia'],['share_sam','Sam','sam'],['share_denise','Denise','denise']];
 let shopMonth=null, shopRows=[], shopBusy=false;
 // the hub has its own today(), but this layer must still work if the hub
 // failed to load, so it keeps its own
@@ -6154,8 +6167,9 @@ function shopDraw(){
     '<label><span class="l">'+L('Bulan','Month')+'</span><input type="month" id="shopM" value="'+shopMonth+'"></label>'+
     '<div class="tot"><div class="big">'+money(total)+'</div>'+
       '<div class="lil">'+monthName+' · '+shopRows.length+' '+L('catatan','records')+'</div>'+
-      '<div class="lil" style="margin-top:6px">'+
-        PEOPLE.map(p=>p[1]+' '+money(per[p[0]])).join(' · ')+'</div></div>'+
+      '<div class="wholine">'+PEOPLE.map(p=>
+        '<span class="w-'+p[2]+'"><span class="wdot d-'+p[2]+'"></span>'+p[1]+' '+money(per[p[0]])+'</span>').join('')+
+      '</div></div>'+
 
     '<div style="font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8b6914;margin-bottom:8px">'+
       L('Tambah pengeluaran','Add spending')+'</div>'+
@@ -6165,7 +6179,8 @@ function shopDraw(){
     '<div style="font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8b6914;margin:4px 0 6px">'+
       L('Dibagi untuk siapa','Split between')+'</div>'+
     '<div class="split">'+PEOPLE.map(p=>
-      '<label><span class="l">'+p[1]+'</span><input type="number" id="s_'+p[0]+'" min="0" step="1000" placeholder="0"></label>').join('')+'</div>'+
+      '<label class="p-'+p[2]+'"><span class="l w-'+p[2]+'"><span class="wdot d-'+p[2]+'"></span>'+p[1]+'</span>'+
+      '<input type="number" id="s_'+p[0]+'" min="0" step="1000" placeholder="0"></label>').join('')+'</div>'+
     '<div class="rowbtns" style="margin-top:12px">'+
       '<button class="alt" id="sThird">'+L('Bagi 3 rata','Split equally')+'</button>'+
       '<button id="sSave">'+L('Simpan','Save')+'</button>'+
@@ -6173,12 +6188,12 @@ function shopDraw(){
     '<div id="sMsg"></div>'+
 
     '<table><thead><tr><th>'+L('Tgl','Date')+'</th><th>'+L('Beli','Item')+'</th><th>'+L('Jumlah','Amount')+'</th>'+
-      '<th>S</th><th>Sam</th><th>D</th><th></th></tr></thead><tbody>'+
+      PEOPLE.map(p=>'<th class="w-'+p[2]+'">'+p[1].slice(0,3)+'</th>').join('')+'<th></th></tr></thead><tbody>'+
       (shopRows.length?shopRows.map(r=>
         '<tr data-id="'+r.id+'"><td>'+String(r.spent_on||'').slice(8)+'/'+String(r.spent_on||'').slice(5,7)+'</td>'+
         '<td>'+String(r.description||'').replace(/[<>&]/g,'')+'</td>'+
         '<td>'+money(Number(r.amount)||0)+'</td>'+
-        PEOPLE.map(p=>'<td>'+((Number(r[p[0]])||0)?money(r[p[0]]).replace('Rp ',''):'-')+'</td>').join('')+
+        PEOPLE.map(p=>'<td class="w-'+p[2]+'">'+((Number(r[p[0]])||0)?money(r[p[0]]).replace('Rp ',''):'-')+'</td>').join('')+
         '<td><button class="del" data-del="'+r.id+'">✕</button></td></tr>').join('')
         :'<tr><td colspan="7" class="none">'+L('Belum ada catatan bulan ini.','Nothing recorded this month yet.')+'</td></tr>')+
     '</tbody></table>';
