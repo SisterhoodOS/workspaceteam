@@ -171,6 +171,9 @@ const ef=supabase.createClient(EF_URL,EF_KEY,{auth:{persistSession:false}});
 const TABS=[['home','Overview'],['monika','Monika'],['leny','Leny'],['lia','Lia'],['notes','Notes']];
 const PEOPLE=[['share_sophia','Sophia','sophia'],['share_sam','Sam','sam'],['share_denise','Denise','denise']];
 const KPI_CALLS=15;
+const PROJECT_LABELS={saha_synergy:'Saha Synergy',bwb:'BWB',bfp:'Best Friend Production'};
+const TASK_STATUS={todo:'To do',doing:'In progress',done:'Done',blocked:'Blocked'};
+function projName(p){return PROJECT_LABELS[p]||p||'-'}
 
 const D={tasks:[],work:[],hub:null,home:[],clients:[],notes:[],loaded:false};
 let tab='home', month=null;
@@ -329,7 +332,7 @@ function viewHome(){
         '<div class="scroll"><table><thead><tr><th>When</th><th>Who</th><th>Project</th></tr></thead><tbody>'+
         A.upcoming.slice(0,8).map(c=>'<tr><td><strong>'+esc(stamp(c.meeting_at))+'</strong></td>'+
           '<td class="serif" style="font-size:16px">'+esc(c.name||'')+'</td>'+
-          '<td class="mini">'+esc(c.project||'')+'</td></tr>').join('')+'</tbody></table></div>'
+          '<td class="mini">'+esc(projName(c.project))+'</td></tr>').join('')+'</tbody></table></div>'
         :unknown('upcoming meetings'))+
     '</div>'+
 
@@ -383,7 +386,7 @@ function viewMonika(){
             '<td class="mini">'+esc(AREAS[t.area||'sisterhood']||'')+'</td>'+
             '<td class="mini">'+(st.length?sd+' of '+st.length:'-')+'</td>'+
             '<td><span class="pill '+(t.status==='done'?'p-done':'p-open')+'">'+
-              esc(t.status==='done'?'Done':(t.status||'to do'))+'</span></td></tr>';
+              esc(TASK_STATUS[t.status]||t.status||'To do')+'</span></td></tr>';
         }).join('')+'</tbody></table></div>'
         :unknown('today'))+
     '</div>'+
@@ -488,7 +491,7 @@ function viewLia(){
         D.clients.filter(c=>c.report_sent_at)
           .sort((a,b)=>String(b.report_sent_at).localeCompare(String(a.report_sent_at)))
           .map(c=>'<div class="note-row"><strong class="serif" style="font-size:18px">'+esc(c.name||'')+'</strong>'+
-            ' <span class="pill p-flat">'+esc(c.project||'')+'</span>'+
+            ' <span class="pill p-flat">'+esc(projName(c.project))+'</span>'+
             (c.meeting_at?'<div class="mini">Meeting '+esc(stamp(c.meeting_at))+'</div>':'')+
             '<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--ruby);font-size:12.5px">Read the report</summary>'+
             '<pre style="white-space:pre-wrap;word-break:break-word;background:var(--shell);border-radius:5px;'+
@@ -503,7 +506,7 @@ function viewLia(){
         Object.keys(STAT).map(s=>'<tr><td>'+esc(STAT[s])+'</td><td class="num">'+(byStatus[s]||0)+'</td></tr>').join('')+
         '</tbody></table></div>'+
         '<div class="stats" style="margin-top:18px;margin-bottom:0">'+Object.keys(byProject).map(p=>
-          '<div class="stat"><div class="k">'+esc(p)+'</div><div class="v">'+byProject[p]+'</div>'+
+          '<div class="stat"><div class="k">'+esc(projName(p))+'</div><div class="v">'+byProject[p]+'</div>'+
           '<div class="n">clients</div></div>').join('')+'</div>'
         :unknown('Lia’s client list'))+
     '</div>';
