@@ -400,13 +400,6 @@ table.simple td{vertical-align:middle}
   <div class="grid" id="workStats"></div>
 
   <div class="card">
-    <div class="seclabel">Right now</div>
-    <h2>Today</h2>
-    <p class="lead">Everything due today, from every client. Tick it off and the pay is logged for you.</p>
-    <div id="todayList"></div>
-  </div>
-
-  <div class="card">
     <div class="seclabel">Admin work</div>
     <h2>Your four folders</h2>
     <p class="lead">The admin side of the job, paid by the hour. Click a folder to open the list inside it.</p>
@@ -1752,37 +1745,10 @@ function renderWork(monKey){
     '<div class="stat"><div class="k">Due today</div><div class="v">'+(daily.length+todayTasks.length)+'</div>'+
       '<div class="n">'+daily.length+' from clients, '+todayTasks.length+' admin</div></div>';
 
-  // ---- today
-  const todayRows=daily.map(p=>{
-    const r=R[p.type]||{};
-    const done=doneThisWeek(p,monKey), target=targetThisWeek(p), left=leftThisWeek(p,monKey);
-    const pace=Math.min(dailyPace(p),left);
-    return '<tr class="fold-'+clientColour(p.client)+'">'+
-      '<td data-label="Client"><strong>'+esc(clientName(p.client))+'</strong></td>'+
-      '<td data-label="What">'+esc(r.lbl||p.type)+'</td>'+
-      '<td data-label="Do today">'+pace+' '+esc(pace===1?String(r.unit||'').replace(/s$/,''):(r.unit||''))+'</td>'+
-      '<td data-label="This week">'+done+' of '+target+' done, '+left+' left</td>'+
-      '<td class="num" data-label="Pays">'+fmt(planEach(p))+' each</td>'+
-      '<td class="noprint"><button class="mini" onclick="planDone(\''+p.id+'\')">+1 done</button></td></tr>';
-  // Admin tasks are capped here so Today stays readable on a phone. The rest
-  // are one tap away in the folders, and the count says how many are waiting.
-  }).join('')+todayTasks.slice(0,5).map(t=>
-    '<tr class="fold-'+esc(t.fold||'monthly')+'">'+
-      '<td data-label="Client"><strong>Admin</strong></td>'+
-      '<td data-label="What">'+esc(t.title)+'</td>'+
-      '<td data-label="Do today">once</td>'+
-      '<td data-label="This week">'+pill(TST,t.status)+'</td>'+
-      '<td class="num" data-label="Pays"><span style="color:var(--muted)">hourly</span></td>'+
-      '<td class="noprint"><button class="mini" onclick="taskStep(\''+t.id+'\')">next step</button></td></tr>').join('')+
-    (todayTasks.length>5
-      ? '<tr><td colspan="6" style="text-align:center;color:var(--muted)">and '+(todayTasks.length-5)+
-        ' more admin tasks, further down in your folders</td></tr>'
-      : '');
-
-  document.getElementById('todayList').innerHTML=todayRows
-    ? '<div class="tblwrap"><table class="rsp"><thead><tr><th>Who</th><th>What</th><th>Do today</th>'+
-      '<th>This week</th><th class="num">Pays</th><th></th></tr></thead><tbody>'+todayRows+'</tbody></table></div>'
-    : '<div class="empty"><span class="serif">Nothing due today</span>Enjoy it.</div>';
+  // The standalone Today list was removed at Monika's request (2026-07-21):
+  // it repeated the client cards below and flooded the top of the page with
+  // the whole monthly admin checklist. The "Due today" stat above still uses
+  // `daily` and `todayTasks` for its count.
 
   // ---- one card per client
   document.getElementById('clientCards').innerHTML=CLIENTS.map(c=>{
