@@ -288,12 +288,22 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 .f-sophia{background:#7A5AA8}
 .f-seree{background:#2F7D6E}
 .f-denise{background:#B4652F}
+/* Client colours Monika chose (2026-07-21): BWB maroon, SEREE dark green,
+   RANIA gold, DENISE purple. Sisterhood stays pink. */
+.f-maroon{background:#6A1024}
+.f-green{background:#2F5D3A}
+.f-gold{background:#9A7B1F}
+.f-purple{background:#7A5AA8}
 tr.fold-monthly td{background:#FBEFF4}
 tr.fold-reels   td{background:#EDF3F9}
 tr.fold-home    td{background:#F1F3E6}
 tr.fold-sophia  td{background:#F3EFF9}
 tr.fold-seree   td{background:#E9F3F0}
 tr.fold-denise  td{background:#FAF0E7}
+tr.fold-maroon  td{background:#FBEAEE}
+tr.fold-green   td{background:#EAF2EC}
+tr.fold-gold    td{background:#F7F1DF}
+tr.fold-purple  td{background:#F3EFF9}
 tr.fold-monthly.done td,tr.fold-reels.done td,tr.fold-home.done td,tr.fold-sophia.done td{opacity:.55}
 table.simple th{white-space:nowrap}
 table.simple td{vertical-align:middle}
@@ -1281,10 +1291,10 @@ if(tasks.some(t=>!t.fold)){
 // in by hand and never guessed.
 const CLIENTS=[
   {id:'sisterhood',name:'Sisterhood OS',colour:'monthly'},
-  {id:'bwb',       name:'BWB',          colour:'reels'},
-  {id:'seree',     name:'SEREE',        colour:'seree'},
-  {id:'rania',     name:'RANIA',        colour:'sophia'},
-  {id:'denise',    name:'DENISE',       colour:'denise'}
+  {id:'bwb',       name:'BWB',          colour:'maroon'},
+  {id:'seree',     name:'SEREE',        colour:'green'},
+  {id:'rania',     name:'RANIA',        colour:'gold'},
+  {id:'denise',    name:'DENISE',       colour:'purple'}
 ];
 const PER_LABEL={day:'every day',week:'every week',month:'every month'};
 // how many times a week's worth of a thing happens, for the weekly maths
@@ -1771,8 +1781,10 @@ function renderWork(monKey){
     }).join('');
     // Work already logged for this client this month, whether or not it has a
     // standing target. This is what makes "I did 11 carousels for BWB" show up
-    // under BWB instead of only in the month's log at the bottom.
-    const logged=mine.filter(e=>e.client===c.name);
+    // under BWB instead of only in the month's log at the bottom. Matched
+    // loosely so a stray capital or space does not hide the row.
+    const norm=s=>String(s||'').trim().toLowerCase();
+    const logged=mine.filter(e=>norm(e.client)===norm(c.name));
     const loggedTotal=logged.reduce((s,e)=>s+total(e),0);
     const logRows=logged.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>
       '<tr class="fold-'+c.colour+'">'+
