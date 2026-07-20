@@ -156,6 +156,32 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
 @media(max-width:400px){
   .grid{grid-template-columns:1fr}.hero .split div{min-width:100%}.hero .big{font-size:31px}
 }
+/* the work board */
+.col{border:1px solid var(--line);border-radius:5px;margin-bottom:10px;overflow:hidden;background:var(--paper)}
+.col>.hd{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:.15s}
+.col>.hd:hover{background:var(--cream)}
+.col.open>.hd{background:var(--cream);border-bottom:1px solid var(--line)}
+.col .nm{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;color:var(--burg)}
+.col .pr{font-size:11.5px;color:var(--olive);font-weight:600;letter-spacing:.3px}
+.col .cnt{margin-left:auto;text-align:right;white-space:nowrap}
+.col .cnt b{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;color:var(--choc)}
+.col .cnt span{display:block;font-size:10.5px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase}
+.col .arw{color:var(--muted);font-size:13px;transition:.2s}
+.col.open .arw{transform:rotate(90deg)}
+.col .bd{display:none;padding:4px 16px 14px}
+.col.open .bd{display:block}
+.col .note{margin:10px 0 4px}
+.tline{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.tline:last-child{border-bottom:0}
+.tline .tk{width:19px;height:19px;border:1.5px solid var(--line);border-radius:4px;background:#fff;
+  cursor:pointer;flex:none;font-size:12px;line-height:1;color:var(--olive);padding:0}
+.tline.is-done .tk{background:var(--olive);border-color:var(--olive);color:#fff}
+.tline.is-done .tt{text-decoration:line-through;color:var(--muted)}
+.tline .tt{flex:1;min-width:0}
+.tline .tt b{font-weight:600}
+.tline .mt{display:block;font-size:11px;color:var(--muted)}
+.emptyline{padding:16px 0;color:var(--muted);font-size:12.5px}
+
 /* the three people a household shop splits between */
 .who-sophia{color:#C2477E}
 .who-sam{color:#1F3A6E}
@@ -280,6 +306,7 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 <nav>
   <div class="wrap">
     <button class="on" data-p="dash">Month Summary</button>
+    <button data-p="board">Work Board</button>
     <button data-p="sched">My Schedule</button>
     <button data-p="daily">Daily Admin</button>
     <button data-p="log">Log Work</button>
@@ -381,6 +408,35 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
   </div>
 </section>
 
+<!-- ================= WORK BOARD ================= -->
+<section class="panel" id="p-board">
+  <div class="card">
+    <div class="seclabel">Today</div>
+    <h2 id="boardDate">Today</h2>
+    <p class="lead">Everything due today, from every kind of work, in one place. Tick it off here and it ticks off everywhere.</p>
+
+    <div class="frow">
+      <div class="f" style="grid-column:1/-1"><label>Add something quickly</label>
+        <input id="qTitle" placeholder="Follow up with the venue for the August circle"></div>
+    </div>
+    <div class="frow">
+      <div class="f"><label>Kind of work</label><select id="qCat"></select></div>
+      <div class="f"><label>Date</label><input type="date" id="qDate"></div>
+      <div class="f"><label>&nbsp;</label><button class="btn" id="qAdd" style="width:100%">Add to the board</button></div>
+    </div>
+    <div class="note">Whatever you add here files itself into its column below and onto the Daily Admin list. You never type it twice.</div>
+
+    <div id="boardToday"></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Your work, by kind</div>
+    <h2>The Columns</h2>
+    <p class="lead">Each column is one kind of work with what it pays. Click a column to open it.</p>
+    <div id="boardCols"></div>
+  </div>
+</section>
+
 <!-- ================= DAILY ADMIN ================= -->
 <section class="panel" id="p-daily">
   <div class="grid" id="taskStats"></div>
@@ -406,6 +462,15 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
         <option>Vendor management</option>
         <option>Purchase or payment</option>
         <option>General organizing</option>
+        <option>Reel (template)</option>
+        <option>Reel (custom)</option>
+        <option>Meta ad video edit</option>
+        <option>Carousel (from template)</option>
+        <option>Carousel (new template)</option>
+        <option>Production day</option>
+        <option>Production half day</option>
+        <option>Meeting</option>
+        <option>Website or landing page</option>
         <option>Other</option>
       </select></div>
       <div class="f"><label>Area</label><select id="tArea">
@@ -961,6 +1026,29 @@ const AREA_OF_CAT={
 function areaOf(cat){return AREA_OF_CAT[cat]||'sisterhood'}
 const REP_LABEL={unset:'How often?',daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
 
+// ---- the work board. One column per kind of work, priced from the signed
+// rate list, so a task lands in its column the moment it is written down.
+const GROUPS=[
+  {id:'admin',name:'Admin support',rate:'IDR 40,000 per hour',
+   note:'Logged to the nearest 15 minutes. 15 to 25 hrs a week.',
+   cats:['Calendar & scheduling','Communications follow-up','Notion task tracking','Document organisation',
+         'Event & workshop logistics','Systems (MailerLite, Circle, Calendly, Canva)','Client portal & UI',
+         'Claude coding session','Household management','Vendor management','Purchase or payment','General organizing']},
+  {id:'content',name:'Reels & carousels',rate:'IDR 10,000 to 40,000 each',
+   note:'Template reels 10,000. Custom reels and Meta ad edits 40,000. Carousel from template 10,000, new template 40,000.',
+   cats:['Reel (template)','Reel (custom)','Meta ad video edit','Carousel (from template)','Carousel (new template)']},
+  {id:'production',name:'Production & meetings',rate:'IDR 350,000 a day · 50,000 a meeting',
+   note:'Full day up to 10 hours. Half day 200,000. Meetings up to 90 minutes, when not inside logged admin hours.',
+   cats:['Production day','Production half day','Meeting']},
+  {id:'web',name:'Websites & pages',rate:'IDR 600,000 to 1,600,000 a project',
+   note:'Landing page 600,000. Up to 5 pages 1,600,000. Extra page 120,000. Agreed in writing before work starts.',
+   cats:['Website or landing page']},
+  {id:'other',name:'Commission & other',rate:'Typed in by hand',
+   note:'Sales commission and anything outside the list.',cats:['Other']}
+];
+const GROUP_OF={};GROUPS.forEach(g=>g.cats.forEach(c=>GROUP_OF[c]=g.id));
+function groupOf(cat){return GROUP_OF[cat]||'other'}
+
 const KEY='monika_workspace_v1', PKEY='monika_payments_v1',
       TKEY='monika_tasks_v1', FKEY='monika_finance_v1',
       CKEY='monika_commit_v1', SEEDFLAG='monika_seeded_v1';
@@ -1231,6 +1319,77 @@ function taskEdit(id){
   document.querySelector('nav button[data-p="daily"]').click();
 }
 function taskDel(id){if(confirm('Delete this task?')){tasks=tasks.filter(x=>x.id!==id);saveTasks()}}
+// ---- work board
+let openCols={};
+function boardLine(t){
+  const ar=t.area||areaOf(t.cat);
+  const done=t.status==='done';
+  return '<div class="tline'+(done?' is-done':'')+'">'+
+    '<button class="tk" onclick="taskToggle(\''+t.id+'\')" title="'+(done?'Reopen':'Mark done')+'">'+(done?'✓':'')+'</button>'+
+    '<span class="tt"><b>'+esc(t.title)+'</b>'+
+      '<span class="area area-'+esc(ar)+'">'+esc(AREA_LABEL[ar]||ar)+'</span>'+
+      '<span class="mt">'+esc(t.cat||'')+(t.time?' · '+esc(t.time):'')+
+      ((+t.hrs||0)?' · '+t.hrs+' hrs':'')+(t.date!==todayISO()?' · '+esc(t.date):'')+'</span></span>'+
+    '<span>'+pill(TST,t.status)+'</span>'+
+  '</div>';
+}
+function renderBoard(){
+  const today=todayISO();
+  const d=new Date(today+'T00:00:00');
+  document.getElementById('boardDate').textContent=
+    DN[(d.getDay()+6)%7]+', '+d.getDate()+' '+MN[d.getMonth()]+' '+d.getFullYear();
+
+  // the quick-add picker offers every kind of work, grouped
+  const qc=document.getElementById('qCat');
+  if(qc&&!qc.options.length){
+    qc.innerHTML=GROUPS.map(g=>'<optgroup label="'+esc(g.name)+'">'+
+      g.cats.map(c=>'<option>'+esc(c)+'</option>').join('')+'</optgroup>').join('');
+  }
+
+  const todays=tasks.filter(t=>t.date===today);
+  const overdue=tasks.filter(t=>t.date<today&&t.status!=='done');
+  const doneCount=todays.filter(t=>t.status==='done').length;
+
+  document.getElementById('boardToday').innerHTML=
+    (todays.length?'<div style="margin:16px 0 4px;font-size:11.5px;color:var(--muted)">'+
+      doneCount+' of '+todays.length+' done today</div>'+todays.map(boardLine).join('')
+      :'<div class="emptyline">Nothing is set for today yet. Add something above, or it will fill in as you plan the week.</div>')+
+    (overdue.length?'<div style="margin:20px 0 4px;font-size:11.5px;color:var(--burg)">'+
+      overdue.length+' still open from earlier days</div>'+overdue.map(boardLine).join(''):'');
+
+  document.getElementById('boardCols').innerHTML=GROUPS.map(g=>{
+    const mine=tasks.filter(t=>groupOf(t.cat)===g.id);
+    const open=mine.filter(t=>t.status!=='done');
+    const hrs=mine.reduce((s,t)=>s+(+t.hrs||0),0);
+    return '<div class="col'+(openCols[g.id]?' open':'')+'" data-g="'+g.id+'">'+
+      '<div class="hd" onclick="toggleCol(\''+g.id+'\')">'+
+        '<span class="arw">▶</span>'+
+        '<span><span class="nm">'+esc(g.name)+'</span><br><span class="pr">'+esc(g.rate)+'</span></span>'+
+        '<span class="cnt"><b>'+open.length+'</b><span>open of '+mine.length+'</span></span>'+
+      '</div>'+
+      '<div class="bd">'+
+        '<div class="note">'+esc(g.note)+(g.id==='admin'&&hrs?' Logged so far on this column: <strong>'+hrs+' hrs</strong>.':'')+'</div>'+
+        (mine.length?mine.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(boardLine).join('')
+          :'<div class="emptyline">Nothing filed here yet.</div>')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function toggleCol(id){openCols[id]=!openCols[id];renderBoard()}
+document.getElementById('qAdd').onclick=()=>{
+  const title=document.getElementById('qTitle').value.trim();
+  if(!title){alert('Please write what the task is.');return}
+  const cat=document.getElementById('qCat').value;
+  tasks.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,7),
+    date:document.getElementById('qDate').value||todayISO(),time:'',title,cat,area:areaOf(cat),
+    wa:'',link:'',rep:'unset',hrs:0,status:'todo',who:'',note:'',pushed:false});
+  document.getElementById('qTitle').value='';
+  saveTasks();
+};
+document.getElementById('qTitle').addEventListener('keydown',e=>{
+  if(e.key==='Enter')document.getElementById('qAdd').click();
+});
+
 function taskToggle(id){
   tasks=tasks.map(x=>x.id===id?{...x,status:x.status==='done'?'todo':'done'}:x);saveTasks();
 }
@@ -1518,6 +1677,8 @@ function render(){
       '<td class="num rate" data-label="Per month">'+n0(wkPay*4.33+moPay)+'</td><td></td></tr>'})()
     :'<tr><td colspan="7"><div class="empty"><span class="serif">No commitments yet</span>Add your first one with the form below.</div></td></tr>';
 
+  renderBoard();
+
   // ---------- daily admin ----------
   const filt=document.getElementById('tFilter').value;
   const q=document.getElementById('tSearch').value.trim().toLowerCase();
@@ -1735,7 +1896,7 @@ function storageMeter(){
 }
 
 // ---- defaults and first paint
-['iDate','yDate','tDate','fDate'].forEach(id=>document.getElementById(id).value=todayISO());
+['iDate','yDate','tDate','fDate','qDate'].forEach(id=>document.getElementById(id).value=todayISO());
 syncType();
 render();
 </script>
