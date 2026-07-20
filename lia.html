@@ -238,25 +238,40 @@ const WHO={
 };
 const SUGGESTED={
   saha_synergy:[
-    {t:'First message',b:'Hi {{name}}, I came across your work and the way you talk about building the business rather than just running it stood out.\n\nI work with Sophia at Saha Synergy. She sits down with founders who are past the scrappy stage and helps them get the structure right, so the business stops depending on them being in every room.\n\nIs that something you are thinking about at the moment?'},
-    {t:'Follow up, no reply',b:'Hi {{name}}, just floating this back up in case it slipped past.\n\nNo pressure at all. If the timing is wrong, tell me and I will leave it. If it is more that you are curious but busy, I can send one paragraph on what a first conversation looks like.'},
-    {t:'They showed interest',b:'That is good to hear, {{name}}.\n\nThe first call is 30 minutes and it is genuinely just Sophia asking questions. Where the business is, what is taking your time, what you want it to look like in a year. No slides, nothing to prepare.\n\nWhat does your week look like? I will work around you.'},
-    {t:'Booking the call',b:'Lovely. I have put you down for {{time}}.\n\nYou will get a calendar invite with the link. If something comes up, just message me here and we will move it, no awkwardness.'},
-    {t:'Warm, not now',b:'Completely understood, {{name}}. Timing matters more than interest.\n\nI will leave it with you. If things shift in a few months, message me here and we will pick it up. In the meantime I hope the quarter treats you well.'}
+    {t:'First message',n:'Replace the bracket with something true about them. That one line is the whole message.',
+     b:'Hi {{name}}, quick one, and it is not a pitch.\n\nYou are running [what they actually do] and it is working. Usually around this size the business starts living in the founder\'s head and nowhere else.\n\nSophia at Saha Synergy rebuilds that part, so it runs without you in every room.\n\nIs that on your mind right now, or is it a later problem?'},
+    {t:'Follow up, no reply',n:'Send once. Then stop, and mean it.',
+     b:'Hi {{name}}, bumping this once and then I will leave you alone.\n\nIf the timing is off, say so and I will stop. If it is more that you are interested but buried, I understand that too.\n\nWhich one is it?'},
+    {t:'They are interested',n:'Take the pressure off. The call is the ask, not the money.',
+     b:'Good to hear, {{name}}.\n\nFirst call is 30 minutes with Sophia. No deck, nothing to prepare. She asks where the business is, what is eating your week, and what you want it to look like in a year.\n\nWhat day suits you? I will work around your schedule.'},
+    {t:'Booking it in',
+     b:'Done, you are in for {{time}}.\n\nCalendar invite is on its way with the link. If something moves, message me here and we will shift it.'},
+    {t:'Interested, but not now',n:'This one earns the next conversation. Do not push.',
+     b:'Completely fair, {{name}}. Timing beats interest every time.\n\nI will leave it with you. If things change in a few months, message me here and we pick it straight back up.\n\nGood luck with the quarter.'}
   ],
   bfp:[
-    {t:'First message',b:'Hi {{name}}, I have been watching what you are putting out and the ideas are there. The reach is the part that looks like it is fighting you.\n\nI work with Best Friend Production. We handle content strategy, and we also shoot properly when something needs to be shot, music video or film.\n\nWho is looking after your content right now?'},
-    {t:'Follow up, no reply',b:'Hi {{name}}, no worries if this is not the moment.\n\nOne thing I will leave you with. Most accounts we pick up are not short of ideas, they are short of a shape to put them in. If you ever want a second pair of eyes on that, I am here.'},
-    {t:'They showed interest',b:'Great, {{name}}.\n\nBefore we talk, send me two or three pieces you are proud of and one that flopped. The flop usually tells us more.\n\nThe call is 30 minutes and we will walk through what your feed is actually saying versus what you want it to say.'},
-    {t:'Production enquiry',b:'Thanks {{name}}, that helps.\n\nSo I bring the right people to the call, a few quick things. Roughly what are we shooting, when do you need it live, and is there a budget range you are working inside?\n\nHonest answers are fine, even if the answer is that you are still working it out.'},
-    {t:'Booking the call',b:'Booked in for {{time}}.\n\nThe invite is on its way. Bring the links, we will look at them together on the call.'}
+    {t:'First message',n:'Only send this if you have actually looked at their content. It shows either way.',
+     b:'Hi {{name}}, I have been going through your stuff. The ideas are good. The reach is not matching them yet.\n\nI am with Best Friend Production. We do content strategy, and when something needs shooting properly we shoot it, music video or film.\n\nWho is handling your content at the moment?'},
+    {t:'Follow up, no reply',n:'Give something away here. It costs nothing and it is remembered.',
+     b:'Hi {{name}}, once more and then I will stop.\n\nOne thought either way. Most accounts we take on are not short of ideas, they are short of a shape to put them in.\n\nIf you ever want another set of eyes on that, I am here.'},
+    {t:'They are interested',n:'Asking for the flop is the part that makes them trust you.',
+     b:'Great, {{name}}.\n\nBefore we talk, send me two or three posts you are proud of and one that flopped. The flop usually tells us more.\n\n30 minutes, and we go through what your feed is actually saying versus what you want it to say.'},
+    {t:'Production enquiry',n:'Ask the budget question plainly. Dancing around it wastes both weeks.',
+     b:'Thanks {{name}}, that helps.\n\nThree quick things so I bring the right people to the call. What are we shooting, when does it need to be live, and is there a budget range you are working inside?\n\nStill figuring it out is a fine answer to any of them.'},
+    {t:'Booking it in',
+     b:'You are booked for {{time}}.\n\nInvite is on its way. Bring the links, we will pull them up together.'}
   ],
   bwb:[
-    {t:'First message',b:'Hi {{name}}, are you still looking for someone to walk your dog?\n\nI am with BWB. We walk dogs across LA, same walker each time so your dog knows who is coming through the door, and you get photos from the walk.\n\nWhereabouts are you, and what is your dog like?'},
-    {t:'Follow up, no reply',b:'Hi {{name}}, just checking back once.\n\nIf you have already sorted someone, that is genuinely fine, tell me and I will stop messaging. If you are still looking, I can tell you who covers your area and what the days look like.'},
-    {t:'They showed interest',b:'Happy to hear it, {{name}}.\n\nA few things so I can match the right walker. What is your dog’s name and age, how is she with other dogs, and which days were you thinking?\n\nIf she is nervous or reactive, say so plainly. It changes who we send, not whether we come.'},
-    {t:'Meet and greet',b:'Before the first proper walk we do a short meet and greet, free, about 15 minutes. The walker comes to you, meets your dog, and you get to decide if it feels right.\n\nDoes {{time}} work for that?'},
-    {t:'Booking the call',b:'Set for {{time}}.\n\nIf your dog is home at that time, even better. Easier to introduce them in their own space.'}
+    {t:'First message',n:'Short beats clever here. People answer a direct question about their dog.',
+     b:'Hi {{name}}, are you still looking for a dog walker?\n\nI am with BWB. We cover LA, same walker every time so your dog is not meeting a stranger, and you get photos from each walk.\n\nWhereabouts are you, and who is the dog?'},
+    {t:'Follow up, no reply',n:'Giving them an easy way out is what gets the reply.',
+     b:'Hi {{name}}, checking back once.\n\nIf you have already found someone, just say so and I will leave you alone. If you are still looking, I can tell you who covers your street and what the week could look like.'},
+    {t:'They are interested',n:'The reactive-dog line matters. Owners are used to being judged for it.',
+     b:'Happy to hear it, {{name}}.\n\nA few things so I match the right walker. Dog\'s name and age, how she is around other dogs, and which days you are thinking.\n\nIf she is nervous or reactive, say it straight. It changes who we send, not whether we come.'},
+    {t:'Meet and greet',n:'Free and short. Say both, it removes the reason to say no.',
+     b:'Before the first real walk we do a meet and greet. Free, about 15 minutes. The walker comes to you, meets your dog, and you decide if it feels right.\n\nDoes {{time}} work?'},
+    {t:'Booking it in',
+     b:'Set for {{time}}.\n\nIf your dog is home then, even better. Much easier to introduce them on their own turf.'}
   ]
 };
 
@@ -400,11 +415,14 @@ function renderMessages(){
     '<div class="card">'+
       '<h2>'+esc(PROJECT_LABELS[state.project])+'</h2>'+
       '<div class="sub">'+esc(WHO[state.project]||'')+'</div>'+
-      '<div class="locked" style="margin-bottom:16px">Starting points, not rules. Change the wording to sound like you, '+
-        'and use {{name}} and {{time}} where the details go. Nothing here is saved until you press Save on one.</div>'+
+      '<div class="locked" style="margin-bottom:16px">Two rules that decide whether these work. '+
+        '<strong>One:</strong> the first message needs one true, specific line about that person. Without it, it reads as a blast '+
+        'and gets ignored. <strong>Two:</strong> keep them short. Long messages do not get read on a phone.<br><br>'+
+        'Use {{name}} and {{time}} where the details go. Nothing is saved until you press Save on one.</div>'+
       list.map((s,i)=>
         '<div class="sect" style="'+(i===0?'border-top:0;margin-top:0;padding-top:0':'')+'">'+
           '<h3>'+esc(s.t)+'</h3>'+
+          (s.n?'<div class="sub">'+esc(s.n)+'</div>':'')+
           '<textarea data-sug="'+i+'" style="min-height:150px">'+esc(s.b)+'</textarea>'+
           '<div class="acts" style="margin-top:9px">'+
             '<button class="btn btn-sm" data-copy="'+i+'">Copy</button>'+
@@ -450,9 +468,21 @@ async function loadSavedTemplates(){
 //  INVOICE  ·  agreed pay against what the real rows show
 // ===========================================================
 function fmtIDR(n){return PAY.currency+' '+Math.round(n).toLocaleString('en-US')}
-let invMonth=null;
-function renderInvoice(){
+let invMonth=null, allClients=null;
+
+// the target is one number across the whole job, so the invoice reads every
+// project rather than only the tab that happens to be open
+async function renderInvoice(){
   if(!invMonth)invMonth=todayISO().slice(0,7);
+  if(allClients===null){
+    $('view').innerHTML='<div class="card"><div class="empty">Adding up every project…</div></div>';
+    const rows=await db.rows('effi_clients',{});
+    if(rows===null){$('view').innerHTML='<div class="card"><div class="empty">Could not load the clients.</div></div>';return}
+    allClients=rows;
+  }
+  drawInvoice();
+}
+function drawInvoice(){
   const [y,m]=invMonth.split('-').map(Number);
   const inMonth=c=>{
     if(!c.meeting_at)return false;
@@ -460,9 +490,11 @@ function renderInvoice(){
     return d.getFullYear()===y&&d.getMonth()+1===m;
   };
   // counted from the real client rows, nothing modelled
-  const calls=state.clients.filter(c=>(c.status||'')==='booked'&&inMonth(c))
+  const calls=allClients.filter(c=>(c.status||'')==='booked'&&inMonth(c))
     .sort((a,b)=>new Date(a.meeting_at)-new Date(b.meeting_at));
   const hit=calls.length;
+  const byProject={};
+  PROJECTS.forEach(p=>byProject[p]=calls.filter(c=>c.project===p).length);
   const pct=Math.min(100,Math.round(hit/PAY.kpiCalls*100));
   const monthName=new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
 
@@ -470,7 +502,7 @@ function renderInvoice(){
     '<div class="card">'+
       '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:6px">'+
         '<div><h2>Invoice · '+esc(monthName)+'</h2>'+
-        '<div class="sub" style="margin:0">Lia · '+esc(PROJECT_LABELS[state.project])+'</div></div>'+
+        '<div class="sub" style="margin:0">Lia · all three projects together</div></div>'+
         '<div style="flex:1"></div>'+
         '<input type="month" id="invMonth" value="'+esc(invMonth)+'" style="max-width:180px">'+
       '</div>'+
@@ -482,35 +514,44 @@ function renderInvoice(){
       '<div class="stat"><div class="n">'+Math.max(0,PAY.kpiCalls-hit)+'</div><div class="l">STILL TO BOOK</div></div>'+
     '</div>'+
 
+    '<div class="card"><h2>Where they came from</h2>'+
+      '<div class="sub">The same '+hit+' call'+(hit===1?'':'s')+', split by project.</div>'+
+      '<div class="scroller"><table style="min-width:420px"><thead><tr><th>Project</th><th>Booked calls</th></tr></thead><tbody>'+
+        PROJECTS.map(p=>'<tr><td>'+esc(PROJECT_LABELS[p])+'</td><td>'+byProject[p]+'</td></tr>').join('')+
+        '<tr style="background:var(--blush-50)"><td><strong>Together</strong></td><td><strong>'+hit+'</strong></td></tr>'+
+      '</tbody></table></div>'+
+    '</div>'+
+
     '<div class="card"><h2>The calls behind that number</h2>'+
-      '<div class="sub">Every client marked booked with a meeting in '+esc(monthName)+', in '+esc(PROJECT_LABELS[state.project])+'.</div>'+
+      '<div class="sub">Every client marked booked with a meeting in '+esc(monthName)+', across all three projects.</div>'+
       (calls.length?
-        '<div class="scroller"><table style="min-width:560px"><thead><tr><th>#</th><th>When</th><th>Name</th><th>Platform</th></tr></thead><tbody>'+
+        '<div class="scroller"><table style="min-width:660px"><thead><tr><th>#</th><th>When</th><th>Name</th><th>Project</th><th>Platform</th></tr></thead><tbody>'+
         calls.map((c,i)=>'<tr data-id="'+esc(c.id)+'"><td class="disp" style="color:var(--purple-500)">'+(i+1)+'</td>'+
           '<td>'+esc(fmtDateTime(c.meeting_at))+'</td>'+
           '<td class="disp">'+esc(c.name||'(no name)')+'</td>'+
+          '<td class="mini">'+esc(PROJECT_LABELS[c.project]||c.project||'-')+'</td>'+
           '<td class="mini">'+esc(PLATFORM_LABELS[c.source]||c.source||'-')+'</td></tr>').join('')+
         '</tbody></table></div>'
-        :'<div class="empty">No calls booked in this month yet.</div>')+
+        :'<div class="empty">No calls booked in this month yet, in any project.</div>')+
     '</div>'+
 
     '<div class="card"><h2>Terms</h2>'+
       '<div class="sub">Set by Monika on 20 July 2026.</div>'+
       '<table><tbody>'+
         '<tr><td>Salary</td><td><strong>'+esc(fmtIDR(PAY.salary))+' per month</strong></td></tr>'+
-        '<tr><td>Target</td><td><strong>'+PAY.kpiCalls+' booked calls per month</strong></td></tr>'+
-        '<tr><td>Counted from</td><td>Clients marked <em>Booked</em> whose meeting falls inside the month</td></tr>'+
+        '<tr><td>Target</td><td><strong>'+PAY.kpiCalls+' booked calls per month, all projects together</strong></td></tr>'+
+        '<tr><td>Counted from</td><td>Clients marked <em>Booked</em> whose meeting falls inside the month, in Saha Synergy, BWB and Best Friend Production combined</td></tr>'+
       '</tbody></table>'+
-      '<div class="locked" style="margin-top:14px">The target counts this project only. Switch tabs at the top to see another one. '+
+      '<div class="locked" style="margin-top:14px">This page ignores the project tabs at the top. The target is one number '+
+        'for the whole job, so a call booked anywhere counts the same. '+
         'If the salary or the target is wrong, say so and it will be corrected here.</div>'+
     '</div>';
 
-  $('invMonth').onchange=e=>{invMonth=e.target.value||invMonth;renderInvoice()};
-  const tb=document.querySelector('#view tbody');
-  if(tb)tb.onclick=e=>{
+  $('invMonth').onchange=e=>{invMonth=e.target.value||invMonth;drawInvoice()};
+  document.querySelectorAll('#view tbody').forEach(tb=>tb.onclick=e=>{
     const tr=e.target.closest('tr'); if(!tr||!tr.dataset.id)return;
-    clientDetail(state.clients.find(c=>String(c.id)===String(tr.dataset.id)));
-  };
+    clientDetail(allClients.find(c=>String(c.id)===String(tr.dataset.id)));
+  });
 }
 
 // ===========================================================
@@ -856,7 +897,11 @@ function drawDetail(c){
     flag('Saving…','busy');
     const row=await db.update('effi_clients',c.id,
       {status:st,meeting_at:mv?new Date(mv).toISOString():null},'status');
-    if(row){Object.assign(c,row);flag('Saved','ok');renderClientList()}
+    if(row){
+      Object.assign(c,row);
+      allClients=null; // a booking just changed, so the invoice must recount
+      flag('Saved','ok');renderClientList();
+    }
     else flag('Not saved','bad');
   };
   if($('dClearMeet'))$('dClearMeet').onclick=async()=>{
@@ -1168,6 +1213,7 @@ $('tplBtn').onclick=async()=>{
 // ===========================================================
 async function loadProject(){
   state.targetDate=null;state.targets=[];state.session=null;
+  allClients=null; // the invoice spans every project, so it re-reads
   $('view').innerHTML='<div class="card"><div class="empty">Loading '+esc(PROJECT_LABELS[state.project])+'…</div></div>';
   const cs=await db.rows('effi_clients',{project:state.project});
   state.clients=cs||[];
