@@ -4627,6 +4627,13 @@ function calcHours(start,end){
   const [eh,em]=end.split(':').map(Number);
   return Math.max(0,Math.round((eh*60+em-sh*60-sm)/60*10)/10);
 }
+// A day can hold up to two shifts (Leny works morning and evening). Its hours
+// are the two shifts added together. Older slots with no second shift still
+// work, since the missing times contribute zero.
+function dayHours(slot){
+  if(!slot) return 0;
+  return Math.round((calcHours(slot.start,slot.end)+calcHours(slot.start2,slot.end2))*10)/10;
+}
 
 function getSchedHoursForDate(dateStr){
   const ws=getWorkSchedule();
@@ -4642,7 +4649,7 @@ function getMonthScheduledHours(yr,mo){
   for(let d=1;d<=days;d++){
     const ds=`${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const h=getSchedHoursForDate(ds);
-    if(h) total+=calcHours(h.start,h.end);
+    if(h) total+=dayHours(h);
   }
   return Math.round(total*10)/10;
 }
@@ -4655,7 +4662,7 @@ function getWeekScheduledHours(dateStr){
     const dd=new Date(sun); dd.setDate(sun.getDate()+i);
     const ds=dd.toISOString().slice(0,10);
     const h=getSchedHoursForDate(ds);
-    if(h) total+=calcHours(h.start,h.end);
+    if(h) total+=dayHours(h);
   }
   return Math.round(total*10)/10;
 }
@@ -4830,7 +4837,7 @@ function renderSchedMonth(viewMonth, sophiaMode){
           const isToday = dateStr===today();
           const hasTasks = tasks.length>0;
           const wh = getSchedHoursForDate(dateStr);
-          const hrs = wh?calcHours(wh.start,wh.end):0;
+          const hrs = dayHours(wh);
           return `<div onclick="openDayView('${dateStr}')" style="padding:4px 1px 5px;border-radius:8px;cursor:pointer;background:${isToday?'var(--gold-dark)':'transparent'};color:${isToday?'#fff':'var(--brown)'};transition:.1s">
             <div style="font-size:.8rem;font-weight:${isToday?'700':'400'};line-height:1.2">${d}</div>
             ${hrs>0?`<div style="font-size:.52rem;font-weight:600;color:${isToday?'rgba(255,255,255,.75)':'var(--gold-dark)'};">${hrs}h</div>`:''}
@@ -4922,30 +4929,46 @@ function renderSchedHours(sophiaMode){
         // Get dates for this week (Sun–Sat)
         const now2 = new Date();
         const sun2 = new Date(now2); sun2.setDate(now2.getDate()-now2.getDay());
+        const SHIFT1 = state.lang==='id'?'Sesi 1':'Shift 1';
+        const SHIFT2 = state.lang==='id'?'Sesi 2':'Shift 2';
         return DAY_KEYS.map((dk,i)=>{
           const slot = tmpl[dk];
-          const hrs = slot?calcHours(slot.start,slot.end):0;
+          const hrs = dayHours(slot);
           const dayDate = new Date(sun2); dayDate.setDate(sun2.getDate()+i);
           const dateLabel = dayDate.toLocaleDateString(state.lang==='id'?'id-ID':'en-US',{day:'numeric',month:'short'});
-          return `<div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)">
+          return `<div style="display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)">
             <div style="flex-shrink:0;min-width:60px">
               <div style="font-size:.75rem;font-weight:700;color:var(--gold-dark)">${dayShorts[i]}</div>
               <div style="font-size:.62rem;color:#aaa">${dateLabel}</div>
             </div>
             ${sophiaMode?`
-              <input type="checkbox" id="ws-off-${dk}" ${!slot?'checked':''} style="accent-color:var(--gold-dark)"
-                onchange="toggleDayOff('${dk}',this.checked)">
-              <label for="ws-off-${dk}" style="font-size:.68rem;color:#aaa;white-space:nowrap">${t('sched_day_off')}</label>
-              <input type="time" id="ws-start-${dk}" value="${slot?slot.start:''}" ${!slot?'disabled':''} class="fi" oninput="updateTmplTotal()" style="flex:1;padding:5px 8px;font-size:.75rem;${!slot?'opacity:.4':''}">
-              <span style="font-size:.75rem;color:#aaa">–</span>
-              <input type="time" id="ws-end-${dk}" value="${slot?slot.end:''}" ${!slot?'disabled':''} class="fi" oninput="updateTmplTotal()" style="flex:1;padding:5px 8px;font-size:.75rem;${!slot?'opacity:.4':''}">
+              <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <input type="checkbox" id="ws-off-${dk}" ${!slot?'checked':''} style="accent-color:var(--gold-dark)"
+                    onchange="toggleDayOff('${dk}',this.checked)">
+                  <label for="ws-off-${dk}" style="font-size:.68rem;color:#aaa;white-space:nowrap">${t('sched_day_off')}</label>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px">
+                  <span style="font-size:.58rem;color:#aaa;min-width:34px" class="ws-lbl-${dk}">${SHIFT1}</span>
+                  <input type="time" id="ws-start-${dk}" value="${slot?slot.start:''}" ${!slot?'disabled':''} class="fi" oninput="updateTmplTotal()" style="flex:1;padding:5px 8px;font-size:.75rem;${!slot?'opacity:.4':''}">
+                  <span style="font-size:.75rem;color:#aaa">–</span>
+                  <input type="time" id="ws-end-${dk}" value="${slot?slot.end:''}" ${!slot?'disabled':''} class="fi" oninput="updateTmplTotal()" style="flex:1;padding:5px 8px;font-size:.75rem;${!slot?'opacity:.4':''}">
+                </div>
+                <div style="display:flex;align-items:center;gap:5px">
+                  <span style="font-size:.58rem;color:#aaa;min-width:34px">${SHIFT2}</span>
+                  <input type="time" id="ws-start2-${dk}" value="${slot&&slot.start2?slot.start2:''}" ${!slot?'disabled':''} class="fi" oninput="updateTmplTotal()" style="flex:1;padding:5px 8px;font-size:.75rem;${!slot?'opacity:.4':''}">
+                  <span style="font-size:.75rem;color:#aaa">–</span>
+                  <input type="time" id="ws-end2-${dk}" value="${slot&&slot.end2?slot.end2:''}" ${!slot?'disabled':''} class="fi" oninput="updateTmplTotal()" style="flex:1;padding:5px 8px;font-size:.75rem;${!slot?'opacity:.4':''}">
+                </div>
+              </div>
             `:`
               ${(()=>{
                 const ds = dayDate.toISOString().slice(0,10);
                 const actualDay = state.workHours.entries.filter(e=>e.date===ds).reduce((s,e)=>s+(e.duration||0),0);
+                const shift2 = slot&&slot.start2&&slot.end2?'<br>'+slot.start2+' – '+slot.end2:'';
                 return slot
                   ?`<div style="flex:1">
-                      <div style="font-size:.8rem;color:var(--brown)">${slot.start} – ${slot.end}</div>
+                      <div style="font-size:.8rem;color:var(--brown)">${slot.start} – ${slot.end}${shift2}</div>
                       <div style="font-size:.62rem;color:#aaa;margin-top:1px">${state.lang==='id'?'Jadwal':'Scheduled'}: ${hrs}h</div>
                     </div>
                     <div style="text-align:right;flex-shrink:0">
@@ -4968,7 +4991,7 @@ function renderSchedHours(sophiaMode){
       `:`
         <div style="margin-top:10px;padding:12px;background:var(--cream);border-radius:10px;display:flex;justify-content:space-between;align-items:center">
           <span style="font-size:.75rem;color:#888">${state.lang==='id'?'Total jam per minggu':'Total hours per week'}</span>
-          <span style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold-dark)">${DAY_KEYS.reduce((s,dk)=>{const sl=tmpl[dk];return s+(sl?calcHours(sl.start,sl.end):0);},0)}h</span>
+          <span style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold-dark)">${Math.round(DAY_KEYS.reduce((s,dk)=>s+dayHours(tmpl[dk]),0)*10)/10}h</span>
         </div>
       `}
     </div>
@@ -4982,7 +5005,7 @@ function renderSchedHours(sophiaMode){
         <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
           <div style="flex:1">
             <div style="font-size:.82rem;font-weight:500">${fmtDate(ds)}</div>
-            <div style="font-size:.7rem;color:#aaa;margin-top:1px">${slot?`${slot.start} – ${slot.end} · ${calcHours(slot.start,slot.end)}h`:t('sched_off')}</div>
+            <div style="font-size:.7rem;color:#aaa;margin-top:1px">${slot?`${slot.start} – ${slot.end}${slot.start2&&slot.end2?' , '+slot.start2+' – '+slot.end2:''} · ${dayHours(slot)}h`:t('sched_off')}</div>
           </div>
           ${sophiaMode?`<button class="btn btn-d btn-sm" onclick="deleteOverride('${ds}')">🗑️</button>`:''}
         </div>`).join('')}
@@ -4992,21 +5015,24 @@ function renderSchedHours(sophiaMode){
 }
 
 function toggleDayOff(dk, isOff){
-  const startEl = document.getElementById('ws-start-'+dk);
-  const endEl = document.getElementById('ws-end-'+dk);
-  if(startEl) { startEl.disabled=isOff; startEl.style.opacity=isOff?'.4':'1'; }
-  if(endEl) { endEl.disabled=isOff; endEl.style.opacity=isOff?'.4':'1'; }
+  ['ws-start-'+dk,'ws-end-'+dk,'ws-start2-'+dk,'ws-end2-'+dk].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.disabled=isOff; el.style.opacity=isOff?'.4':'1'; }
+  });
+  updateTmplTotal();
 }
 
 function updateTmplTotal(){
   let total = 0;
   DAY_KEYS.forEach(dk=>{
     const offEl = document.getElementById('ws-off-'+dk);
-    const startEl = document.getElementById('ws-start-'+dk);
-    const endEl = document.getElementById('ws-end-'+dk);
     if(!offEl||offEl.checked) return;
-    const s = startEl?.value; const e = endEl?.value;
+    const s = document.getElementById('ws-start-'+dk)?.value;
+    const e = document.getElementById('ws-end-'+dk)?.value;
+    const s2 = document.getElementById('ws-start2-'+dk)?.value;
+    const e2 = document.getElementById('ws-end2-'+dk)?.value;
     if(s&&e) total += calcHours(s,e);
+    if(s2&&e2) total += calcHours(s2,e2);
   });
   const el = document.getElementById('tmpl-total-val');
   if(el) el.textContent = total > 0 ? total.toFixed(1)+'h' : '—';
@@ -5016,15 +5042,16 @@ function saveWorkTemplate(){
   const ws = getWorkSchedule();
   DAY_KEYS.forEach(dk=>{
     const offEl = document.getElementById('ws-off-'+dk);
-    const startEl = document.getElementById('ws-start-'+dk);
-    const endEl = document.getElementById('ws-end-'+dk);
     if(!offEl) return;
-    if(offEl.checked){ ws.template[dk]=null; }
-    else {
-      const start = startEl?.value||'08:00';
-      const end = endEl?.value||'17:00';
-      ws.template[dk] = {start,end};
-    }
+    if(offEl.checked){ ws.template[dk]=null; return; }
+    const start = document.getElementById('ws-start-'+dk)?.value||'08:00';
+    const end = document.getElementById('ws-end-'+dk)?.value||'17:00';
+    // the second shift is optional: only kept when both of its times are set
+    const start2 = document.getElementById('ws-start2-'+dk)?.value||'';
+    const end2 = document.getElementById('ws-end2-'+dk)?.value||'';
+    const slot = {start,end};
+    if(start2&&end2){ slot.start2=start2; slot.end2=end2; }
+    ws.template[dk] = slot;
   });
   saveState();
   showToast(t('sched_hrs_saved'),'sage');
