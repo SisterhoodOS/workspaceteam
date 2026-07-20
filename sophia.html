@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sophia · Saha Synergy</title>
+<meta name="theme-color" content="#A55166">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --mist:#F7DAE7; --bubble:#E2B4C1; --cherry:#D38C9D; --ruby:#A55166;
+  --ink:#4A2230; --soft:#8B6472; --paper:#FFFDFE; --shell:#FDF6F9;
+  --line:#F2DFE7;
+  --shadow:0 10px 30px rgba(165,81,102,.13);
+  --shadow-sm:0 4px 14px rgba(165,81,102,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:var(--ink);
+  background:linear-gradient(180deg,#FFF9FB 0%,var(--mist) 100%) fixed;min-height:100vh}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400}
+a{color:var(--ruby)}
+button,input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+header.hero{background:linear-gradient(135deg,var(--ruby) 0%,var(--cherry) 55%,var(--bubble) 100%);
+  color:#fff;padding:52px 0 44px;position:relative;overflow:hidden}
+header.hero:after{content:'';position:absolute;right:-70px;top:-70px;width:280px;height:280px;
+  border-radius:50%;background:rgba(255,255,255,.12)}
+header.hero .brand{font-size:10px;letter-spacing:4px;text-transform:uppercase;opacity:.85;margin-bottom:14px}
+header.hero h1{font-size:44px;letter-spacing:.5px;line-height:1.1}
+header.hero .sub{margin-top:10px;font-size:13.5px;opacity:.92;max-width:560px}
+header.hero .when{margin-top:16px;font-size:12px;opacity:.8}
+
+nav.tabs{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;
+  box-shadow:var(--shadow-sm)}
+nav.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:16px 18px;cursor:pointer;white-space:nowrap;
+  font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--soft);
+  border-bottom:2px solid transparent;transition:.16s}
+nav.tabs button:hover{color:var(--ruby)}
+nav.tabs button.on{color:var(--ruby);border-bottom-color:var(--ruby)}
+
+main{padding:30px 0 60px}
+.card{background:var(--paper);border-radius:6px;box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+.card .lbl{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--cherry);margin-bottom:6px}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .lead{font-size:13px;color:var(--soft);margin-bottom:18px;max-width:640px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.stat{background:var(--paper);border-radius:6px;box-shadow:var(--shadow-sm);padding:18px 20px;border-top:3px solid var(--bubble)}
+.stat.ruby{border-top-color:var(--ruby)}
+.stat.cherry{border-top-color:var(--cherry)}
+.stat .k{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft)}
+.stat .v{font-family:'Cormorant Garamond',Georgia,serif;font-size:33px;line-height:1.1;margin-top:4px;color:var(--ruby)}
+.stat .n{font-size:11.5px;color:var(--soft);margin-top:3px}
+.bar{height:5px;border-radius:99px;background:var(--mist);margin-top:9px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--cherry),var(--ruby))}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-family:'Cormorant Garamond',Georgia,serif;font-size:12.5px;color:var(--ruby);
+  padding:10px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:var(--shell)}
+.scroll{overflow-x:auto;margin:0 -6px;padding:0 6px}
+.num{text-align:right;white-space:nowrap}
+.mini{font-size:11.5px;color:var(--soft)}
+.empty{text-align:center;padding:34px 16px;color:var(--soft);font-family:'Cormorant Garamond',Georgia,serif;font-size:16px}
+
+.pill{display:inline-block;border-radius:99px;padding:3px 11px;font-size:11px;font-weight:600;white-space:nowrap}
+.p-done{background:#E4F0E7;color:#3F7050} .p-open{background:var(--mist);color:var(--ruby)}
+.p-warn{background:#FBEEDC;color:#8A6420} .p-flat{background:var(--shell);color:var(--soft)}
+
+.who-sophia{color:#C2477E} .who-sam{color:#1F3A6E} .who-denise{color:#8B6BB5}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.d-sophia{background:#E88FB4} .d-sam{background:#1F3A6E} .d-denise{background:#B79BDB}
+
+.person{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.person .ring{width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;
+  justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;color:#fff;
+  background:linear-gradient(135deg,var(--ruby),var(--cherry))}
+.person .nm{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px}
+.person .rl{font-size:11.5px;color:var(--soft)}
+
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:5px;padding:13px 15px;
+  background:var(--shell);resize:vertical;line-height:1.6}
+textarea:focus{outline:none;border-color:var(--cherry);background:#fff}
+.btn{border:0;border-radius:99px;padding:12px 28px;cursor:pointer;font-size:12px;letter-spacing:1.6px;
+  text-transform:uppercase;background:linear-gradient(135deg,var(--ruby),var(--cherry));color:#fff;
+  box-shadow:var(--shadow-sm);transition:.16s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;transform:none;cursor:default}
+.btn.ghost{background:var(--paper);color:var(--ruby);border:1px solid var(--line)}
+.note-row{border-left:3px solid var(--bubble);padding:11px 0 11px 14px;margin-bottom:14px}
+.note-row .when{font-size:11px;color:var(--soft);margin-top:5px}
+
+/* the thank you, after a note is sent */
+#love{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;
+  background:rgba(165,81,102,.94);color:#fff;text-align:center;padding:24px}
+#love.on{display:flex;animation:fade .4s ease}
+#love .in{animation:rise .7s cubic-bezier(.2,.9,.3,1)}
+#love .big{font-family:'Cormorant Garamond',Georgia,serif;font-size:62px;line-height:1.1}
+#love .sm{margin-top:14px;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;opacity:.9}
+#love .hearts{font-size:30px;margin-bottom:16px;letter-spacing:8px}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+
+#gateMsg{position:fixed;inset:0;z-index:600;background:linear-gradient(135deg,var(--ruby),var(--cherry));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:19px;text-align:center;padding:24px}
+#bar{position:fixed;right:14px;bottom:14px;z-index:200;background:var(--ruby);color:#fff;border-radius:99px;
+  padding:9px 16px;font-size:11.5px;box-shadow:var(--shadow);display:none;align-items:center;gap:10px}
+#bar a{color:#F7DAE7;text-decoration:underline;cursor:pointer}
+@media(max-width:560px){
+  header.hero h1{font-size:33px}
+  #bar{left:14px;right:14px;justify-content:center}
+  #love .big{font-size:44px}
+}
+@media print{nav.tabs,#bar{display:none!important}}
+</style>
+</head>
+<body>
+
+<div id="gateMsg">Opening your space…</div>
+
+<div id="app" style="display:none">
+  <header class="hero">
+    <div class="wrap">
+      <div class="brand">Saha Synergy Group Ltd</div>
+      <h1>Hi Queen, this is your space</h1>
+      <div class="sub">Everything your team is carrying, in one place. Progress, hours, spending and reports, kept up to date as they work.</div>
+      <div class="when" id="heroWhen"></div>
+    </div>
+  </header>
+
+  <nav class="tabs"><div class="wrap" id="tabs"></div></nav>
+
+  <main><div class="wrap" id="view"></div></main>
+</div>
+
+<div id="love"><div class="in">
+  <div class="hearts">🤍 🤍 🤍</div>
+  <div class="big">we love you</div>
+  <div class="sm">Your note has been delivered</div>
+</div></div>
+
+<div id="bar"><span id="barTxt">Up to date</span><a id="barRefresh">Refresh</a><a id="barOut">Switch person</a></div>
+
+<script>
+/* ===========================================================
+   Sophia's overview.
+
+   Read only. It reads what the team has already recorded and
+   never writes to their records; the one thing it writes is a
+   note, into its own table. Every figure on this page is
+   counted from a real row, and where there is no row it says
+   so rather than showing a zero that looks like a result.
+=========================================================== */
+(function(){
+'use strict';
+
+const WS_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
+const WS_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
+const EF_URL='https://hseffkdzxyiescyrvvzr.supabase.co';
+const EF_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzZWZma2R6eHlpZXNjeXJ2dnpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5OTM2NzIsImV4cCI6MjA5NDU2OTY3Mn0.X6upfM8BUyyvQiFSrS7WkDd5iR08qEp3p8tE9nn2bmQ';
+const SOPHIA='sophia@sisterhoodos.io';
+
+const ws=supabase.createClient(WS_URL,WS_KEY);
+const ef=supabase.createClient(EF_URL,EF_KEY,{auth:{persistSession:false}});
+
+const TABS=[['home','Overview'],['monika','Monika'],['leny','Leny'],['lia','Lia'],['notes','Notes']];
+const PEOPLE=[['share_sophia','Sophia','sophia'],['share_sam','Sam','sam'],['share_denise','Denise','denise']];
+const KPI_CALLS=15;
+
+const D={tasks:[],work:[],hub:null,home:[],clients:[],notes:[],loaded:false};
+let tab='home', month=null;
+
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function rp(n){return 'IDR '+Math.round(Number(n)||0).toLocaleString('en-US')}
+function isoToday(){const d=new Date();return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function thisMonth(){return isoToday().slice(0,7)}
+function longDate(iso){const d=new Date(iso+'T00:00:00');
+  return isNaN(d)?iso:d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function stamp(iso){if(!iso)return '';const d=new Date(iso);
+  return d.toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}
+function monthName(m){const[y,mm]=m.split('-');return new Date(+y,+mm-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'})}
+function status(t,cls){$('barTxt').textContent=t;$('bar').style.background=cls==='bad'?'#B5453F':'var(--ruby)'}
+
+// a figure with no rows behind it is said out loud, not shown as zero
+function unknown(what){return '<div class="empty">Nothing recorded yet for '+esc(what)+'.</div>'}
+
+// ---------- loading ----------
+async function loadAll(){
+  status('Loading…');
+  const out=[];
+  const st=await ws.from('workspace_state').select('key,value,updated_at');
+  if(st.error){console.error(st.error);out.push('the team workspace')}
+  else{
+    // this page reads across accounts, so two people can hold the same key.
+    // keep the freshest, never whichever happened to arrive last.
+    const m=new Map(), seen=new Map();
+    (st.data||[]).forEach(r=>{
+      const prev=seen.get(r.key);
+      if(prev&&String(prev)>=String(r.updated_at||''))return;
+      seen.set(r.key,r.updated_at||'');
+      m.set(r.key,r.value);
+    });
+    D.tasks=Array.isArray(m.get('monika_tasks_v1'))?m.get('monika_tasks_v1'):[];
+    D.work =Array.isArray(m.get('monika_workspace_v1'))?m.get('monika_workspace_v1'):[];
+    D.hub  =m.get('leny__leny_hub_v2')||null;
+  }
+  const he=await ws.from('home_expenses').select('*').order('spent_on',{ascending:false});
+  if(he.error){console.error(he.error);out.push('household spending')} else D.home=he.data||[];
+
+  const nt=await ws.from('team_notes').select('*').order('created_at',{ascending:false}).limit(50);
+  if(nt.error){console.error(nt.error)} else D.notes=nt.data||[];
+
+  const cl=await ef.from('effi_clients').select('*');
+  if(cl.error){console.error(cl.error);out.push('Lia’s clients')} else D.clients=cl.data||[];
+
+  D.loaded=true;
+  status(out.length?('Could not load: '+out.join(', ')):'Up to date',out.length?'bad':'');
+  render();
+}
+
+// ---------- shell ----------
+function drawTabs(){
+  $('tabs').innerHTML=TABS.map(t=>'<button data-t="'+t[0]+'" class="'+(t[0]===tab?'on':'')+'">'+esc(t[1])+'</button>').join('');
+}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;drawTabs();render()};
+function render(){
+  if(!month)month=thisMonth();
+  if(tab==='home')viewHome();
+  else if(tab==='monika')viewMonika();
+  else if(tab==='leny')viewLeny();
+  else if(tab==='lia')viewLia();
+  else viewNotes();
+}
+
+// ---------- the numbers, each counted from real rows ----------
+function monikaFigures(){
+  const today=isoToday();
+  const t=D.tasks;
+  const todays=t.filter(x=>x.date===today);
+  const done=todays.filter(x=>x.status==='done').length;
+  const open=t.filter(x=>x.status!=='done').length;
+  const overdue=t.filter(x=>x.date<today&&x.status!=='done').length;
+  const hrsMonth=t.filter(x=>String(x.date||'').slice(0,7)===month)
+    .reduce((s,x)=>s+(+x.hrs||0),0);
+  const logged=D.work.filter(x=>String(x.date||'').slice(0,7)===month);
+  return {t,todays,done,open,overdue,hrsMonth,logged};
+}
+function lenyFigures(){
+  const h=D.hub||{};
+  const entries=((h.workHours&&h.workHours.entries)||[]).filter(e=>String(e.date||'').slice(0,7)===month);
+  const hours=entries.reduce((s,e)=>s+(Number(e.duration)||0),0);
+  const rate=Number(h.payRate)||0;
+  const day=(obj)=>{
+    const d=(obj||{})[isoToday()];
+    if(!d)return null;
+    const vals=Object.values(d);
+    return {done:vals.filter(Boolean).length,total:vals.length};
+  };
+  return {hub:h,entries,hours,rate,
+    hanu:day(h.hanuCare),house:day(h.lenyHouseTasks),cook:day(h.cookingTasks),shop:day(h.groceryTasks)};
+}
+function homeFigures(){
+  const rows=D.home.filter(r=>String(r.spent_on||'').slice(0,7)===month);
+  const total=rows.reduce((s,r)=>s+(Number(r.amount)||0),0);
+  const per={};PEOPLE.forEach(p=>per[p[0]]=rows.reduce((s,r)=>s+(Number(r[p[0]])||0),0));
+  return {rows,total,per};
+}
+function liaFigures(){
+  const [y,m]=month.split('-').map(Number);
+  const inMonth=c=>{if(!c.meeting_at)return false;const d=new Date(c.meeting_at);
+    return d.getFullYear()===y&&d.getMonth()+1===m};
+  const booked=D.clients.filter(c=>(c.status||'')==='booked'&&inMonth(c))
+    .sort((a,b)=>new Date(a.meeting_at)-new Date(b.meeting_at));
+  const replied=D.clients.filter(c=>(c.status||'no_response')!=='no_response').length;
+  const reports=D.clients.filter(c=>c.report_sent_at).length;
+  const upcoming=D.clients.filter(c=>c.meeting_at&&new Date(c.meeting_at)>=Date.now())
+    .sort((a,b)=>new Date(a.meeting_at)-new Date(b.meeting_at));
+  return {booked,replied,reports,upcoming};
+}
+
+function monthPicker(){
+  return '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px">'+
+    '<span class="mini">Showing</span>'+
+    '<input type="month" id="mPick" value="'+month+'" style="padding:8px 11px;border:1px solid var(--line);'+
+      'border-radius:5px;background:var(--paper);max-width:180px">'+
+    '<span class="mini">'+esc(monthName(month))+'</span></div>';
+}
+function wireMonth(){const el=$('mPick');if(el)el.onchange=e=>{month=e.target.value||month;render()}}
+
+// ---------- OVERVIEW ----------
+function viewHome(){
+  const M=monikaFigures(), L=lenyFigures(), H=homeFigures(), A=liaFigures();
+  const pct=M.todays.length?Math.round(M.done/M.todays.length*100):0;
+  const callPct=Math.min(100,Math.round(A.booked.length/KPI_CALLS*100));
+
+  $('view').innerHTML=
+    monthPicker()+
+    '<div class="stats">'+
+      '<div class="stat ruby"><div class="k">Monika, today</div><div class="v">'+M.done+' / '+M.todays.length+'</div>'+
+        '<div class="bar"><span style="width:'+pct+'%"></span></div>'+
+        '<div class="n">'+M.open+' open in total'+(M.overdue?', '+M.overdue+' overdue':'')+'</div></div>'+
+      '<div class="stat cherry"><div class="k">Leny, hours this month</div><div class="v">'+L.hours.toFixed(1)+'</div>'+
+        '<div class="n">'+L.entries.length+' day'+(L.entries.length===1?'':'s')+' clocked in</div></div>'+
+      '<div class="stat ruby"><div class="k">Lia, booked calls</div><div class="v">'+A.booked.length+' / '+KPI_CALLS+'</div>'+
+        '<div class="bar"><span style="width:'+callPct+'%"></span></div>'+
+        '<div class="n">'+callPct+'% of the monthly target</div></div>'+
+      '<div class="stat cherry"><div class="k">Household spending</div><div class="v">'+rp(H.total)+'</div>'+
+        '<div class="n">'+H.rows.length+' shop'+(H.rows.length===1?'':'s')+' this month</div></div>'+
+    '</div>'+
+
+    '<div class="card"><div class="lbl">Household</div><h2>Who owes what</h2>'+
+      '<div class="lead">Split as Leny recorded it, for '+esc(monthName(month))+'.</div>'+
+      (H.rows.length?
+        '<div class="stats" style="margin-bottom:0">'+PEOPLE.map(p=>
+          '<div class="stat"><div class="k"><span class="dot d-'+p[2]+'"></span>'+p[1]+'</div>'+
+          '<div class="v who-'+p[2]+'">'+rp(H.per[p[0]])+'</div></div>').join('')+'</div>'
+        :unknown('household spending this month'))+
+    '</div>'+
+
+    '<div class="card"><div class="lbl">Coming up</div><h2>Meetings ahead</h2>'+
+      '<div class="lead">Every call Lia has booked that has not happened yet.</div>'+
+      (A.upcoming.length?
+        '<div class="scroll"><table><thead><tr><th>When</th><th>Who</th><th>Project</th></tr></thead><tbody>'+
+        A.upcoming.slice(0,8).map(c=>'<tr><td><strong>'+esc(stamp(c.meeting_at))+'</strong></td>'+
+          '<td class="serif" style="font-size:16px">'+esc(c.name||'')+'</td>'+
+          '<td class="mini">'+esc(c.project||'')+'</td></tr>').join('')+'</tbody></table></div>'
+        :unknown('upcoming meetings'))+
+    '</div>'+
+
+    '<div class="card"><div class="lbl">From you</div><h2>Your last note</h2>'+
+      (D.notes.length?
+        '<div class="note-row">'+esc(D.notes[0].body)+'<div class="when">'+esc(stamp(D.notes[0].created_at))+'</div></div>'+
+        '<button class="btn ghost" id="goNotes">Write another</button>'
+        :'<div class="lead">You have not left a note yet. The team sees them the moment they open their own space.</div>'+
+         '<button class="btn" id="goNotes">Write your first note</button>')+
+    '</div>';
+
+  wireMonth();
+  if($('goNotes'))$('goNotes').onclick=()=>{tab='notes';drawTabs();render()};
+}
+
+// ---------- MONIKA ----------
+function viewMonika(){
+  const M=monikaFigures();
+  const byArea={}, byCat={};
+  M.t.forEach(t=>{
+    const a=t.area||'sisterhood';
+    byArea[a]=byArea[a]||{n:0,done:0};byArea[a].n++;if(t.status==='done')byArea[a].done++;
+    const c=t.cat||'Other';
+    byCat[c]=byCat[c]||{n:0,hrs:0};byCat[c].n++;byCat[c].hrs+=(+t.hrs||0);
+  });
+  const AREAS={sisterhood:'Sisterhood',home:'Household',finance:'Finance'};
+
+  $('view').innerHTML=
+    '<div class="card"><div class="person"><div class="ring">M</div>'+
+      '<div><div class="nm">Monika Purba</div><div class="rl">Head of Social Media and Operations</div></div></div>'+
+      monthPicker()+
+      '<div class="stats" style="margin-bottom:0">'+
+        '<div class="stat ruby"><div class="k">Done today</div><div class="v">'+M.done+' / '+M.todays.length+'</div></div>'+
+        '<div class="stat"><div class="k">Still open</div><div class="v">'+M.open+'</div>'+
+          '<div class="n">across every date</div></div>'+
+        '<div class="stat cherry"><div class="k">Overdue</div><div class="v">'+M.overdue+'</div>'+
+          '<div class="n">from earlier days</div></div>'+
+        '<div class="stat"><div class="k">Hours on tasks</div><div class="v">'+M.hrsMonth.toFixed(1)+'</div>'+
+          '<div class="n">'+esc(monthName(month))+'</div></div>'+
+      '</div></div>'+
+
+    '<div class="card"><div class="lbl">Today</div><h2>'+esc(longDate(isoToday()))+'</h2>'+
+      '<div class="lead">What Monika has on for today, and how far through it she is.</div>'+
+      (M.todays.length?
+        '<div class="scroll"><table><thead><tr><th>Task</th><th>Kind of work</th><th>Area</th><th>Steps</th><th>Status</th></tr></thead><tbody>'+
+        M.todays.map(t=>{
+          const st=Array.isArray(t.steps)?t.steps:[];
+          const sd=st.filter(s=>s.done).length;
+          return '<tr><td><strong>'+esc(t.title||'')+'</strong></td>'+
+            '<td class="mini">'+esc(t.cat||'')+'</td>'+
+            '<td class="mini">'+esc(AREAS[t.area||'sisterhood']||'')+'</td>'+
+            '<td class="mini">'+(st.length?sd+' of '+st.length:'-')+'</td>'+
+            '<td><span class="pill '+(t.status==='done'?'p-done':'p-open')+'">'+
+              esc(t.status==='done'?'Done':(t.status||'to do'))+'</span></td></tr>';
+        }).join('')+'</tbody></table></div>'
+        :unknown('today'))+
+    '</div>'+
+
+    '<div class="card"><div class="lbl">The whole list</div><h2>Work by kind</h2>'+
+      '<div class="lead">Every task on her board, grouped, with the hours she has put against each.</div>'+
+      (Object.keys(byCat).length?
+        '<div class="scroll"><table><thead><tr><th>Kind of work</th><th class="num">Tasks</th><th class="num">Hours logged</th></tr></thead><tbody>'+
+        Object.keys(byCat).sort((a,b)=>byCat[b].n-byCat[a].n).map(c=>
+          '<tr><td>'+esc(c)+'</td><td class="num">'+byCat[c].n+'</td>'+
+          '<td class="num">'+(byCat[c].hrs?byCat[c].hrs.toFixed(2):'-')+'</td></tr>').join('')+
+        '</tbody></table></div>'
+        :unknown('her task list'))+
+      (Object.keys(byArea).length?
+        '<div class="stats" style="margin-top:18px;margin-bottom:0">'+Object.keys(byArea).map(a=>
+          '<div class="stat"><div class="k">'+esc(AREAS[a]||a)+'</div>'+
+          '<div class="v">'+byArea[a].done+' / '+byArea[a].n+'</div><div class="n">finished</div></div>').join('')+'</div>':'')+
+    '</div>';
+  wireMonth();
+}
+
+// ---------- LENY ----------
+function viewLeny(){
+  const L=lenyFigures(), H=homeFigures();
+  const block=(label,d)=>'<div class="stat"><div class="k">'+label+'</div><div class="v">'+
+    (d?d.done+' / '+d.total:'-')+'</div><div class="n">'+(d?'today':'not started today')+'</div></div>';
+
+  $('view').innerHTML=
+    '<div class="card"><div class="person"><div class="ring">L</div>'+
+      '<div><div class="nm">Leny</div><div class="rl">Household</div></div></div>'+
+      monthPicker()+
+      '<div class="stats" style="margin-bottom:0">'+
+        '<div class="stat ruby"><div class="k">Hours this month</div><div class="v">'+L.hours.toFixed(1)+'</div>'+
+          '<div class="n">'+L.entries.length+' day'+(L.entries.length===1?'':'s')+' clocked</div></div>'+
+        '<div class="stat cherry"><div class="k">Earned this month</div><div class="v">'+
+          (L.rate?rp(L.hours*L.rate):'not set')+'</div>'+
+          '<div class="n">'+(L.rate?'at '+rp(L.rate)+' an hour':'her hourly rate has not been filled in')+'</div></div>'+
+        block('Hanu care',L.hanu)+block('House',L.house)+block('Cooking',L.cook)+
+      '</div></div>'+
+
+    '<div class="card"><div class="lbl">Hours</div><h2>Days worked in '+esc(monthName(month))+'</h2>'+
+      '<div class="lead">Clocked in and out by Leny herself.</div>'+
+      (L.entries.length?
+        '<div class="scroll"><table><thead><tr><th>Day</th><th>In</th><th>Out</th><th class="num">Hours</th>'+
+        (L.rate?'<th class="num">Pay</th>':'')+'</tr></thead><tbody>'+
+        L.entries.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(e=>
+          '<tr><td>'+esc(e.date||'')+'</td><td class="mini">'+esc(e.timeIn||'-')+'</td>'+
+          '<td class="mini">'+esc(e.timeOut||'-')+'</td>'+
+          '<td class="num">'+(Number(e.duration)||0).toFixed(2)+'</td>'+
+          (L.rate?'<td class="num">'+rp((Number(e.duration)||0)*L.rate)+'</td>':'')+'</tr>').join('')+
+        '<tr style="background:var(--mist)"><td colspan="3"><strong>Total</strong></td>'+
+          '<td class="num"><strong>'+L.hours.toFixed(2)+'</strong></td>'+
+          (L.rate?'<td class="num"><strong>'+rp(L.hours*L.rate)+'</strong></td>':'')+'</tr>'+
+        '</tbody></table></div>'
+        :unknown('hours this month'))+
+    '</div>'+
+
+    '<div class="card"><div class="lbl">Household</div><h2>Shopping and the split</h2>'+
+      '<div class="lead">Everything Leny bought this month, and who each shop belongs to.</div>'+
+      (H.rows.length?
+        '<div class="scroll"><table><thead><tr><th>Date</th><th>What</th><th class="num">Amount</th>'+
+        PEOPLE.map(p=>'<th class="num who-'+p[2]+'"><span class="dot d-'+p[2]+'"></span>'+p[1]+'</th>').join('')+
+        '</tr></thead><tbody>'+
+        H.rows.map(r=>'<tr><td class="mini">'+esc(r.spent_on||'')+'</td><td>'+esc(r.description||'')+'</td>'+
+          '<td class="num">'+rp(r.amount)+'</td>'+
+          PEOPLE.map(p=>'<td class="num who-'+p[2]+'">'+((Number(r[p[0]])||0)?rp(r[p[0]]):'-')+'</td>').join('')+
+          '</tr>').join('')+
+        '<tr style="background:var(--mist)"><td></td><td><strong>Total</strong></td>'+
+          '<td class="num"><strong>'+rp(H.total)+'</strong></td>'+
+          PEOPLE.map(p=>'<td class="num who-'+p[2]+'"><strong>'+rp(H.per[p[0]])+'</strong></td>').join('')+'</tr>'+
+        '</tbody></table></div>'
+        :unknown('shopping this month'))+
+    '</div>';
+  wireMonth();
+}
+
+// ---------- LIA ----------
+function viewLia(){
+  const A=liaFigures();
+  const STAT={no_response:'No response',response:'Response',interest:'Interest',
+    not_interest:'Not interest',booked:'Booked',canceled:'Canceled'};
+  const byStatus={};D.clients.forEach(c=>{const s=c.status||'no_response';byStatus[s]=(byStatus[s]||0)+1});
+  const byProject={};D.clients.forEach(c=>{const p=c.project||'-';byProject[p]=(byProject[p]||0)+1});
+  const callPct=Math.min(100,Math.round(A.booked.length/KPI_CALLS*100));
+
+  $('view').innerHTML=
+    '<div class="card"><div class="person"><div class="ring">L</div>'+
+      '<div><div class="nm">Lia</div><div class="rl">Outreach, all three projects</div></div></div>'+
+      monthPicker()+
+      '<div class="stats" style="margin-bottom:0">'+
+        '<div class="stat ruby"><div class="k">Booked calls</div><div class="v">'+A.booked.length+' / '+KPI_CALLS+'</div>'+
+          '<div class="bar"><span style="width:'+callPct+'%"></span></div>'+
+          '<div class="n">'+esc(monthName(month))+', all projects together</div></div>'+
+        '<div class="stat"><div class="k">Clients</div><div class="v">'+D.clients.length+'</div></div>'+
+        '<div class="stat cherry"><div class="k">Have replied</div><div class="v">'+A.replied+'</div></div>'+
+        '<div class="stat"><div class="k">Reports sent to you</div><div class="v">'+A.reports+'</div></div>'+
+      '</div></div>'+
+
+    '<div class="card"><div class="lbl">Reports</div><h2>Client reports ready for you</h2>'+
+      '<div class="lead">Prepared by Lia before each meeting. The full text is kept, so it is here whenever you want it.</div>'+
+      (A.reports?
+        D.clients.filter(c=>c.report_sent_at)
+          .sort((a,b)=>String(b.report_sent_at).localeCompare(String(a.report_sent_at)))
+          .map(c=>'<div class="note-row"><strong class="serif" style="font-size:18px">'+esc(c.name||'')+'</strong>'+
+            ' <span class="pill p-flat">'+esc(c.project||'')+'</span>'+
+            (c.meeting_at?'<div class="mini">Meeting '+esc(stamp(c.meeting_at))+'</div>':'')+
+            '<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--ruby);font-size:12.5px">Read the report</summary>'+
+            '<pre style="white-space:pre-wrap;word-break:break-word;background:var(--shell);border-radius:5px;'+
+            'padding:14px;margin-top:9px;font-size:12.5px;line-height:1.6">'+esc(c.report_text||'')+'</pre></details>'+
+            '<div class="when">Sent '+esc(stamp(c.report_sent_at))+'</div></div>').join('')
+        :unknown('client reports'))+
+    '</div>'+
+
+    '<div class="card"><div class="lbl">Pipeline</div><h2>Where everyone stands</h2>'+
+      (D.clients.length?
+        '<div class="scroll"><table><thead><tr><th>Status</th><th class="num">Clients</th></tr></thead><tbody>'+
+        Object.keys(STAT).map(s=>'<tr><td>'+esc(STAT[s])+'</td><td class="num">'+(byStatus[s]||0)+'</td></tr>').join('')+
+        '</tbody></table></div>'+
+        '<div class="stats" style="margin-top:18px;margin-bottom:0">'+Object.keys(byProject).map(p=>
+          '<div class="stat"><div class="k">'+esc(p)+'</div><div class="v">'+byProject[p]+'</div>'+
+          '<div class="n">clients</div></div>').join('')+'</div>'
+        :unknown('Lia’s client list'))+
+    '</div>';
+  wireMonth();
+}
+
+// ---------- NOTES ----------
+function viewNotes(){
+  $('view').innerHTML=
+    '<div class="card"><div class="lbl">A word from you</div><h2>Leave the team a note</h2>'+
+      '<div class="lead">Anything you want them to know. Monika, Leny and Lia all see it in their own space. '+
+        'Notes are kept, so nothing gets lost in a chat thread.</div>'+
+      '<textarea id="noteBody" placeholder="Write it here…"></textarea>'+
+      '<div style="display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap">'+
+        '<button class="btn" id="noteSend">Send note</button>'+
+        '<span class="mini" id="noteMsg"></span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card"><div class="lbl">Kept</div><h2>Everything you have sent</h2>'+
+      (D.notes.length?
+        D.notes.map(n=>'<div class="note-row">'+esc(n.body)+
+          '<div class="when">'+esc(stamp(n.created_at))+'</div></div>').join('')
+        :unknown('notes'))+
+    '</div>';
+
+  $('noteSend').onclick=async()=>{
+    const el=$('noteBody'), body=el.value.trim();
+    const msg=$('noteMsg');
+    if(!body){msg.textContent='Write something first.';return}
+    $('noteSend').disabled=true;msg.textContent='Sending…';
+    const {data,error}=await ws.from('team_notes').insert({body:body,author:'sophia'}).select().single();
+    $('noteSend').disabled=false;
+    if(error){console.error(error);msg.textContent='It did not send. Check the connection and try again.';return}
+    msg.textContent='';el.value='';
+    D.notes.unshift(data);
+    showLove();
+  };
+}
+function showLove(){
+  const l=$('love');
+  l.classList.add('on');
+  setTimeout(()=>{l.classList.remove('on');render()},2600);
+  l.onclick=()=>{l.classList.remove('on');render()};
+}
+
+// ---------- boot ----------
+$('barRefresh').onclick=loadAll;
+$('barOut').onclick=()=>{
+  try{sessionStorage.removeItem('ws_gate')}catch(e){}
+  localStorage.setItem('ws_profile','');
+  location.href='index.html';
+};
+
+(async function(){
+  let passed=false;
+  try{passed=sessionStorage.getItem('ws_gate')==='1'}catch(e){}
+  if(!passed){location.replace('index.html');return}
+  const {data}=await ws.auth.getSession();
+  if(!data||!data.session){location.replace('index.html');return}
+  if((data.session.user.email||'').toLowerCase()!==SOPHIA){location.replace('index.html');return}
+  localStorage.setItem('ws_profile','SOPHIA');
+  $('gateMsg').style.display='none';
+  $('app').style.display='block';
+  $('bar').style.display='flex';
+  $('heroWhen').textContent=longDate(isoToday());
+  drawTabs();
+  await loadAll();
+})();
+})();
+</script>
+</body>
+</html>

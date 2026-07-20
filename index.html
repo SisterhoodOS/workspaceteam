@@ -277,6 +277,9 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 #picker .who{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid var(--line);
   border-radius:3px;padding:15px 17px;margin-bottom:11px;cursor:pointer;font-family:inherit;transition:.18s}
 #picker .who:hover{border-color:var(--olive);background:var(--olive-pale)}
+#picker .who.queen{border-color:#D38C9D;background:#FDF6F9}
+#picker .who.queen:hover{border-color:#A55166;background:#F7DAE7}
+#picker .who.queen .nm{color:#A55166}
 #picker .who .nm{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;color:var(--burg);letter-spacing:.4px}
 #picker .who .sub{font-size:11.5px;color:var(--muted);margin-top:2px}
 
@@ -312,6 +315,7 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
     <div class="brand">Saha Synergy Group Ltd</div>
     <h2>Whose workspace?</h2>
     <p class="lede">Each person keeps their own records. Pick yours.</p>
+    <button class="who queen" data-who="SOPHIA"><div class="nm">Sophia</div><div class="sub">Founder · your whole team at a glance</div></button>
     <button class="who" data-who="MONIKA"><div class="nm">Monika</div><div class="sub">Head of Social Media &amp; Operations</div></button>
     <button class="who" data-who="LIA"><div class="nm">Lia</div><div class="sub">Outreach, clients, meetings, reports</div></button>
     <button class="who" data-who="LENY"><div class="nm">Leny</div><div class="sub">Home organising, stock, shopping, meals, Hanu</div></button>
@@ -435,6 +439,12 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 
 <!-- ================= WORK BOARD ================= -->
 <section class="panel" id="p-board">
+  <div class="card" id="notesCard" style="display:none;border-left:4px solid #D38C9D">
+    <div class="seclabel" style="color:#A55166">From Sophia</div>
+    <h2>Notes</h2>
+    <div id="notesBody"></div>
+  </div>
+
   <div class="card">
     <div class="seclabel">Today</div>
     <h2 id="boardDate">Today</h2>
@@ -2029,8 +2039,9 @@ const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
 // each person signs in to her own account with her own password, so the
 // separation is enforced by row level security in the database, not by the
 // screen. One person's password cannot reach another person's records.
-const PROFILES={MONIKA:'Monika Purba',LIA:'Lia',LENY:'Leny'};
+const PROFILES={SOPHIA:'Sophia',MONIKA:'Monika Purba',LIA:'Lia',LENY:'Leny'};
 const ACCOUNTS={
+  SOPHIA:'sophia@sisterhoodos.io',
   MONIKA:'purbamonika610@gmail.com',
   LENY:'leny@sisterhoodos.io',
   LIA:'lia@sisterhoodos.io'
@@ -2067,6 +2078,7 @@ function bootApp(){
   // the household rows are not in this browser, so they load on demand
   document.querySelectorAll('nav button[data-p="home"]').forEach(b=>b.addEventListener('click',loadHome));
   loadHome();
+  loadNotes();
 }
 
 // ---- every save also goes up, debounced per key
@@ -2118,7 +2130,7 @@ document.getElementById('gBack').onclick=showPicker;
 // Leny and Lia each run their own app on their own page. The handoff flag
 // proves the password was entered here; their page also checks that the
 // signed in account is actually theirs.
-const OWN_PAGE={LENY:'leny.html',LIA:'lia.html'};
+const OWN_PAGE={SOPHIA:'sophia.html',LENY:'leny.html',LIA:'lia.html'};
 function enterProfile(p){
   const last=localStorage.getItem(PROFKEY);
   // leaving someone else's folder: clear their records off this device.
@@ -2302,6 +2314,22 @@ async function loadHome(){
 
   document.getElementById('homeMonthPick').onchange=e=>{homeMonth=e.target.value||homeMonth;loadHome()};
   document.getElementById('homeReload').onclick=loadHome;
+}
+
+// ---- notes Sophia leaves for the team, shown on the work board
+async function loadNotes(){
+  const box=document.getElementById('notesBody'), card=document.getElementById('notesCard');
+  if(!box||!card)return;
+  const {data,error}=await sb.from('team_notes').select('*')
+    .order('created_at',{ascending:false}).limit(10);
+  if(error||!data||!data.length){card.style.display='none';return}
+  card.style.display='';
+  box.innerHTML=data.map(n=>
+    '<div style="border-left:3px solid #E2B4C1;padding:10px 0 10px 14px;margin-bottom:12px">'+
+      hesc(n.body)+
+      '<div style="font-size:11px;color:var(--muted);margin-top:5px">'+
+      hesc(new Date(n.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'}))+'</div>'+
+    '</div>').join('');
 }
 
 // ---- every visit starts at the name list and asks for that person's
