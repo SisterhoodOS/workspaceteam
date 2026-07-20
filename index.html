@@ -2007,9 +2007,14 @@ async function loadHome(){
       (rows.length?rows.map(r=>{
         const sum=HOME_PEOPLE.reduce((s,p)=>s+(Number(r[p[0]])||0),0);
         const bad=Math.round(sum)!==Math.round(Number(r.amount)||0);
+        // who it was for is not stored separately, it is simply who has a share
+        const on=HOME_PEOPLE.filter(p=>(Number(r[p[0]])||0)>0);
+        const forWho=on.length===HOME_PEOPLE.length?'<span class="mini">shared by all three</span>'
+          :on.map(p=>'<span class="mini who-'+p[2]+'">'+p[1]+'</span>').join(', ')||'<span class="mini">nobody</span>';
         return '<tr'+(bad?' style="background:#FBEFEA"':'')+'>'+
           '<td data-label="Date">'+hesc(r.spent_on||'')+'</td>'+
-          '<td data-label="What">'+hesc(r.description||'')+(bad?' <em style="color:#8C2038">(split does not add up)</em>':'')+'</td>'+
+          '<td data-label="What">'+hesc(r.description||'')+(bad?' <em style="color:#8C2038">(split does not add up)</em>':'')+
+            '<div style="font-size:11px;color:var(--muted);margin-top:2px">'+forWho+'</div></td>'+
           '<td data-label="Amount" class="num">'+rp(r.amount)+'</td>'+
           HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num who-'+p[2]+'">'+
             ((Number(r[p[0]])||0)?rp(r[p[0]]):'-')+'</td>').join('')+

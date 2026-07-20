@@ -5950,6 +5950,17 @@ function renderDateHistory(dateStr){
 #payCard .split label.p-denise input{border-color:#B79BDB;background:#F5F1FB}
 #payCard .wholine{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 #payCard .wholine span{font-size:.76rem;font-weight:600}
+#payCard .ask{background:#faf8f3;border:1px solid #e6ddc8;border-radius:14px;padding:14px 16px;margin-bottom:14px}
+#payCard .ask .q{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#3b0510}
+#payCard .ask .qs,#payCard .qs{font-size:.76rem;color:#8a7378;margin-top:3px;line-height:1.45}
+#payCard .whos{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+#payCard .wbox{display:flex;align-items:center;gap:6px;margin:0;padding:8px 12px;background:#fff;
+  border:1px solid #d4c9b0;border-radius:999px;font-size:.82rem;font-weight:600;cursor:pointer}
+#payCard .wbox input{width:auto;margin:0;padding:0}
+#payCard .wbox:has(input:checked){border-width:2px}
+#payCard .wbox:has(input:disabled){opacity:.75;cursor:default}
+#payCard .auto{display:none;background:#e8f1f8;color:#28516f;border-radius:10px;
+  padding:9px 12px;font-size:.78rem;margin-top:10px}
 #payWrap{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.45);display:none;
   overflow-y:auto;padding:16px;font-family:'Poppins',sans-serif}
 #payWrap.on{display:block}
@@ -6176,13 +6187,27 @@ function shopDraw(){
     '<label><span class="l">'+L('Tanggal','Date')+'</span><input type="date" id="sDate" value="'+isoToday()+'"></label>'+
     '<label><span class="l">'+L('Beli apa','What was bought')+'</span><input type="text" id="sDesc" placeholder="'+L('Contoh: belanja mingguan','e.g. weekly groceries')+'"></label>'+
     '<label><span class="l">'+L('Jumlah (Rp)','Amount (Rp)')+'</span><input type="number" id="sAmt" min="0" step="1000" placeholder="0"></label>'+
+
+    // the question that decides the whole split, asked plainly
+    '<div class="ask">'+
+      '<div class="q">'+L('Belanjaan ini untuk siapa?','Who is this shopping for?')+'</div>'+
+      '<div class="qs">'+L('Kalau cuma makanan Sophia, centang Sophia saja. Kalau dipakai bersama, centang semua.',
+                           'If it is only Sophia\'s food, tick Sophia alone. If everyone uses it, tick all three.')+'</div>'+
+      '<div class="whos">'+PEOPLE.map(p=>
+        '<label class="wbox w-'+p[2]+'"><input type="checkbox" class="whoChk" data-k="'+p[0]+'" checked>'+
+        '<span class="wdot d-'+p[2]+'"></span>'+p[1]+'</label>').join('')+'</div>'+
+      '<div id="sAuto" class="auto"></div>'+
+    '</div>'+
+
     '<div style="font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8b6914;margin:4px 0 6px">'+
-      L('Dibagi untuk siapa','Split between')+'</div>'+
+      L('Hasil pembagian','The split')+'</div>'+
     '<div class="split">'+PEOPLE.map(p=>
       '<label class="p-'+p[2]+'"><span class="l w-'+p[2]+'"><span class="wdot d-'+p[2]+'"></span>'+p[1]+'</span>'+
       '<input type="number" id="s_'+p[0]+'" min="0" step="1000" placeholder="0"></label>').join('')+'</div>'+
+    '<div class="qs" style="margin-top:6px">'+L('Terisi otomatis. Ubah angkanya kalau pembagiannya tidak rata.',
+                                                'Filled in for you. Change the numbers if the split is not even.')+'</div>'+
     '<div class="rowbtns" style="margin-top:12px">'+
-      '<button class="alt" id="sThird">'+L('Bagi 3 rata','Split equally')+'</button>'+
+      '<button class="alt" id="sThird">'+L('Hitung ulang','Recalculate')+'</button>'+
       '<button id="sSave">'+L('Simpan','Save')+'</button>'+
     '</div>'+
     '<div id="sMsg"></div>'+
@@ -6199,15 +6224,12 @@ function shopDraw(){
     '</tbody></table>';
 
   document.getElementById('shopM').onchange=e=>{shopMonth=e.target.value||shopMonth;shopLoad()};
-  document.getElementById('sThird').onclick=()=>{
-    const amt=Number(document.getElementById('sAmt').value)||0;
-    if(!amt){shopMsg(L('Isi jumlahnya dulu.','Enter the amount first.'),true);return}
-    // the leftover rupiah goes to the first person so the split always adds up
-    const base=Math.floor(amt/3/1000)*1000;
-    const vals=[base,base,amt-base*2];
-    PEOPLE.forEach((p,i)=>document.getElementById('s_'+p[0]).value=vals[i]);
-  };
+  document.getElementById('sThird').onclick=applySplit;
   document.getElementById('sSave').onclick=shopSave;
+  document.getElementById('sAmt').oninput=applySplit;
+  document.querySelectorAll('.whoChk').forEach(c=>c.onchange=applySplit);
+  document.getElementById('sDesc').oninput=()=>{checkWater();applySplit()};
+  checkWater();
   document.getElementById('payBody').onclick=e=>{
     const id=e.target.getAttribute('data-del');
     if(id)shopDelete(id);
@@ -6215,6 +6237,37 @@ function shopDraw(){
 }
 function shopMsg(t,bad){
   document.getElementById('sMsg').innerHTML='<div class="'+(bad?'bad':'warn')+'">'+t+'</div>';
+}
+
+// Drinking water is used by the whole house, so it always splits three ways.
+// Matching 'air' needs word boundaries or it fires on repair, chair, dairy.
+const WATER=/(^|[^a-z])(air|aqua|galon|gallon|mineral|water|cleo)([^a-z]|$)/i;
+function isWater(){return WATER.test(document.getElementById('sDesc').value||'')}
+function checkWater(){
+  const note=document.getElementById('sAuto');
+  if(!note)return;
+  if(isWater()){
+    document.querySelectorAll('.whoChk').forEach(c=>{c.checked=true;c.disabled=true});
+    note.innerHTML=L('💧 Air minum selalu dibagi bertiga, jadi ini sudah diatur otomatis.',
+                     '💧 Drinking water is always split three ways, so this is set for you.');
+    note.style.display='block';
+  }else{
+    document.querySelectorAll('.whoChk').forEach(c=>{c.disabled=false});
+    note.style.display='none';
+  }
+}
+// splits the amount evenly across whoever is ticked, leftover rupiah on the
+// first of them, so the three shares always add back up to the total
+function applySplit(){
+  const amt=Number(document.getElementById('sAmt').value)||0;
+  const on=[...document.querySelectorAll('.whoChk')].filter(c=>c.checked).map(c=>c.dataset.k);
+  PEOPLE.forEach(p=>{const el=document.getElementById('s_'+p[0]);if(el&&!on.includes(p[0]))el.value=''});
+  if(!amt||!on.length)return;
+  const base=Math.floor(amt/on.length/1000)*1000;
+  on.forEach((k,i)=>{
+    const el=document.getElementById('s_'+k);
+    if(el)el.value=(i===0)?amt-base*(on.length-1):base;
+  });
 }
 async function shopSave(){
   if(shopBusy)return;
