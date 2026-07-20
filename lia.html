@@ -238,7 +238,7 @@ const WHO={
 };
 const SUGGESTED={
   saha_synergy:[
-    {t:'First message',n:'The real one, in Monika\'s own words. Only the name is swapped for {{name}}.',
+    {t:'First message',n:'The real one, in Monika\'s own words. Sent from Monika\'s account, so it stays signed as Monika. Only the recipient\'s name is swapped for {{name}}.',
      b:'Hi {{name}},\n\nI\'m Monika, Head of Operations at Saha Synergy working alongside Sophia Fox. She came across your work and it has the same underlying thread she cares about: building things that actually serve people rather than extracting from them. She\'d love to connect. Happy to set up a virtual intro whenever works on your end.'},
     {t:'First message, alternative',n:'Shorter, and asks a question. Use whichever fits the person. Replace the bracket with something true about them.',
      b:'Hi {{name}}, quick one, and it is not a pitch.\n\nYou are running [what they actually do] and it is working. Usually around this size the business starts living in the founder\'s head and nowhere else.\n\nSophia at Saha Synergy rebuilds that part, so it runs without you in every room.\n\nIs that on your mind right now, or is it a later problem?'},
@@ -264,7 +264,13 @@ const SUGGESTED={
      b:'You are booked for {{time}}.\n\nInvite is on its way. Bring the links, we will pull them up together.'}
   ],
   bwb:[
-    {t:'First message',n:'Short beats clever here. People answer a direct question about their dog.',
+    {t:'First message · Friendly',n:'Your wording, unchanged. Warmest of the three. Good for people who post about their dog a lot.',
+     b:"Hi! 😊 I came across your profile and noticed you have such an adorable dog!\n\nI wanted to introduce myself. We’re a local dog walking team in Los Angeles that helps busy pet parents make sure their pups get the exercise, attention, and care they deserve.\n\nWhether you need regular walks, occasional help, or someone reliable while you're busy, we'd love to help.\n\nIf you're ever looking for a trustworthy dog walker, I'd be happy to answer any questions or tell you more about our services. 🐾\n\nHave a wonderful day!"},
+    {t:'First message · Casual',n:'Your wording, unchanged. Lightest touch, easiest to ignore without feeling rude, which is why people answer it.',
+     b:"Hey! Hope you don't mind me reaching out.\n\nI saw your pup and couldn't resist saying hi! 🐶 We offer reliable dog walking services across Los Angeles for busy owners who want their dogs to stay happy, active, and cared for.\n\nIf you've ever needed an extra hand with walks, I'd be happy to share more information—no pressure at all!\n\nHave a great day!"},
+    {t:'First message · Offer first',n:'Your wording, unchanged. Leads with the service rather than the dog. Use it when their profile shows little about the dog.',
+     b:"Hi! I hope you're having a great day.\n\nI'm reaching out because we help dog owners in Los Angeles with professional, loving dog walking services. Every walk is tailored to your dog's energy level and personality, so they get the care and attention they deserve.\n\nIf you're interested, I'd love to tell you more or answer any questions. We'd love the opportunity to meet you and your pup! 🐾"},
+    {t:'First message · Short',n:'Mine, kept as a fourth option. One direct question, nothing else. Worth testing against the three above to see which gets more replies.',
      b:'Hi {{name}}, are you still looking for a dog walker?\n\nI am with BWB. We cover LA, same walker every time so your dog is not meeting a stranger, and you get photos from each walk.\n\nWhereabouts are you, and who is the dog?'},
     {t:'Follow up, no reply',n:'Giving them an easy way out is what gets the reply.',
      b:'Hi {{name}}, checking back once.\n\nIf you have already found someone, just say so and I will leave you alone. If you are still looking, I can tell you who covers your street and what the week could look like.'},
