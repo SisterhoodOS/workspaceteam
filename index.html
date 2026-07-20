@@ -2453,6 +2453,28 @@ const PROFKEY='ws_profile';
 const GATEFLAG='ws_gate';
 function cloudKey(k){return profile==='MONIKA'?k:profile.toLowerCase()+'__'+k}
 
+// A page opened straight off the disk (file:///…) looks and behaves like the
+// real thing, but the browser throws its storage away and there is no cloud
+// account behind it. Monika lost an evening of petty cash that way on
+// 2026-07-21. The app refuses to start there rather than quietly eat the work.
+if(location.protocol==='file:'){
+  document.documentElement.innerHTML=
+    '<body style="margin:0;font-family:Georgia,serif;background:#6A1024;color:#F2EDE8;'+
+    'display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px">'+
+    '<div style="max-width:420px;text-align:center;line-height:1.6">'+
+    '<div style="font-size:34px;margin-bottom:14px">Jangan pakai halaman ini</div>'+
+    '<p style="font-size:16px">Ini file di komputer, bukan website. Apa pun yang kamu isi di sini '+
+    '<strong>tidak akan tersimpan</strong> dan tidak bisa dilihat tim.</p>'+
+    '<p style="font-size:16px">Buka alamat ini:</p>'+
+    '<p style="font-size:18px"><a style="color:#fff" href="https://sisterhoodos.github.io/workspaceteam/">'+
+    'sisterhoodos.github.io/workspaceteam</a></p>'+
+    '<hr style="border:0;border-top:1px solid rgba(255,255,255,.3);margin:22px 0">'+
+    '<p style="font-size:14px;opacity:.85">This is a file on the computer, not the website. '+
+    'Nothing typed here is saved. Use the link above.</p>'+
+    '</div></body>';
+  throw new Error('opened as a local file');
+}
+
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const gate=document.getElementById('gate'), pick=document.getElementById('picker'),
       bar=document.getElementById('syncbar'),
@@ -2483,22 +2505,38 @@ function bootApp(){
 }
 
 // ---- every save also goes up, debounced per key
-const timers={};
+// `pending` is the set of keys written but not yet confirmed by the server.
+// Closing the tab while it is non-empty is how work goes missing, so that
+// case now warns instead of passing in silence.
+const timers={}, pending=new Set();
 function queuePush(k){
   if(offline)return;
   clearTimeout(timers[k]);
+  pending.add(k);
   status('Saving…','busy');
   timers[k]=setTimeout(()=>pushKey(k),900);
 }
 async function pushKey(k){
   const raw=localStorage.getItem(k);
-  if(raw==null)return;
-  let val;try{val=JSON.parse(raw)}catch(e){return}
+  if(raw==null){pending.delete(k);return}
+  let val;try{val=JSON.parse(raw)}catch(e){pending.delete(k);return}
   const {error}=await sb.from('workspace_state')
     .upsert({user_id:uid,key:cloudKey(k),value:val,updated_at:new Date().toISOString()},{onConflict:'user_id,key'});
   if(error){offline=true;status('Not saved to cloud','off');console.error(error)}
-  else status('Saved to cloud');
+  else{pending.delete(k);status(pending.size?'Saving…':'Saved to cloud',pending.size?'busy':'')}
 }
+window.addEventListener('beforeunload',e=>{
+  if(!pending.size&&!offline)return;
+  e.preventDefault();
+  e.returnValue='Belum semua tersimpan ke cloud. Tunggu sebentar sebelum menutup.';
+  return e.returnValue;
+});
+// A tab going to the background on a phone may never come back, so anything
+// still waiting is sent immediately rather than waiting out its timer.
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState!=='hidden')return;
+  pending.forEach(k=>{clearTimeout(timers[k]);pushKey(k)});
+});
 function wrapWrites(){
   const orig=window.writeStore;
   window.writeStore=function(k,v){const ok=orig(k,v);if(ok)queuePush(k);return ok};
@@ -2550,9 +2588,9 @@ document.getElementById('syncWho').onclick=async function(){
   // switching wipes this folder off the device, so every pending save has to
   // land in the cloud first. If any of them fails, stay put.
   status('Saving before switching…','busy');
-  const pending=Object.keys(timers);
-  pending.forEach(k=>clearTimeout(timers[k]));
-  for(const k of pending)await pushKey(k);
+  const waiting=[...pending];
+  waiting.forEach(k=>clearTimeout(timers[k]));
+  for(const k of waiting)await pushKey(k);
   if(offline){
     alert('Your latest changes could not be saved to the cloud, so switching now would lose them.\n\nCheck your connection and try again.');
     return;

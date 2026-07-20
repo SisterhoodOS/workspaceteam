@@ -229,6 +229,21 @@ const DATA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const GATE_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
 const GATE_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
 
+// Opened straight off the disk this page still runs but saves nowhere.
+// Refuse rather than quietly lose the work. Same guard as index.html.
+if(location.protocol==='file:'){
+  document.documentElement.innerHTML=
+    '<body style="margin:0;font-family:Georgia,serif;background:#263056;color:#F7F3EA;'+
+    'display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px">'+
+    '<div style="max-width:420px;text-align:center;line-height:1.6">'+
+    '<div style="font-size:32px;margin-bottom:14px">Do not use this page</div>'+
+    '<p style="font-size:16px">This is a file on the computer, not the website. '+
+    'Nothing typed here is saved.</p>'+
+    '<p style="font-size:18px"><a style="color:#fff" href="https://sisterhoodos.github.io/workspaceteam/">'+
+    'sisterhoodos.github.io/workspaceteam</a></p></div></body>';
+  throw new Error('opened as a local file');
+}
+
 const sb=supabase.createClient(DATA_URL,DATA_KEY);
 
 const PROJECTS=['saha_synergy','bwb','bfp'];

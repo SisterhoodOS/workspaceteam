@@ -5990,11 +5990,11 @@ function renderDateHistory(dateStr){
 </style>
 <div id="lwait">Loading…</div>
 <div id="lsync"><span class="dot"></span><span id="lsyncTxt">Synced</span><a id="lsyncBack">Switch person</a></div>
-<button id="payBtn">💰 My pay</button>
-<button id="shopBtn">🧾 Belanja rumah</button>
+<button id="payBtn">💰</button>
+<button id="shopBtn">🧾</button>
 <div id="payWrap"><div id="payCard">
   <div class="hd">
-    <div><div class="t">My pay</div><div class="s" id="paySub"></div></div>
+    <div><div class="t" id="payTitle"></div><div class="s" id="paySub"></div></div>
     <button id="payClose">×</button>
   </div>
   <div class="bd" id="payBody"></div>
@@ -6010,6 +6010,24 @@ function renderDateHistory(dateStr){
 const SB_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
 const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
 const LOCAL='leny_hub_v2', CLOUD='leny__leny_hub_v2', PROFKEY='ws_profile';
+
+// Opened straight off the disk this page still runs, but the browser throws
+// its storage away and there is no account behind it. Refuse rather than
+// quietly lose the work. See the same guard in index.html.
+if(location.protocol==='file:'){
+  document.documentElement.innerHTML=
+    '<body style="margin:0;font-family:Georgia,serif;background:#263056;color:#F7F3EA;'+
+    'display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px">'+
+    '<div style="max-width:420px;text-align:center;line-height:1.6">'+
+    '<div style="font-size:32px;margin-bottom:14px">Jangan pakai halaman ini</div>'+
+    '<p style="font-size:16px">Ini file di komputer, bukan website. Apa pun yang diisi di sini '+
+    '<strong>tidak akan tersimpan</strong>.</p>'+
+    '<p style="font-size:18px"><a style="color:#fff" href="https://sisterhoodos.github.io/workspaceteam/">'+
+    'sisterhoodos.github.io/workspaceteam</a></p>'+
+    '<p style="font-size:14px;opacity:.85;margin-top:18px">This is a file on the computer, not the website. '+
+    'Nothing typed here is saved.</p></div></body>';
+  throw new Error('opened as a local file');
+}
 
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const bar=document.getElementById('lsync'), txt=document.getElementById('lsyncTxt'),
@@ -6083,6 +6101,8 @@ let payMonth=null;
 
 function payOpen(){
   if(!payMonth){const d=new Date();payMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+  document.getElementById('payTitle').textContent=L('Gaji saya','My pay');
+  document.getElementById('paySub').textContent=L('Jam kerja bulan ini','This month\'s hours');
   payDraw();
   document.getElementById('payWrap').classList.add('on');
 }
@@ -6147,10 +6167,29 @@ function isoToday(){const d=new Date();return new Date(d-d.getTimezoneOffset()*6
 function L(id,en){const st=window.__lenyState&&window.__lenyState();
   return (st&&st.lang==='id')?id:en}
 
+// The two floating buttons and anything already on screen have to follow the
+// ID/EN switch too, so the language toggle is wrapped rather than duplicated.
+function shopLangSync(){
+  const pb=document.getElementById('payBtn'), sb=document.getElementById('shopBtn');
+  if(pb)pb.textContent='💰 '+L('Gaji saya','My pay');
+  if(sb)sb.textContent='🧾 '+L('Belanja rumah','Household shopping');
+  const open=document.getElementById('payWrap');
+  if(open&&open.classList.contains('on')&&shopMonth&&document.getElementById('sDesc')){
+    document.getElementById('payTitle').textContent=L('Belanja rumah','Household shopping');
+    document.getElementById('paySub').textContent=L('Dibagi ke Sophia, Sam, Denise','Split between Sophia, Sam and Denise');
+    shopDraw();
+  }
+}
+(function(){
+  const orig=window.toggleLang;
+  window.toggleLang=function(){ if(typeof orig==='function')orig.apply(this,arguments); shopLangSync(); };
+})();
+
 function shopOpen(){
   if(!shopMonth){const d=new Date();shopMonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
   document.getElementById('payWrap').classList.add('on');
-  document.getElementById('paySub').textContent=L('Belanja rumah','Household shopping');
+  document.getElementById('payTitle').textContent=L('Belanja rumah','Household shopping');
+  document.getElementById('paySub').textContent=L('Dibagi ke Sophia, Sam, Denise','Split between Sophia, Sam and Denise');
   shopLoad();
 }
 async function shopLoad(){
