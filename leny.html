@@ -6354,6 +6354,9 @@ document.getElementById('lsyncBack').onclick=async function(){
   if(offline){alert('Your latest changes could not be saved to the cloud, so switching now would lose them.');return}
   localStorage.setItem(PROFKEY,'');
   try{sessionStorage.removeItem('ws_gate')}catch(e){}
+  // index.html now stays signed in, so without ending the session it would
+  // just send Leny straight back here. Sign out so the next person is asked.
+  await sb.auth.signOut();
   location.href='index.html';
 };
 

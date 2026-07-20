@@ -1322,9 +1322,12 @@ async function loadProject(){
   renderView();
 }
 
-$('syncBack').onclick=function(){
+$('syncBack').onclick=async function(){
   try{sessionStorage.removeItem('ws_gate')}catch(e){}
   localStorage.setItem('ws_profile','');
+  // index.html now stays signed in, so the gate session must end here or it
+  // would send Lia straight back. Sign out of the workspace (gate) project.
+  try{await supabase.createClient(GATE_URL,GATE_KEY).auth.signOut()}catch(e){}
   location.href='index.html';
 };
 

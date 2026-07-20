@@ -2638,7 +2638,12 @@ document.getElementById('syncWho').onclick=async function(){
     alert('Your latest changes could not be saved to the cloud, so switching now would lose them.\n\nCheck your connection and try again.');
     return;
   }
+  // Since the app now stays signed in, a plain reload would walk straight back
+  // into the same person. Switching has to end the session so the name list
+  // and password come back for whoever is next.
   localStorage.setItem(PROFKEY,'');
+  try{sessionStorage.removeItem(GATEFLAG)}catch(e){}
+  await sb.auth.signOut();
   location.reload();
 };
 
