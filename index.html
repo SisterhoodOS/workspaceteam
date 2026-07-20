@@ -1788,7 +1788,7 @@ function renderWork(monKey){
   document.getElementById('clientCards').innerHTML=CLIENTS.map(c=>{
     const rows=plan.filter(p=>p.client===c.id);
     const weekly=rows.reduce((s,p)=>s+planPerWeek(p),0);
-    const body=rows.length?rows.map(p=>{
+    const planRows=rows.map(p=>{
       const r=R[p.type]||{};
       const done=doneThisWeek(p,monKey), target=targetThisWeek(p);
       const prog=target?'<div class="bar"><span style="width:'+Math.min(100,Math.round(done/target*100))+'%"></span></div>'+
@@ -1802,12 +1802,34 @@ function renderWork(monKey){
         '<td class="num" data-label="Per week">'+fmt(planPerWeek(p))+'</td>'+
         '<td class="noprint"><button class="mini" onclick="planDone(\''+p.id+'\')">+1 done</button>'+
           '<button class="mini" onclick="planDel(\''+p.id+'\')">remove</button></td></tr>';
-    }).join(''):'<tr><td colspan="6"><div class="empty"><span class="serif">Nothing agreed yet</span>'+
+    }).join('');
+    // Work already logged for this client this month, whether or not it has a
+    // standing target. This is what makes "I did 11 carousels for BWB" show up
+    // under BWB instead of only in the month's log at the bottom.
+    const logged=mine.filter(e=>e.client===c.name);
+    const loggedTotal=logged.reduce((s,e)=>s+total(e),0);
+    const logRows=logged.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>
+      '<tr class="fold-'+c.colour+'">'+
+        '<td data-label="What"><strong>'+esc((R[e.type]||{}).lbl||e.type)+'</strong> '+
+          '<span class="pill p-ok">done</span>'+
+          (e.link?'<div><a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">Open</a></div>':'')+
+          '<div style="font-size:11px;color:var(--muted)">'+esc(e.date)+'</div></td>'+
+        '<td data-label="How often">'+pill(APPR,e.appr)+'</td>'+
+        '<td data-label="How many">'+(e.qty||0)+' '+esc((R[e.type]||{}).unit||'')+'</td>'+
+        '<td class="num" data-label="Each">'+fmt(e.rate||0)+'</td>'+
+        '<td class="num" data-label="Total">'+fmt(total(e))+'</td>'+
+        '<td class="noprint"><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>').join('');
+    const body=(planRows+logRows)||
+      '<tr><td colspan="6"><div class="empty"><span class="serif">Nothing agreed yet</span>'+
       'Add what you make for '+esc(c.name)+' using the box below.</div></td></tr>';
+    // Header line: the weekly plan if there is one, plus what has been logged.
+    const parts=[];
+    if(rows.length)parts.push(fmt(weekly)+' a week planned');
+    if(logged.length)parts.push(fmt(loggedTotal)+' logged this month');
     return '<div style="margin-bottom:22px">'+
       '<div class="fcard f-'+c.colour+'" style="cursor:default;min-height:0;padding:12px 16px;margin-bottom:0;border-radius:4px 4px 0 0">'+
         '<div class="k">'+esc(c.name)+'</div>'+
-        '<div class="n" style="font-size:12.5px">'+(rows.length?fmt(weekly)+' a week &middot; about '+fmt(weekly*4.33)+' a month':'no work set up yet')+'</div>'+
+        '<div class="n" style="font-size:12.5px">'+(parts.length?parts.join(' &middot; '):'no work set up yet')+'</div>'+
       '</div>'+
       '<div class="tblwrap"><table class="rsp"><thead><tr><th>What you make</th><th>How often</th>'+
       '<th>How many</th><th class="num">Each</th><th class="num">Per week</th><th></th></tr></thead>'+
@@ -2792,9 +2814,27 @@ async function loadNotes(){
     '</div>').join('');
 }
 
-// ---- every visit starts at the name list and asks for that person's
-// password, so the link never drops straight into anyone's records
+// ---- Stay signed in. Monika asked not to retype her password on every
+// refresh (2026-07-21), reversing the earlier ask-every-time. The Supabase
+// session already persists, so if it is still valid the app opens straight
+// into that person's folder. Leny and Lia are sent to their own pages. Only
+// with no session does the name list and password appear. "Sign out" still
+// clears it for when the laptop is shared.
 (async function(){
+  try{
+    const {data}=await sb.auth.getSession();
+    const sess=data&&data.session;
+    if(sess&&sess.user){
+      const email=(sess.user.email||'').toLowerCase();
+      const prof=Object.keys(ACCOUNTS).find(k=>ACCOUNTS[k].toLowerCase()===email);
+      if(prof){
+        uid=sess.user.id;
+        try{sessionStorage.setItem(GATEFLAG,'1')}catch(e){}
+        enterProfile(prof);      // Monika opens here; Leny/Lia redirect inside
+        return;
+      }
+    }
+  }catch(e){console.error(e)}
   try{sessionStorage.removeItem(GATEFLAG)}catch(e){}
   showPicker();
 })();
