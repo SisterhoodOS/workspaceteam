@@ -1239,11 +1239,12 @@ const FOLDER_NOTE={
     'Worth confirming the 10 with Sophia in writing so the target and the pay agree.</div>',
   sophia:'<div class="note">This folder is for reminders you want to raise with Sophia. Add them as they come up.</div>'
 };
-const FOLDER_SEEDED='monika_folders_v1';
-// The seed flag lives on the device, but the tasks sync between devices, so
-// a second device would otherwise seed a duplicate set. If any task already
-// carries a folder, the seeding has happened somewhere and is skipped.
-if(!localStorage.getItem(FOLDER_SEEDED)&&!tasks.some(t=>t.fold)){
+// Whether the folders have been filled is a fact about the tasks, not about
+// this laptop. Asking a flag in localStorage got it wrong: the flag was set
+// here while the cloud still held the old folder-less tasks, so every folder
+// came back empty. The tasks themselves are the only honest answer.
+const seededAlready=tasks.some(t=>/^f_/.test(t.id||''));
+if(!seededAlready){
   tasks=tasks.filter(t=>!/^scope\d+$/.test(t.id||''));
   const mk=(fold,title,cat,rep,day,note)=>({
     id:'f_'+fold+'_'+Math.random().toString(36).slice(2,8),
@@ -1273,8 +1274,13 @@ if(!localStorage.getItem(FOLDER_SEEDED)&&!tasks.some(t=>t.fold)){
   tasks=tasks.map(t=>t.fold?t:Object.assign({},t,{fold:(t.area||areaOf(t.cat))==='home'?'home':'monthly'}));
   tasks=SEED.concat(tasks);
   writeStore(TKEY,tasks);
-  localStorage.setItem(FOLDER_SEEDED,'1');
   localStorage.setItem(SCOPE_SEEDED,'1');
+}
+// A task that arrived from an older version has no folder and would sit in
+// none of them, invisible. Give it one every time, not only while seeding.
+if(tasks.some(t=>!t.fold)){
+  tasks=tasks.map(t=>t.fold?t:Object.assign({},t,{fold:(t.area||areaOf(t.cat))==='home'?'home':'monthly'}));
+  writeStore(TKEY,tasks);
 }
 // ================= THE PLAN =================
 // One row per standing job: this client, this kind of work, this many, this
@@ -1357,9 +1363,19 @@ function planQty(id){
   p.qty=n;savePlan();
 }
 
-let activeFolder=localStorage.getItem('monika_active_folder')||'monthly';
-function openFolder(id){activeFolder=id;localStorage.setItem('monika_active_folder',id);
-  document.getElementById('tFold').value=id;render()}
+// Nothing is open until a folder is pressed. Monika asked for it this way:
+// the four folders sit closed, and pressing one is what reveals its list.
+// Pressing the open one again closes it.
+let activeFolder='';
+function openFolder(id){
+  activeFolder=(activeFolder===id)?'':id;
+  if(activeFolder)document.getElementById('tFold').value=activeFolder;
+  render();
+  if(activeFolder){
+    const card=document.getElementById('taskListCard');
+    if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
 localStorage.setItem(SEEDFLAG,'1');
 
 let editId=null, payEditId=null, taskEditId=null, cashEditId=null, commitEditId=null;
@@ -2203,14 +2219,19 @@ function render(){
     return '<div class="fcard f-'+f.id+(on?' on':'')+'" onclick="openFolder(\''+f.id+'\')">'+
       '<div class="k">'+esc(f.name)+'</div><div class="v">'+open+'</div>'+
       '<div class="n">'+(inF.length?open+' open of '+inF.length:'nothing in here yet')+
-      (on?' &middot; open now':'')+'</div></div>';
+      (on?' &middot; tap to close':' &middot; tap to open')+'</div></div>';
   }).join('');
-  const fMeta=FOLDERS.find(f=>f.id===activeFolder)||FOLDERS[0];
+  // Closed until pressed: no folder open means no list and no note on screen.
+  const fMeta=FOLDERS.find(f=>f.id===activeFolder);
   const fNote=document.getElementById('folderNote');
-  fNote.innerHTML=FOLDER_NOTE[activeFolder]||'';
-  fNote.style.display=FOLDER_NOTE[activeFolder]?'':'none';
-  document.getElementById('tFormTitle').textContent='Add to '+fMeta.name;
-  document.getElementById('tListTitle').textContent=fMeta.name;
+  const fList=document.getElementById('taskListCard');
+  fNote.innerHTML=(fMeta&&FOLDER_NOTE[activeFolder])||'';
+  fNote.style.display=(fMeta&&FOLDER_NOTE[activeFolder])?'':'none';
+  fList.style.display=fMeta?'':'none';
+  if(fMeta){
+    document.getElementById('tFormTitle').textContent='Add to '+fMeta.name;
+    document.getElementById('tListTitle').textContent=fMeta.name;
+  }
 
   const filt=document.getElementById('tFilter').value;
   const q=document.getElementById('tSearch').value.trim().toLowerCase();
