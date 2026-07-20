@@ -5,8 +5,8 @@
   "start_url": "leny.html",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#f4f4f1",
-  "theme_color": "#3b0510",
+  "background_color": "#F5F1E9",
+  "theme_color": "#263056",
   "orientation": "portrait",
   "icons": [
     {

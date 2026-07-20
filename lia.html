@@ -10,18 +10,21 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+/* Navy, steel, burgundy and cream. The variable names are the old pink ones
+   so nothing downstream had to be rewired, only the values changed. */
 :root{
-  --blush-50:#fdf6f8; --pink-100:#fbe4ee; --pink-300:#f0b8cc;
-  --purple-200:#e3cdec; --purple-500:#a97bc4;
-  --maroon-700:#8c2f4a; --maroon-900:#5c1a2e;
-  --ink:#3a1424; --ink-soft:#7a4a5e; --cream:#fff8fa;
-  --line:#f2dfe7;
+  --blush-50:#F8F5EF; --pink-100:#E2D9CB; --pink-300:#517493;
+  --purple-200:#CFD8E1; --purple-500:#517493;
+  --maroon-700:#0B3F63; --maroon-900:#022E4C;
+  --wine:#56061D;
+  --ink:#101F2E; --ink-soft:#586A7A; --cream:#FCFAF6;
+  --line:#DCD3C3;
   --font-display:'Fraunces',Georgia,serif;
   --font-body:'Quicksand','Trebuchet MS',sans-serif;
   --r-sm:10px; --r-md:16px; --r-lg:24px;
-  --shadow:0 8px 24px rgba(92,26,46,.12);
-  --shadow-sm:0 4px 12px rgba(92,26,46,.08);
-  --ok:#3f7d52; --warn:#b8791f; --bad:#b5453f;
+  --shadow:0 8px 24px rgba(2,46,76,.14);
+  --shadow-sm:0 4px 12px rgba(2,46,76,.09);
+  --ok:#3F6B55; --warn:#8A6A2E; --bad:#56061D;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font-body);color:var(--ink);font-size:14px;line-height:1.55;
@@ -80,10 +83,10 @@ tbody tr:hover{background:var(--blush-50)}
 .pill{display:inline-block;border-radius:999px;padding:3px 11px;font-size:11.5px;font-weight:600;white-space:nowrap}
 .s-no_response{background:var(--pink-100);color:var(--ink-soft)}
 .s-response{background:var(--purple-200);color:var(--purple-500)}
-.s-interest{background:var(--pink-100);color:#e0709a}
-.s-not_interest{background:var(--pink-100);color:#9c6b78;text-decoration:line-through}
+.s-interest{background:var(--pink-100);color:#56061D}
+.s-not_interest{background:var(--pink-100);color:#7C8A96;text-decoration:line-through}
 .s-booked{background:var(--maroon-900);color:var(--cream)}
-.s-canceled{background:#e8e0e2;color:#8a7378;text-decoration:line-through}
+.s-canceled{background:#E4DED3;color:#8A8378;text-decoration:line-through}
 .s-pending{background:var(--pink-100);color:var(--ink-soft)}
 .s-contacted{background:var(--purple-200);color:var(--purple-500)}
 
@@ -138,10 +141,10 @@ pre.report{background:var(--blush-50);border-radius:var(--r-sm);padding:14px;fon
 
 #sync{position:fixed;right:14px;bottom:14px;z-index:250;background:var(--maroon-900);color:var(--cream);
   border-radius:999px;padding:8px 15px;font-size:11.5px;box-shadow:var(--shadow);display:flex;align-items:center;gap:9px}
-#sync .dot{width:8px;height:8px;border-radius:50%;background:#8fbf6a;flex:none}
-#sync.busy .dot{background:#d9a441}
-#sync.bad .dot{background:#c4593f}
-#sync a{color:#d8c8bc;text-decoration:underline;cursor:pointer;flex:none}
+#sync .dot{width:8px;height:8px;border-radius:50%;background:#7FA98C;flex:none}
+#sync.busy .dot{background:#C79A55}
+#sync.bad .dot{background:#A6503F}
+#sync a{color:#CFC6B6;text-decoration:underline;cursor:pointer;flex:none}
 @media(max-width:560px){#sync{left:14px;right:14px;justify-content:center}}
 
 #wait{position:fixed;inset:0;z-index:400;background:linear-gradient(160deg,var(--purple-200),var(--pink-300) 70%);
@@ -302,16 +305,6 @@ const SUGGESTED={
   saha_synergy:[
     {t:'First message',n:'The real one, in Monika\'s own words. Sent from Monika\'s account, so it stays signed as Monika. Only the recipient\'s name is swapped for {{name}}.',
      b:'Hi {{name}},\n\nI\'m Monika, Head of Operations at Saha Synergy working alongside Sophia Fox. She came across your work and it has the same underlying thread she cares about: building things that actually serve people rather than extracting from them. She\'d love to connect. Happy to set up a virtual intro whenever works on your end.'},
-    {t:'First message, alternative',n:'Shorter, and asks a question. Use whichever fits the person. Replace the bracket with something true about them.',
-     b:'Hi {{name}}, quick one, and it is not a pitch.\n\nYou are running [what they actually do] and it is working. Usually around this size the business starts living in the founder\'s head and nowhere else.\n\nSophia at Saha Synergy rebuilds that part, so it runs without you in every room.\n\nIs that on your mind right now, or is it a later problem?'},
-    {t:'Follow up, no reply',n:'Send once. Then stop, and mean it.',
-     b:'Hi {{name}}, bumping this once and then I will leave you alone.\n\nIf the timing is off, say so and I will stop. If it is more that you are interested but buried, I understand that too.\n\nWhich one is it?'},
-    {t:'They are interested',n:'Take the pressure off. The call is the ask, not the money.',
-     b:'Good to hear, {{name}}.\n\nFirst call is 30 minutes with Sophia. No deck, nothing to prepare. She asks where the business is, what is eating your week, and what you want it to look like in a year.\n\nWhat day suits you? I will work around your schedule.'},
-    {t:'Booking it in',
-     b:'Done, you are in for {{time}}.\n\nCalendar invite is on its way with the link. If something moves, message me here and we will shift it.'},
-    {t:'Interested, but not now',n:'This one earns the next conversation. Do not push.',
-     b:'Completely fair, {{name}}. Timing beats interest every time.\n\nI will leave it with you. If things change in a few months, message me here and we pick it straight back up.\n\nGood luck with the quarter.'}
   ],
   bfp:[
     {t:'First message · Friendly and professional',n:'Your wording, unchanged. Your own pick. Safest opener, works on almost any business page.',
@@ -344,14 +337,6 @@ const SUGGESTED={
      b:"Hi! I hope you're having a great day.\n\nI'm reaching out because we help dog owners in Los Angeles with professional, loving dog walking services. Every walk is tailored to your dog's energy level and personality, so they get the care and attention they deserve.\n\nIf you're interested, I'd love to tell you more or answer any questions. We'd love the opportunity to meet you and your pup! 🐾"},
     {t:'First message · Short',n:'Mine, kept as a fourth option. One direct question, nothing else. Worth testing against the three above to see which gets more replies.',
      b:'Hi {{name}}, are you still looking for a dog walker?\n\nI am with BWB. We cover LA, same walker every time so your dog is not meeting a stranger, and you get photos from each walk.\n\nWhereabouts are you, and who is the dog?'},
-    {t:'Follow up, no reply',n:'Giving them an easy way out is what gets the reply.',
-     b:'Hi {{name}}, checking back once.\n\nIf you have already found someone, just say so and I will leave you alone. If you are still looking, I can tell you who covers your street and what the week could look like.'},
-    {t:'They are interested',n:'The reactive-dog line matters. Owners are used to being judged for it.',
-     b:'Happy to hear it, {{name}}.\n\nA few things so I match the right walker. Dog\'s name and age, how she is around other dogs, and which days you are thinking.\n\nIf she is nervous or reactive, say it straight. It changes who we send, not whether we come.'},
-    {t:'Meet and greet',n:'Free and short. Say both, it removes the reason to say no.',
-     b:'Before the first real walk we do a meet and greet. Free, about 15 minutes. The walker comes to you, meets your dog, and you decide if it feels right.\n\nDoes {{time}} work?'},
-    {t:'Booking it in',
-     b:'Set for {{time}}.\n\nIf your dog is home then, even better. Much easier to introduce them on their own turf.'}
   ]
 };
 
@@ -1097,7 +1082,7 @@ function makePdf(c){
   let y=0;
 
   function header(){
-    doc.setFillColor(92,26,46);doc.rect(0,0,W,90,'F');
+    doc.setFillColor(2,46,76);doc.rect(0,0,W,90,'F');
     doc.setTextColor(255,248,250);
     doc.setFont('times','bold');doc.setFontSize(20);doc.text('Lia · Outreach',M,44);
     doc.setFont('helvetica','normal');doc.setFontSize(11);
@@ -1107,13 +1092,13 @@ function makePdf(c){
   function room(h){if(y+h>H-M){doc.addPage();y=M}}
   function section(title){
     room(40);
-    doc.setFillColor(251,228,238);doc.rect(M-10,y-14,MAXW+20,24,'F');
-    doc.setTextColor(140,47,74);doc.setFont('helvetica','bold');doc.setFontSize(11);
+    doc.setFillColor(226,217,203);doc.rect(M-10,y-14,MAXW+20,24,'F');
+    doc.setTextColor(2,46,76);doc.setFont('helvetica','bold');doc.setFontSize(11);
     doc.text(String(title).toUpperCase(),M,y+2);
     y+=30;
   }
   function body(text){
-    doc.setTextColor(58,20,36);doc.setFont('helvetica','normal');doc.setFontSize(10.5);
+    doc.setTextColor(16,31,46);doc.setFont('helvetica','normal');doc.setFontSize(10.5);
     const lines=doc.splitTextToSize(String(text==null||text===''?'-':text),MAXW);
     lines.forEach(ln=>{room(16);doc.text(ln,M,y);y+=14});
     y+=8;
