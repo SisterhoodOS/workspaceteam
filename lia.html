@@ -153,6 +153,25 @@ pre.report{background:var(--blush-50);border-radius:var(--r-sm);padding:14px;fon
 .trunc{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 .savenote{font-size:11.5px;margin-left:8px}
 .savenote.ok{color:var(--ok)} .savenote.bad{color:var(--bad)} .savenote.busy{color:var(--warn)}
+
+/* who each business is for */
+.icp{border-top:4px solid var(--purple-500)}
+.icp .lede{font-size:14.5px;margin:14px 0 18px;color:var(--ink)}
+.lang{display:flex;gap:3px;background:rgba(255,255,255,.6);border-radius:999px;padding:4px}
+.lang button{border:0;background:none;border-radius:999px;padding:6px 14px;font-family:inherit;
+  font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+.lang button.on{background:var(--maroon-900);color:var(--cream)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.cols2{grid-template-columns:1fr;gap:14px}}
+.icp .ttl{font-family:var(--font-display);font-size:14px;margin-bottom:7px}
+.icp .ttl.good{color:var(--ok)} .icp .ttl.bad{color:var(--bad)}
+.icp ul{list-style:none;margin:0}
+.icp li{padding:5px 0 5px 14px;position:relative;font-size:13px;line-height:1.5;border-bottom:1px solid var(--line)}
+.icp li:last-child{border-bottom:0}
+.icp li:before{content:'';position:absolute;left:0;top:12px;width:5px;height:5px;border-radius:50%;background:var(--pink-300)}
+.icp .wh{margin-top:16px;font-size:13px;color:var(--ink-soft);line-height:1.55}
+.icp .askbox{margin-top:16px;background:var(--purple-200);border-radius:var(--r-sm);padding:14px 16px;font-size:13.5px;line-height:1.55}
+.icp .askbox .ttl{color:var(--maroon-900);margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -236,6 +255,49 @@ const WHO={
   bfp:'Social media content strategy, music video and film production.',
   bwb:'Dog walking and pet care in Los Angeles.'
 };
+
+// Who each business is actually for. Written out so the hour is spent on the
+// right twenty people rather than a hundred wrong ones. Both languages,
+// because this is the part that has to be understood exactly.
+const ICP={
+  saha_synergy:{
+    en:{who:'Founders and entrepreneurs, with women in business as the heart of it. People who already have a real business, not an idea.',
+      good:['Two years in or more, with paying customers','Has a team, even a small one, or is about to hire','Talks about being stretched, doing everything herself, wanting to step back','Speaks about the business as something she is building, not a side hustle','Runs a real offer with a price on it'],
+      bad:['Pre-revenue, still deciding what to sell','Looking for a job or an internship','Network marketing and dropship courses','Anyone whose page is all quotes and no business'],
+      where:'LinkedIn founder profiles, Instagram business accounts, founder communities.',
+      ask:'Does this person already carry the weight of a business? If she has nothing to hand over, there is nothing to restructure.'},
+    id:{who:'Founder dan pengusaha, terutama perempuan yang punya bisnis. Orang yang bisnisnya sudah jalan, bukan yang masih berupa ide.',
+      good:['Sudah jalan dua tahun atau lebih, sudah ada yang bayar','Sudah punya tim, walau kecil, atau sedang mau merekrut','Cerita soal capek, semua dikerjakan sendiri, ingin bisa lepas tangan','Membicarakan bisnisnya sebagai sesuatu yang dibangun, bukan sampingan','Punya produk atau jasa yang jelas harganya'],
+      bad:['Belum ada pemasukan, masih bingung mau jual apa','Sedang cari kerja atau magang','MLM dan kursus dropship','Halaman yang isinya cuma kutipan motivasi, tidak ada bisnisnya'],
+      where:'Profil founder di LinkedIn, akun bisnis di Instagram, komunitas founder.',
+      ask:'Apakah orang ini sudah memikul beban sebuah bisnis? Kalau tidak ada yang bisa diserahkan, tidak ada yang bisa dibenahi.'}
+  },
+  bwb:{
+    en:{who:'People in Los Angeles who own a dog. That is the whole filter. Volume matters more than picking here.',
+      good:['Lives in LA or an LA neighbourhood, Silver Lake, Venice, Santa Monica, Echo Park and so on','Posts their dog, tags it, has it in their bio','Works full time, travels, or posts about being busy','Owns a bigger or high energy breed that needs real walking'],
+      bad:['Outside Los Angeles, however lovely the dog','Other dog walkers, groomers and pet businesses','Accounts with no dog anywhere on them'],
+      where:'Instagram location tags for LA neighbourhoods, LA dog hashtags, local dog park and pet shop pages.',
+      ask:'Do they live in LA, and do they have a dog? If both are yes, send. Do not overthink this one.'},
+    id:{who:'Orang di Los Angeles yang punya anjing. Itu saja saringannya. Di sini jumlah lebih penting daripada memilih-milih.',
+      good:['Tinggal di LA atau daerahnya, Silver Lake, Venice, Santa Monica, Echo Park dan sekitarnya','Sering posting anjingnya, di-tag, atau ada di bio','Kerja penuh waktu, sering bepergian, atau cerita soal sibuk','Anjingnya besar atau aktif, jadi butuh jalan yang serius'],
+      bad:['Di luar Los Angeles, sebagus apa pun anjingnya','Sesama dog walker, groomer, atau usaha hewan lain','Akun yang tidak ada anjingnya sama sekali'],
+      where:'Tag lokasi Instagram daerah LA, hashtag anjing LA, halaman dog park dan toko hewan setempat.',
+      ask:'Apakah dia tinggal di LA, dan apakah punya anjing? Kalau dua-duanya iya, kirim. Yang ini tidak perlu dipikir lama.'}
+  },
+  bfp:{
+    en:{who:'Businesses that already earn well and can spend around IDR 15,000,000 a month on production. This is the one to be strict about. It is not whoever needs their Instagram handled.',
+      good:['Already pays for professional photo or video, so the standard is understood','Runs paid ads, which means there is a real marketing budget','More than one outlet, branch or location','Sells something expensive: property, villas, clinics, hotels, jewellery, high end food','Has staff running the business, so the owner is not doing everything','An artist or label with real backing behind the release'],
+      bad:['Small or brand new business with no budget yet','Asks the price in the first message, then goes quiet','Wants it cheap, or offers exposure instead of money','Whose entire marketing spend is smaller than one production day','Only wants someone to post for them for a small monthly fee'],
+      where:'Established restaurant groups, hotels and villas, clinics, property developers, retail chains, labels and artist management.',
+      ask:'Could this business comfortably pay IDR 15,000,000 in a month for production? If the honest answer is no, it is a kind conversation that goes nowhere. Move on and spend the hour on one that can.'},
+    id:{who:'Bisnis yang omsetnya sudah bagus dan sanggup mengeluarkan sekitar Rp 15.000.000 per bulan untuk produksi. Yang ini harus tegas. Bukan sekadar siapa saja yang butuh dikelola Instagramnya.',
+      good:['Sudah pernah bayar foto atau video profesional, jadi standarnya sudah paham','Pasang iklan berbayar, artinya ada anggaran marketing beneran','Punya lebih dari satu cabang, outlet, atau lokasi','Menjual barang mahal: properti, villa, klinik, hotel, perhiasan, makanan kelas atas','Sudah punya karyawan yang menjalankan, jadi pemiliknya tidak mengerjakan semuanya sendiri','Artis atau label yang punya dukungan nyata di belakang rilisnya'],
+      bad:['Bisnis kecil atau baru buka yang belum ada anggarannya','Menanyakan harga di pesan pertama, lalu menghilang','Minta murah, atau menawarkan exposure sebagai ganti bayaran','Yang total anggaran marketingnya lebih kecil dari satu hari produksi','Yang cuma mau dicarikan orang untuk posting dengan bayaran bulanan kecil'],
+      where:'Grup restoran mapan, hotel dan villa, klinik, pengembang properti, jaringan retail, label musik dan manajemen artis.',
+      ask:'Apakah bisnis ini sanggup membayar Rp 15.000.000 dalam sebulan untuk produksi tanpa kesulitan? Kalau jujurnya tidak, itu obrolan ramah yang tidak ke mana-mana. Lanjut saja, pakai waktunya untuk yang sanggup.'}
+  }
+};
+let icpLang='en';
 const SUGGESTED={
   saha_synergy:[
     {t:'First message',n:'The real one, in Monika\'s own words. Sent from Monika\'s account, so it stays signed as Monika. Only the recipient\'s name is swapped for {{name}}.',
@@ -253,13 +315,17 @@ const SUGGESTED={
   ],
   bfp:[
     {t:'First message · Friendly and professional',n:'Your wording, unchanged. Your own pick. Safest opener, works on almost any business page.',
-     b:"Hi! 😊 I came across your page and really like what you're building.\n\nI noticed there are a few opportunities to make your social media even more consistent and engaging. I help businesses with social media strategy, content planning, scheduling, and content shoots so they can focus on running their business while maintaining a strong online presence.\n\nIf you've ever been thinking about getting support with your social media, I'd be happy to chat and share a few ideas—no pressure at all.\n\nWishing you continued success! ✨"},
+     b:"Hi! 😊 I came across your page and really like what you're building.\n\nI noticed there are a few opportunities to make your social media even more consistent and engaging. I help businesses with social media strategy, content planning, scheduling, and content shoots so they can focus on running their business while maintaining a strong online presence.\n\nIf you've ever been thinking about getting support with your social media, I'd be happy to chat and share a few ideas, no pressure at all.\n\nWishing you continued success! ✨"},
     {t:'First message · Value first',n:'Your wording, unchanged. The list makes the offer clear fast. Best for people who want to know what they are buying before they reply.',
      b:"Hi! Hope you're having a great day.\n\nI was checking out your Instagram and really enjoyed your brand. I actually had a few content ideas that could help increase engagement and make posting more consistent.\n\nI work with businesses on:\n• Social media strategy\n• Content planning\n• Content shoots\n• Scheduling & management\n• Brand positioning\n\nIf you're ever looking for support, I'd love to connect and share some ideas. 😊"},
     {t:'First message · Personalised',n:'Your wording, unchanged. Promises ideas for their page specifically, so only send it if you are ready to actually have one or two.',
-     b:"Hi! I came across your business and wanted to reach out because I genuinely think your brand has a lot of potential on social media.\n\nI'm a social media manager, and I help businesses create content strategies, organize content calendars, coordinate shoots, schedule posts, and build a brand that attracts the right audience.\n\nIf you're open to it, I'd be happy to share a few ideas specifically for your page. No obligation—just wanted to introduce myself and say hello!\n\nHave a great day!"},
-    {t:'First message · Short',n:'Mine, kept as a fourth. The only one that mentions music video and film, and the only one that ends on a question.',
+     b:"Hi! I came across your business and wanted to reach out because I genuinely think your brand has a lot of potential on social media.\n\nI'm a social media manager, and I help businesses create content strategies, organize content calendars, coordinate shoots, schedule posts, and build a brand that attracts the right audience.\n\nIf you're open to it, I'd be happy to share a few ideas specifically for your page. No obligation, just wanted to introduce myself and say hello!\n\nHave a great day!"},
+    {t:'First message · Short',n:'Mine, kept as a fourth. The only one of the four that ends on a question.',
      b:'Hi {{name}}, I have been going through your stuff. The ideas are good. The reach is not matching them yet.\n\nI am with Best Friend Production. We do content strategy, and when something needs shooting properly we shoot it, music video or film.\n\nWho is handling your content at the moment?'},
+    {t:'First message · Production, not social media',n:'For the bigger fish. Use this when the business already looks like it can pay for a shoot: several locations, running ads, selling something expensive. Do not send it to a small page.',
+     b:"Hi {{name}}, this is not about managing your Instagram.\n\nI'm with Best Friend Production. We shoot: brand films, music videos, campaign work. The kind of thing that gets made once, properly, and then carries a whole season of marketing.\n\nLooking at what you've built, you're at the size where that starts to make sense rather than being a stretch.\n\nIs there anything coming up this year worth shooting? A launch, a new location, an anniversary, a release?"},
+    {t:'Production, qualifying the budget',n:'Send this before booking a call about a shoot. Better an awkward question now than a wasted call for both of you.',
+     b:"Thanks {{name}}, that helps.\n\nSo I bring the right people and not the wrong ones, one straight question. A production day with us sits around IDR 15,000,000, depending on crew and length.\n\nIs that the range you had in mind, or were you thinking of something smaller? Either answer is fine, it just changes who I put on the call."},
     {t:'Follow up, no reply',n:'Give something away here. It costs nothing and it is remembered.',
      b:'Hi {{name}}, once more and then I will stop.\n\nOne thought either way. Most accounts we take on are not short of ideas, they are short of a shape to put them in.\n\nIf you ever want another set of eyes on that, I am here.'},
     {t:'They are interested',n:'Asking for the flop is the part that makes them trust you.',
@@ -273,7 +339,7 @@ const SUGGESTED={
     {t:'First message · Friendly',n:'Your wording, unchanged. Warmest of the three. Good for people who post about their dog a lot.',
      b:"Hi! 😊 I came across your profile and noticed you have such an adorable dog!\n\nI wanted to introduce myself. We’re a local dog walking team in Los Angeles that helps busy pet parents make sure their pups get the exercise, attention, and care they deserve.\n\nWhether you need regular walks, occasional help, or someone reliable while you're busy, we'd love to help.\n\nIf you're ever looking for a trustworthy dog walker, I'd be happy to answer any questions or tell you more about our services. 🐾\n\nHave a wonderful day!"},
     {t:'First message · Casual',n:'Your wording, unchanged. Lightest touch, easiest to ignore without feeling rude, which is why people answer it.',
-     b:"Hey! Hope you don't mind me reaching out.\n\nI saw your pup and couldn't resist saying hi! 🐶 We offer reliable dog walking services across Los Angeles for busy owners who want their dogs to stay happy, active, and cared for.\n\nIf you've ever needed an extra hand with walks, I'd be happy to share more information—no pressure at all!\n\nHave a great day!"},
+     b:"Hey! Hope you don't mind me reaching out.\n\nI saw your pup and couldn't resist saying hi! 🐶 We offer reliable dog walking services across Los Angeles for busy owners who want their dogs to stay happy, active, and cared for.\n\nIf you've ever needed an extra hand with walks, I'd be happy to share more information, no pressure at all!\n\nHave a great day!"},
     {t:'First message · Offer first',n:'Your wording, unchanged. Leads with the service rather than the dog. Use it when their profile shows little about the dog.',
      b:"Hi! I hope you're having a great day.\n\nI'm reaching out because we help dog owners in Los Angeles with professional, loving dog walking services. Every walk is tailored to your dog's energy level and personality, so they get the care and attention they deserve.\n\nIf you're interested, I'd love to tell you more or answer any questions. We'd love the opportunity to meet you and your pup! 🐾"},
     {t:'First message · Short',n:'Mine, kept as a fourth option. One direct question, nothing else. Worth testing against the three above to see which gets more replies.',
@@ -423,9 +489,36 @@ function renderView(){
 // ===========================================================
 //  MESSAGES  ·  drafts per business, plus the real saved templates
 // ===========================================================
+function icpCard(){
+  const d=(ICP[state.project]||{})[icpLang];
+  if(!d)return '';
+  const T=icpLang==='id'
+    ? {t:'Siapa yang kita cari',good:'Kirim kalau begini',bad:'Lewati kalau begini',where:'Di mana mencarinya',ask:'Pertanyaan yang harus kamu jawab sendiri dulu'}
+    : {t:'Who you are looking for',good:'Send when you see this',bad:'Skip when you see this',where:'Where to look',ask:'The question to answer before you send'};
+  return '<div class="card icp">'+
+    '<div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">'+
+      '<div style="flex:1;min-width:200px"><h2>'+esc(T.t)+'</h2>'+
+      '<div class="sub" style="margin-bottom:0">'+esc(PROJECT_LABELS[state.project])+'</div></div>'+
+      '<div class="lang">'+
+        '<button class="'+(icpLang==='en'?'on':'')+'" data-lang="en">EN</button>'+
+        '<button class="'+(icpLang==='id'?'on':'')+'" data-lang="id">ID</button>'+
+      '</div>'+
+    '</div>'+
+    '<p class="lede">'+esc(d.who)+'</p>'+
+    '<div class="cols2">'+
+      '<div><div class="ttl good">✓ '+esc(T.good)+'</div><ul>'+
+        d.good.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>'+
+      '<div><div class="ttl bad">✕ '+esc(T.bad)+'</div><ul>'+
+        d.bad.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>'+
+    '</div>'+
+    '<div class="wh"><strong>'+esc(T.where)+'</strong> '+esc(d.where)+'</div>'+
+    '<div class="askbox"><div class="ttl">'+esc(T.ask)+'</div>'+esc(d.ask)+'</div>'+
+  '</div>';
+}
 function renderMessages(){
   const list=SUGGESTED[state.project]||[];
   $('view').innerHTML=
+    icpCard()+
     '<div class="card">'+
       '<h2>'+esc(PROJECT_LABELS[state.project])+'</h2>'+
       '<div class="sub">'+esc(WHO[state.project]||'')+'</div>'+
@@ -450,6 +543,8 @@ function renderMessages(){
       '<div id="savedTpl"><div class="empty">Loading…</div></div></div>';
 
   $('view').onclick=async e=>{
+    const lg=e.target.getAttribute('data-lang');
+    if(lg){icpLang=lg;renderMessages();return}
     const ci=e.target.getAttribute('data-copy'), si=e.target.getAttribute('data-save');
     const idx=ci!==null?ci:si; if(idx===null)return;
     const box=document.querySelector('textarea[data-sug="'+idx+'"]');
@@ -1006,7 +1101,7 @@ function makePdf(c){
     doc.setTextColor(255,248,250);
     doc.setFont('times','bold');doc.setFontSize(20);doc.text('Lia · Outreach',M,44);
     doc.setFont('helvetica','normal');doc.setFontSize(11);
-    doc.text('Client report — '+(PROJECT_LABELS[c.project]||c.project||''),M,66);
+    doc.text('Client report , '+(PROJECT_LABELS[c.project]||c.project||''),M,66);
     y=120;
   }
   function room(h){if(y+h>H-M){doc.addPage();y=M}}
