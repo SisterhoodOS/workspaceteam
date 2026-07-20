@@ -149,6 +149,12 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
   table.rsp td[data-label="Work"]::before,table.rsp td[data-label="Volume"]::before,
   table.rsp td[data-label="Task"]::before,table.rsp td[data-label="Description"]::before,
   table.rsp td[data-label="Commitment"]::before,table.rsp td[data-label="Info"]::before{flex:none}
+  /* My Work's own long cells. The first cell of a client row carries a title,
+     a note and a progress bar, which cannot sit side by side on a phone. */
+  table.rsp td[data-label="What"],table.rsp td[data-label="What you make"]{
+    flex-direction:column;align-items:flex-start;text-align:left;gap:3px}
+  table.rsp td[data-label="What"]::before,table.rsp td[data-label="What you make"]::before{flex:none}
+  table.rsp td[data-label="What"]>*,table.rsp td[data-label="What you make"]>*{width:100%}
   table.rsp tr.catrow{background:var(--ivory);border-color:var(--line);padding:0;margin-bottom:8px}
   table.rsp tr.catrow td{padding:9px 14px;justify-content:flex-start}
   table.rsp .empty{padding:30px 14px}
@@ -272,7 +278,8 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
   transition:.15s;color:#fff;min-height:96px;display:flex;flex-direction:column;justify-content:center}
 .fcard .k{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;opacity:.9}
 .fcard .v{font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;line-height:1.05;margin:2px 0}
-.fcard .n{font-size:11.5px;opacity:.92}
+.fcard .n{font-size:11.5px;opacity:.92;overflow-wrap:anywhere}
+.fcard .k{overflow-wrap:anywhere}
 .fcard:hover{filter:brightness(1.06)}
 .fcard.on{border-color:var(--choc);box-shadow:0 0 0 3px rgba(54,32,23,.16)}
 .f-monthly{background:#C2668A}
@@ -1737,18 +1744,24 @@ function renderWork(monKey){
     return '<tr class="fold-'+clientColour(p.client)+'">'+
       '<td data-label="Client"><strong>'+esc(clientName(p.client))+'</strong></td>'+
       '<td data-label="What">'+esc(r.lbl||p.type)+'</td>'+
-      '<td data-label="Do today">'+pace+' '+esc(r.unit||'')+'</td>'+
+      '<td data-label="Do today">'+pace+' '+esc(pace===1?String(r.unit||'').replace(/s$/,''):(r.unit||''))+'</td>'+
       '<td data-label="This week">'+done+' of '+target+' done, '+left+' left</td>'+
       '<td class="num" data-label="Pays">'+fmt(planEach(p))+' each</td>'+
       '<td class="noprint"><button class="mini" onclick="planDone(\''+p.id+'\')">+1 done</button></td></tr>';
-  }).join('')+todayTasks.map(t=>
+  // Admin tasks are capped here so Today stays readable on a phone. The rest
+  // are one tap away in the folders, and the count says how many are waiting.
+  }).join('')+todayTasks.slice(0,5).map(t=>
     '<tr class="fold-'+esc(t.fold||'monthly')+'">'+
       '<td data-label="Client"><strong>Admin</strong></td>'+
       '<td data-label="What">'+esc(t.title)+'</td>'+
       '<td data-label="Do today">once</td>'+
       '<td data-label="This week">'+pill(TST,t.status)+'</td>'+
       '<td class="num" data-label="Pays"><span style="color:var(--muted)">hourly</span></td>'+
-      '<td class="noprint"><button class="mini" onclick="taskStep(\''+t.id+'\')">next step</button></td></tr>').join('');
+      '<td class="noprint"><button class="mini" onclick="taskStep(\''+t.id+'\')">next step</button></td></tr>').join('')+
+    (todayTasks.length>5
+      ? '<tr><td colspan="6" style="text-align:center;color:var(--muted)">and '+(todayTasks.length-5)+
+        ' more admin tasks, further down in your folders</td></tr>'
+      : '');
 
   document.getElementById('todayList').innerHTML=todayRows
     ? '<div class="tblwrap"><table class="rsp"><thead><tr><th>Who</th><th>What</th><th>Do today</th>'+
