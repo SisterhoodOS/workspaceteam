@@ -420,6 +420,9 @@ table.simple td{vertical-align:middle}
 
   <div class="card" id="taskListCard">
     <h2 id="tListTitle">Tasks</h2>
+    <div class="frow noprint" id="monthPickRow" style="display:none;max-width:280px">
+      <div class="f"><label>Which month</label><input type="month" id="monthlyMonthPick"></div>
+    </div>
     <div class="addrow noprint">
       <input id="fAdd" placeholder="Add something to this folder, then press Enter">
       <button class="btn" id="fAddBtn">Add</button>
@@ -1287,6 +1290,66 @@ if(tasks.some(t=>!t.fold)){
   tasks=tasks.map(t=>t.fold?t:Object.assign({},t,{fold:(t.area||areaOf(t.cat))==='home'?'home':'monthly'}));
   writeStore(TKEY,tasks);
 }
+// The Monthly schedule folder is organised as one checklist per calendar
+// month. Older monthly tasks inherit the month from their date so they land
+// in the right month rather than piling up together.
+if(tasks.some(t=>t.fold==='monthly'&&!t.month)){
+  tasks=tasks.map(t=>(t.fold==='monthly'&&!t.month)
+    ?Object.assign({},t,{month:mkey(t.date)||todayISO().slice(0,7)}):t);
+  writeStore(TKEY,tasks);
+}
+// The ten steps that make up one month's event work. Picking a fresh month
+// stamps out a clean copy of these.
+const MONTHLY_TEMPLATE=[
+  ['Create flyer for the event','Event & workshop logistics'],
+  ['Write the description for each event','Event & workshop logistics'],
+  ['Upload event on Nomeo','Systems (MailerLite, Circle, Calendly, Canva)'],
+  ['Update Linktree','Systems (MailerLite, Circle, Calendly, Canva)'],
+  ['Schedule the post on Meta','Systems (MailerLite, Circle, Calendly, Canva)'],
+  ['Update Sisterhood and Sophia calendar','Calendar & scheduling'],
+  ['Update facilitator calendar','Calendar & scheduling'],
+  ['Confirm the venue','Vendor management'],
+  ['Create flyer for the monthly post schedule, upload to Instagram and the WA group','Event & workshop logistics'],
+  ['Set the reminder alarm to share the event in the group','Calendar & scheduling']
+];
+function monthlyOf(t){return t.month||mkey(t.date)}
+// Give a month its own copy of the checklist if it has none yet. Writes the
+// store directly, never saveTasks(), so it can be called from inside render
+// paths without looping.
+function ensureMonthlyChecklist(m){
+  if(tasks.some(t=>t.fold==='monthly'&&monthlyOf(t)===m))return false;
+  MONTHLY_TEMPLATE.forEach(([title,cat])=>{
+    tasks.push({id:'f_monthly_'+Math.random().toString(36).slice(2,8),
+      date:m+'-01',time:'',title,cat,area:areaOf(cat),fold:'monthly',month:m,
+      wa:'',link:'',rep:'monthly',hrs:0,status:'todo',who:'',note:'',pushed:false});
+  });
+  writeStore(TKEY,tasks);
+  return true;
+}
+// When every step of a month is done, one line lands under Sisterhood:
+// "Monthly schedule completed for <Month>". Reopening a step takes it back.
+function checkMonthlyComplete(m){
+  const list=tasks.filter(t=>t.fold==='monthly'&&monthlyOf(t)===m);
+  if(!list.length)return;
+  const allDone=list.every(t=>t.status==='done');
+  const existing=db.find(e=>e.type==='monthly_sched'&&e.month===m);
+  if(allDone&&!existing){
+    db.push({id:'e'+Date.now()+Math.random().toString(36).slice(2,7),
+      date:todayISO(),type:'monthly_sched',client:'Sisterhood OS',qty:1,rate:0,
+      appr:'menunggu',paid:'belum',link:'',month:m,
+      note:'Monthly schedule completed for '+mname(m)});
+    writeStore(KEY,db);
+  }else if(!allDone&&existing){
+    db=db.filter(e=>!(e.type==='monthly_sched'&&e.month===m));
+    writeStore(KEY,db);
+  }
+}
+// A friendly label for a logged entry, including the monthly-schedule report
+// that has no row in the rate list.
+function workLabel(e){
+  if(e.type==='monthly_sched')return 'Monthly schedule';
+  return (R[e.type]||{}).lbl||e.type;
+}
 // ================= THE PLAN =================
 // One row per standing job: this client, this kind of work, this many, this
 // often. The rate comes from the signed rate list, so the pay is never typed
@@ -1372,9 +1435,13 @@ function planQty(id){
 // the four folders sit closed, and pressing one is what reveals its list.
 // Pressing the open one again closes it.
 let activeFolder='';
+let monthlyMonth=todayISO().slice(0,7);   // which month the Monthly folder shows
 function openFolder(id){
   activeFolder=(activeFolder===id)?'':id;
-  if(activeFolder)document.getElementById('tFold').value=activeFolder;
+  if(activeFolder){
+    document.getElementById('tFold').value=activeFolder;
+    if(activeFolder==='monthly')ensureMonthlyChecklist(monthlyMonth);
+  }
   render();
   if(activeFolder){
     const card=document.getElementById('taskListCard');
@@ -1608,6 +1675,7 @@ function taskStep(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;
   const i=STEP_ORDER.indexOf(t.status||'todo');
   t.status=STEP_ORDER[(i+1)%STEP_ORDER.length];
+  if(t.fold==='monthly')checkMonthlyComplete(monthlyOf(t));
   saveTasks();
 }
 function taskSetLink(id){
@@ -1787,25 +1855,34 @@ function renderWork(monKey){
     // loosely so a stray capital or space does not hide the row.
     const norm=s=>String(s||'').trim().toLowerCase();
     const logged=mine.filter(e=>norm(e.client)===norm(c.name));
-    const loggedTotal=logged.reduce((s,e)=>s+total(e),0);
-    const logRows=logged.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>
-      '<tr class="fold-'+c.colour+'">'+
-        '<td data-label="What"><strong>'+esc((R[e.type]||{}).lbl||e.type)+'</strong> '+
+    // Monthly-schedule reports carry no money, so they are counted separately
+    // from paid work, otherwise the header would read a misleading "IDR 0".
+    const paidLogged=logged.filter(e=>e.type!=='monthly_sched');
+    const reports=logged.filter(e=>e.type==='monthly_sched');
+    const loggedTotal=paidLogged.reduce((s,e)=>s+total(e),0);
+    const logRows=logged.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>{
+      const isRep=e.type==='monthly_sched';
+      const label=isRep?workLabel(e)+' — '+mname(e.month||mkey(e.date)):workLabel(e);
+      return '<tr class="fold-'+c.colour+'">'+
+        '<td data-label="What"><strong>'+esc(label)+'</strong> '+
           '<span class="pill p-ok">done</span>'+
           (e.link?'<div><a class="lnk" href="'+esc(e.link)+'" target="_blank" rel="noopener">Open</a></div>':'')+
           '<div style="font-size:11px;color:var(--muted)">'+esc(e.date)+'</div></td>'+
         '<td data-label="How often">'+pill(APPR,e.appr)+'</td>'+
-        '<td data-label="How many">'+(e.qty||0)+' '+esc((R[e.type]||{}).unit||'')+'</td>'+
-        '<td class="num" data-label="Each">'+fmt(e.rate||0)+'</td>'+
-        '<td class="num" data-label="Total">'+fmt(total(e))+'</td>'+
-        '<td class="noprint"><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>').join('');
+        '<td data-label="How many">'+(isRep?'1 month':(e.qty||0)+' '+esc((R[e.type]||{}).unit||''))+'</td>'+
+        '<td class="num" data-label="Each">'+(isRep?'-':fmt(e.rate||0))+'</td>'+
+        '<td class="num" data-label="Total">'+(isRep?'<span style="color:var(--muted)">report</span>':fmt(total(e)))+'</td>'+
+        '<td class="noprint"><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>';
+    }).join('');
     const body=(planRows+logRows)||
       '<tr><td colspan="6"><div class="empty"><span class="serif">Nothing agreed yet</span>'+
       'Add what you make for '+esc(c.name)+' using the box below.</div></td></tr>';
-    // Header line: the weekly plan if there is one, plus what has been logged.
+    // Header line: the weekly plan if there is one, what has been logged, and
+    // any completed monthly schedules.
     const parts=[];
     if(rows.length)parts.push(fmt(weekly)+' a week planned');
-    if(logged.length)parts.push(fmt(loggedTotal)+' logged this month');
+    if(paidLogged.length)parts.push(fmt(loggedTotal)+' logged this month');
+    if(reports.length)parts.push(reports.length+' monthly schedule'+(reports.length>1?'s':'')+' done');
     return '<div style="margin-bottom:22px">'+
       '<div class="fcard f-'+c.colour+'" style="cursor:default;min-height:0;padding:12px 16px;margin-bottom:0;border-radius:4px 4px 0 0">'+
         '<div class="k">'+esc(c.name)+'</div>'+
@@ -1820,9 +1897,9 @@ function renderWork(monKey){
   document.getElementById('workLogBody').innerHTML=mine.length
     ? mine.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>
       '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Client">'+esc(e.client||'-')+'</td>'+
-      '<td data-label="Work">'+esc((R[e.type]||{}).lbl||e.type)+'</td>'+
-      '<td class="num" data-label="How many">'+(e.qty||0)+'</td>'+
-      '<td class="num" data-label="Pays">'+fmt(total(e))+'</td>'+
+      '<td data-label="Work">'+esc(workLabel(e)+(e.type==='monthly_sched'?' — '+mname(e.month||mkey(e.date)):''))+'</td>'+
+      '<td class="num" data-label="How many">'+(e.type==='monthly_sched'?'1 month':(e.qty||0))+'</td>'+
+      '<td class="num" data-label="Pays">'+(e.type==='monthly_sched'?'<span style="color:var(--muted)">report</span>':fmt(total(e)))+'</td>'+
       '<td data-label="Approved">'+pill(APPR,e.appr)+'</td>'+
       '<td class="noprint"><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>').join('')
     : '<tr><td colspan="7"><div class="empty"><span class="serif">Nothing logged this month</span>'+
@@ -1924,6 +2001,11 @@ function taskToggle(id){
 
 document.getElementById('fAddBtn').onclick=quickAddTask;
 document.getElementById('fAdd').onkeydown=e=>{if(e.key==='Enter')quickAddTask()};
+document.getElementById('monthlyMonthPick').onchange=e=>{
+  monthlyMonth=e.target.value||monthlyMonth;
+  ensureMonthlyChecklist(monthlyMonth);
+  render();
+};
 document.getElementById('tFilter').onchange=render;
 document.getElementById('tSearch').oninput=render;
 
@@ -2215,7 +2297,11 @@ function render(){
   // Folder cards first. Each one counts what is open inside it, and the
   // one currently open is marked.
   document.getElementById('folderCards').innerHTML=FOLDERS.map(f=>{
-    const inF=tasks.filter(t=>(t.fold||'')===f.id);
+    // The Monthly card reflects the month currently chosen, so its count
+    // matches the checklist that opens rather than every month at once.
+    const inF=f.id==='monthly'
+      ? tasks.filter(t=>t.fold==='monthly'&&monthlyOf(t)===monthlyMonth)
+      : tasks.filter(t=>(t.fold||'')===f.id);
     const open=inF.filter(t=>t.status!=='done').length;
     const on=f.id===activeFolder;
     return '<div class="fcard f-'+f.id+(on?' on':'')+'" onclick="openFolder(\''+f.id+'\')">'+
@@ -2230,14 +2316,23 @@ function render(){
   fNote.innerHTML=(fMeta&&FOLDER_NOTE[activeFolder])||'';
   fNote.style.display=(fMeta&&FOLDER_NOTE[activeFolder])?'':'none';
   fList.style.display=fMeta?'':'none';
+  const mpRow=document.getElementById('monthPickRow');
   if(fMeta){
     document.getElementById('tFormTitle').textContent='Add to '+fMeta.name;
-    document.getElementById('tListTitle').textContent=fMeta.name;
+    document.getElementById('tListTitle').textContent=
+      activeFolder==='monthly'?'Monthly schedule — '+mname(monthlyMonth):fMeta.name;
+    // the month picker belongs to the Monthly folder alone
+    mpRow.style.display=activeFolder==='monthly'?'':'none';
+    if(activeFolder==='monthly')document.getElementById('monthlyMonthPick').value=monthlyMonth;
+  }else{
+    mpRow.style.display='none';
   }
 
   const filt=document.getElementById('tFilter').value;
   const q=document.getElementById('tSearch').value.trim().toLowerCase();
-  let tl=tasks.filter(t=>(t.fold||'')===activeFolder);
+  let tl=activeFolder==='monthly'
+    ? tasks.filter(t=>t.fold==='monthly'&&monthlyOf(t)===monthlyMonth)
+    : tasks.filter(t=>(t.fold||'')===activeFolder);
   if(filt==='today')tl=tl.filter(t=>t.date===todayISO());
   else if(filt==='week')tl=tl.filter(t=>mondayOf(t.date)===monKey);
   else if(filt==='open')tl=tl.filter(t=>t.status!=='done');
