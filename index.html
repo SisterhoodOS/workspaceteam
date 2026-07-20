@@ -266,6 +266,38 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 #gate .msg.ok{color:var(--olive)}
 #gate .foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.5}
 
+/* ---- the four admin folders. Each one owns a colour, and the colour fills
+   the whole card and the whole row, not just an edge. ---- */
+.fcard{border-radius:4px;padding:16px 18px;cursor:pointer;border:2px solid transparent;
+  transition:.15s;color:#fff;min-height:96px;display:flex;flex-direction:column;justify-content:center}
+.fcard .k{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;opacity:.9}
+.fcard .v{font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;line-height:1.05;margin:2px 0}
+.fcard .n{font-size:11.5px;opacity:.92}
+.fcard:hover{filter:brightness(1.06)}
+.fcard.on{border-color:var(--choc);box-shadow:0 0 0 3px rgba(54,32,23,.16)}
+.f-monthly{background:#C2668A}
+.f-reels{background:#4A7BA8}
+.f-home{background:#6B7524}
+.f-sophia{background:#7A5AA8}
+.f-seree{background:#2F7D6E}
+.f-denise{background:#B4652F}
+tr.fold-monthly td{background:#FBEFF4}
+tr.fold-reels   td{background:#EDF3F9}
+tr.fold-home    td{background:#F1F3E6}
+tr.fold-sophia  td{background:#F3EFF9}
+tr.fold-seree   td{background:#E9F3F0}
+tr.fold-denise  td{background:#FAF0E7}
+tr.fold-monthly.done td,tr.fold-reels.done td,tr.fold-home.done td,tr.fold-sophia.done td{opacity:.55}
+table.simple th{white-space:nowrap}
+table.simple td{vertical-align:middle}
+.addrow{display:flex;gap:8px;margin:4px 0 16px}
+.addrow input{flex:1;padding:11px 13px;border:1px solid var(--line);border-radius:4px;
+  font-family:inherit;font-size:13.5px;background:var(--paper);color:var(--txt);outline:none}
+.addrow input:focus{border-color:var(--olive)}
+.cellbtn{background:none;border:none;padding:0;font:inherit;color:var(--burg);
+  text-decoration:underline;cursor:pointer;text-align:left}
+.cellbtn.muted{color:var(--muted);text-decoration:none}
+
 #picker{position:fixed;inset:0;z-index:890;background:linear-gradient(135deg,var(--choc) 0%,#4A121F 55%,var(--burg) 100%);
   display:none;align-items:center;justify-content:center;padding:24px}
 #picker.show{display:flex}
@@ -334,11 +366,15 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 
 <nav>
   <div class="wrap">
-    <button class="on" data-p="dash">Month Summary</button>
-    <button data-p="board">Work Board</button>
-    <button data-p="sched">My Schedule</button>
-    <button data-p="daily">Daily Admin</button>
-    <button data-p="log">Log Work</button>
+    <button class="on" data-p="work">My Work</button>
+    <button data-p="dash">Month Summary</button>
+    <!-- Work Board, My Schedule, Daily Admin and Log Work all live inside My
+         Work now. The panels stay in the page because other tabs read them,
+         but Monika has one place to look instead of four. -->
+    <button data-p="board" hidden>Work Board</button>
+    <button data-p="sched" hidden>My Schedule</button>
+    <button data-p="daily" hidden>Daily Admin</button>
+    <button data-p="log" hidden>Log Work</button>
     <button data-p="appr">Approvals</button>
     <button data-p="pay">Salary Paid</button>
     <button data-p="cash">Petty Cash</button>
@@ -350,8 +386,76 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 
 <main class="wrap">
 
+<!-- ================= MY WORK =================
+     One page that answers the four questions at once: what do I do today,
+     how often does it come round, how many of them, and what does it pay. -->
+<section class="panel on" id="p-work">
+  <div class="grid" id="workStats"></div>
+
+  <div class="card">
+    <div class="seclabel">Right now</div>
+    <h2>Today</h2>
+    <p class="lead">Everything due today, from every client. Tick it off and the pay is logged for you.</p>
+    <div id="todayList"></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Admin work</div>
+    <h2>Your four folders</h2>
+    <p class="lead">The admin side of the job, paid by the hour. Click a folder to open the list inside it.</p>
+    <div class="grid" id="folderCards"></div>
+  </div>
+
+  <div class="card" id="folderNote" style="display:none"></div>
+
+  <div class="card" id="taskListCard">
+    <h2 id="tListTitle">Tasks</h2>
+    <div class="addrow noprint">
+      <input id="fAdd" placeholder="Add something to this folder, then press Enter">
+      <button class="btn" id="fAddBtn">Add</button>
+    </div>
+    <div class="tblwrap"><table class="rsp simple">
+      <thead><tr><th>Task</th><th>Progress</th><th>Link</th><th>Date</th><th></th></tr></thead>
+      <tbody id="taskBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Who you work for</div>
+    <h2>Your clients</h2>
+    <p class="lead">Each client shows what you make for them, how often, how many, and what it pays. Press <strong>+1 done</strong> when you finish one and it goes straight into your earnings.</p>
+    <div id="clientCards"></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">Add a line</div>
+    <h2>Add work to a client</h2>
+    <div class="frow">
+      <div class="f"><label>Client</label><select id="pClient"></select></div>
+      <div class="f"><label>What kind of work</label><select id="pType"></select></div>
+      <div class="f"><label>How many</label><input type="number" id="pQty" value="1" min="1" step="1"></div>
+      <div class="f"><label>How often</label><select id="pPer">
+        <option value="day">Every day</option>
+        <option value="week" selected>Every week</option>
+        <option value="month">Every month</option>
+      </select></div>
+    </div>
+    <div class="btnrow"><button class="btn" id="pAdd">Add to the plan</button></div>
+    <div class="note" id="pPreview"></div>
+  </div>
+
+  <div class="card">
+    <div class="seclabel">The money</div>
+    <h2>What you have logged this month</h2>
+    <div class="tblwrap"><table class="rsp">
+      <thead><tr><th>Date</th><th>Client</th><th>Work</th><th class="num">How many</th><th class="num">Pays</th><th>Approved</th><th></th></tr></thead>
+      <tbody id="workLogBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
 <!-- ================= DASHBOARD ================= -->
-<section class="panel on" id="p-dash">
+<section class="panel" id="p-dash">
   <div class="frow noprint" style="max-width:430px">
     <div class="f"><label>Month</label><select id="mSel"></select></div>
     <div class="f"><label>Exchange rate (IDR per USD)</label><input type="number" id="fx" value="18000"></div>
@@ -474,12 +578,22 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
 
 <!-- ================= DAILY ADMIN ================= -->
 <section class="panel" id="p-daily">
-  <div class="grid" id="taskStats"></div>
 
-  <div class="card">
+  <!-- The long form is kept out of sight rather than deleted: the rest of the
+       page still reads these fields. Everything Monika needs day to day is the
+       one-line adder and the four columns in the table below. -->
+  <div class="card" id="taskFormCard" style="display:none">
     <div class="seclabel">Add a task</div>
-    <h2>Daily Admin List</h2>
-    <p class="lead">Everything you do in a day, in one place: who to contact, the link, the time, and what came of it. Ticking these off is what builds the weekly log Sophia expects.</p>
+    <h2 id="tFormTitle">Add to this folder</h2>
+
+    <div class="frow">
+      <div class="f"><label>Folder</label><select id="tFold">
+        <option value="monthly">Monthly schedule</option>
+        <option value="reels">Trial reels</option>
+        <option value="home">Home</option>
+        <option value="sophia">Sophia</option>
+      </select></div>
+    </div>
 
     <div class="frow">
       <div class="f"><label>Date</label><input type="date" id="tDate"></div>
@@ -548,23 +662,10 @@ tr.ar-finance td:first-child{box-shadow:inset 4px 0 0 var(--burg)}
     </div>
   </div>
 
-  <div class="card">
-    <div class="seclabel">The list</div>
-    <h2>Tasks</h2>
-    <div class="frow noprint" style="max-width:620px">
-      <div class="f"><label>Show</label><select id="tFilter">
-        <option value="today">Today</option>
-        <option value="week">This week</option>
-        <option value="open">Everything not finished</option>
-        <option value="all">Everything</option>
-      </select></div>
-      <div class="f"><label>Search</label><input id="tSearch" placeholder="Name, note, number..."></div>
-      <div class="f"><label>&nbsp;</label><button class="btn olv" id="tPush" style="width:100%">Send hours to Log Work</button></div>
-    </div>
-    <div class="tblwrap"><table class="rsp">
-      <thead><tr><th>Task</th><th>Date</th><th>Time</th><th>Category</th><th>Contact</th><th>Link</th><th class="num">Hrs</th><th>Status</th><th></th></tr></thead>
-      <tbody id="taskBody"></tbody>
-    </table></div>
+  <div style="display:none">
+    <select id="tFilter"><option value="all" selected>Everything</option></select>
+    <input id="tSearch">
+    <button id="tPush"></button>
   </div>
 </section>
 
@@ -1087,7 +1188,7 @@ function groupOf(cat){return GROUP_OF[cat]||'other'}
 const KEY='monika_workspace_v1', PKEY='monika_payments_v1',
       TKEY='monika_tasks_v1', FKEY='monika_finance_v1',
       CKEY='monika_commit_v1', SEEDFLAG='monika_seeded_v1',
-      RKEY='monika_steps_v1';
+      RKEY='monika_steps_v1', PLKEY='monika_plan_v1';
 
 function readStore(k,fb){try{const v=JSON.parse(localStorage.getItem(k));return v==null?fb:v}catch(e){return fb}}
 function writeStore(k,v){
@@ -1115,30 +1216,143 @@ if(commits===null){
 // contract's, not mine. Seeded once, and only into an empty list, so it
 // can never appear twice or sit on top of real tasks.
 const SCOPE_SEEDED='monika_scope_v1';
-if(!tasks.length&&!localStorage.getItem(SCOPE_SEEDED)){
-  const SCOPE=[
-    ['Calendar and scheduling','Calendar & scheduling'],
-    ['Communications follow-up','Communications follow-up'],
-    ['Notion task tracking','Notion task tracking'],
-    ['Document organisation','Document organisation'],
-    ['Event and workshop logistics','Event & workshop logistics'],
-    ['Systems management (MailerLite, Circle.so, Calendly, Canva, Notion)','Systems (MailerLite, Circle, Calendly, Canva)'],
-    ['Client portal builds and UI design (guided by Sophia)','Client portal & UI'],
-    ['Claude coding sessions','Claude coding session'],
-    ['Household management','Household management'],
-    ['Vendor management','Vendor management'],
-    ['General organizing','General organizing'],
-    ['Day-to-day coordination of household staff (Leny)','Household management']
+// Four folders replace the old flat scope list. Seeded once. The old
+// 'scope*' rows from the previous version are cleared out on first load of
+// this version; anything Monika typed herself is left alone.
+const FOLDERS=[
+  {id:'monthly',name:'Monthly schedule',blurb:'Every event, start to finish'},
+  {id:'reels',  name:'Trial reels',     blurb:'Weekly reel batches'},
+  {id:'home',   name:'Home',            blurb:'Household bills and reports'},
+  {id:'sophia', name:'Sophia',          blurb:'Reminders for Sophia'}
+];
+const FOLDER_NOTE={
+  reels:'<div class="note warn"><strong>Target: 10 trial reels a week, 2 a day.</strong> '+
+    'This is the working target Monika set, not a number from the signed agreement. '+
+    'The rate list signed 16 July 2026 fixes the price per reel (template 10,000, trial batch 15,000, custom 40,000) but never states a weekly quantity. '+
+    'Worth confirming the 10 with Sophia in writing so the target and the pay agree.</div>',
+  sophia:'<div class="note">This folder is for reminders you want to raise with Sophia. Add them as they come up.</div>'
+};
+const FOLDER_SEEDED='monika_folders_v1';
+// The seed flag lives on the device, but the tasks sync between devices, so
+// a second device would otherwise seed a duplicate set. If any task already
+// carries a folder, the seeding has happened somewhere and is skipped.
+if(!localStorage.getItem(FOLDER_SEEDED)&&!tasks.some(t=>t.fold)){
+  tasks=tasks.filter(t=>!/^scope\d+$/.test(t.id||''));
+  const mk=(fold,title,cat,rep,day,note)=>({
+    id:'f_'+fold+'_'+Math.random().toString(36).slice(2,8),
+    date:day?todayISO().slice(0,8)+String(day).padStart(2,'0'):todayISO(),
+    time:'',title,cat,area:areaOf(cat),fold,
+    wa:'',link:'',rep,hrs:0,status:'todo',who:'',note:note||'',pushed:false});
+  const SEED=[
+    mk('monthly','Create flyer for the event','Event & workshop logistics','monthly'),
+    mk('monthly','Write the description for each event','Event & workshop logistics','monthly'),
+    mk('monthly','Upload event on Nomeo','Systems (MailerLite, Circle, Calendly, Canva)','monthly'),
+    mk('monthly','Update Linktree','Systems (MailerLite, Circle, Calendly, Canva)','monthly'),
+    mk('monthly','Schedule the post on Meta','Systems (MailerLite, Circle, Calendly, Canva)','monthly'),
+    mk('monthly','Update Sisterhood and Sophia calendar','Calendar & scheduling','monthly'),
+    mk('monthly','Update facilitator calendar','Calendar & scheduling','monthly'),
+    mk('monthly','Confirm the venue','Vendor management','monthly'),
+    mk('monthly','Create flyer for the monthly post schedule, upload to Instagram and the WA group','Event & workshop logistics','monthly'),
+    mk('monthly','Set the reminder alarm to share the event in the group','Calendar & scheduling','monthly'),
+    mk('home','Pay the pool guy','Purchase or payment','monthly',10,'Every month on the 10th'),
+    mk('home','Pay the bike','Purchase or payment','monthly',6,'Every month on the 6th'),
+    mk('home','Update finance','Household management','daily',null,'Every day'),
+    mk('home','Report for Leny and Lia','Household management','monthly',30,'Every month on the 30th'),
+    mk('home','Frontline Hanu','Household management','monthly',23,'Every month on the 23rd'),
+    mk('home','Take out the rubbish (sampah)','Household management','monthly',10,'Every month on the 10th')
   ];
-  tasks=SCOPE.map((s,i)=>({
-    id:'scope'+i,date:todayISO(),time:'',title:s[0],cat:s[1],area:areaOf(s[1]),
-    wa:'',link:'',rep:'unset',hrs:0,status:'todo',who:'',
-    note:'From Section 1 of the rate list signed 16 July 2026. Set how often it repeats, or delete it.',
-    pushed:false
-  }));
+  // Anything Monika already typed gets a folder so nothing goes invisible:
+  // household work lands in Home, everything else in Monthly schedule.
+  tasks=tasks.map(t=>t.fold?t:Object.assign({},t,{fold:(t.area||areaOf(t.cat))==='home'?'home':'monthly'}));
+  tasks=SEED.concat(tasks);
   writeStore(TKEY,tasks);
+  localStorage.setItem(FOLDER_SEEDED,'1');
   localStorage.setItem(SCOPE_SEEDED,'1');
 }
+// ================= THE PLAN =================
+// One row per standing job: this client, this kind of work, this many, this
+// often. The rate comes from the signed rate list, so the pay is never typed
+// in by hand and never guessed.
+const CLIENTS=[
+  {id:'sisterhood',name:'Sisterhood OS',colour:'monthly'},
+  {id:'bwb',       name:'BWB',          colour:'reels'},
+  {id:'seree',     name:'SEREE',        colour:'seree'},
+  {id:'rania',     name:'RANIA',        colour:'sophia'},
+  {id:'denise',    name:'DENISE',       colour:'denise'}
+];
+const PER_LABEL={day:'every day',week:'every week',month:'every month'};
+// how many times a week's worth of a thing happens, for the weekly maths
+const PER_WEEK={day:7,week:1,month:1/4.33};
+
+let plan=readStore(PLKEY,null);
+if(plan===null){
+  // Sisterhood is the one client with numbers Monika has already settled:
+  // 10 trial reels a week, which is 2 a day, and 2 carousels a week.
+  // The other clients start empty, for her to fill in as work is agreed.
+  plan=[
+    {id:'p1',client:'sisterhood',type:'reel_tpl',qty:10,per:'week',note:'10 a week, about 2 a day'},
+    {id:'p2',client:'sisterhood',type:'car_rep', qty:2,per:'week', note:'Twice a week'},
+    {id:'p3',client:'sisterhood',type:'admin',   qty:20,per:'week',note:'Mid-point of the contracted 15 to 25 hours'}
+  ];
+  writeStore(PLKEY,plan);
+}
+function savePlan(){writeStore(PLKEY,plan);render()}
+function clientName(id){const c=CLIENTS.find(x=>x.id===id);return c?c.name:id}
+function clientColour(id){const c=CLIENTS.find(x=>x.id===id);return c?c.colour:'monthly'}
+
+// A row's weekly pay, and what it pays each time it is done.
+function planEach(p){const r=R[p.type];return r?r.rate:0}
+function planPerWeek(p){return planEach(p)*(+p.qty||0)*(PER_WEEK[p.per]||1)}
+
+// How many have actually been logged for this client and work type this week.
+// Read straight off the work entries, so there is no second tally to keep.
+function doneThisWeek(p,monKey){
+  return db.filter(e=>e.type===p.type&&e.client===clientName(p.client)&&mondayOf(e.date)===monKey)
+           .reduce((s,e)=>s+(+e.qty||0),0);
+}
+function targetThisWeek(p){
+  const q=+p.qty||0;
+  return p.per==='day'?q*7:p.per==='week'?q:0;  // monthly rows are not a weekly target
+}
+// How many of this row are left to do this week, and the pace that clears it
+// over five working days.
+function leftThisWeek(p,monKey){return Math.max(0,targetThisWeek(p)-doneThisWeek(p,monKey))}
+function dailyPace(p){const t=targetThisWeek(p);return t?Math.ceil(t/5):0}
+
+// finishing one: straight into the work log at the contract rate. Admin is
+// the exception, it is paid by the hour, so it asks how long it took.
+function planDone(id){
+  const p=plan.find(x=>x.id===id);if(!p)return;
+  const r=R[p.type];if(!r)return;
+  let qty=1;
+  if(r.unit==='hrs'){
+    const v=prompt('How many hours? (0.25 = 15 minutes)','1');
+    if(v===null)return;
+    qty=+v;
+    if(!(qty>0)){alert('Please write a number bigger than zero.');return}
+  }
+  db.push({id:'e'+Date.now()+Math.random().toString(36).slice(2,7),
+    date:todayISO(),type:p.type,client:clientName(p.client),
+    qty,rate:r.rate,appr:'menunggu',paid:'belum',link:'',
+    note:'From the plan: '+r.lbl+' for '+clientName(p.client)});
+  save();
+}
+function planDel(id){
+  const p=plan.find(x=>x.id===id);if(!p)return;
+  if(!confirm('Remove "'+(R[p.type]||{}).lbl+'" from '+clientName(p.client)+'?'))return;
+  plan=plan.filter(x=>x.id!==id);savePlan();
+}
+function planQty(id){
+  const p=plan.find(x=>x.id===id);if(!p)return;
+  const v=prompt('How many '+((R[p.type]||{}).unit||'')+' '+PER_LABEL[p.per]+'?',p.qty);
+  if(v===null)return;
+  const n=+v;if(!(n>0)){alert('Please write a number bigger than zero.');return}
+  p.qty=n;savePlan();
+}
+
+let activeFolder=localStorage.getItem('monika_active_folder')||'monthly';
+function openFolder(id){activeFolder=id;localStorage.setItem('monika_active_folder',id);
+  document.getElementById('tFold').value=id;render()}
 localStorage.setItem(SEEDFLAG,'1');
 
 let editId=null, payEditId=null, taskEditId=null, cashEditId=null, commitEditId=null;
@@ -1332,6 +1546,7 @@ document.getElementById('tSave').onclick=()=>{
     date,time:document.getElementById('tTime').value,title,
     cat:document.getElementById('tCat').value,
     area:document.getElementById('tArea').value,
+    fold:document.getElementById('tFold').value,
     wa:document.getElementById('tWa').value.replace(/[^0-9+]/g,''),
     link:document.getElementById('tLink').value.trim(),
     rep:document.getElementById('tRep').value,
@@ -1348,6 +1563,7 @@ function taskEdit(id){
   document.getElementById('tDate').value=t.date;document.getElementById('tTime').value=t.time||'';
   document.getElementById('tTitle').value=t.title;document.getElementById('tCat').value=t.cat||'Other';
   document.getElementById('tArea').value=t.area||areaOf(t.cat);
+  document.getElementById('tFold').value=t.fold||activeFolder;
   document.getElementById('tWa').value=t.wa||'';document.getElementById('tLink').value=t.link||'';
   document.getElementById('tRep').value=t.rep||'none';document.getElementById('tHrs').value=t.hrs||0;
   document.getElementById('tStatus').value=t.status||'todo';document.getElementById('tWho').value=t.who||'';
@@ -1357,6 +1573,38 @@ function taskEdit(id){
   document.querySelector('nav button[data-p="daily"]').click();
 }
 function taskDel(id){if(confirm('Delete this task?')){tasks=tasks.filter(x=>x.id!==id);saveTasks()}}
+
+// ---- the four-column list edits itself in place, no form involved
+const STEP_ORDER=['todo','doing','done','blocked'];
+function taskStep(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  const i=STEP_ORDER.indexOf(t.status||'todo');
+  t.status=STEP_ORDER[(i+1)%STEP_ORDER.length];
+  saveTasks();
+}
+function taskSetLink(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  const v=prompt('Paste the link for "'+t.title+'"',t.link||'');
+  if(v===null)return;
+  t.link=v.trim();saveTasks();
+}
+function taskSetDate(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  const v=prompt('Date for "'+t.title+'" (YYYY-MM-DD)',t.date||todayISO());
+  if(v===null)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(v.trim())){alert('Please write the date like 2026-07-25.');return}
+  t.date=v.trim();saveTasks();
+}
+// one line in, one task out, straight into the folder that is open
+function quickAddTask(){
+  const box=document.getElementById('fAdd');
+  const title=box.value.trim();
+  if(!title)return;
+  tasks.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,7),
+    date:todayISO(),time:'',title,cat:'Other',area:'sisterhood',fold:activeFolder,
+    wa:'',link:'',rep:'none',hrs:0,status:'todo',who:'',note:'',pushed:false});
+  box.value='';saveTasks();box.focus();
+}
 // ---- steps: the small breakdown under a task, and the memory of it
 // A task's steps are remembered against its name, so the next time the same
 // job comes round the workspace can offer them back instead of asking her to
@@ -1453,6 +1701,103 @@ function boardLine(t){
     '<span>'+pill(TST,t.status)+'</span>'+
   '</div>'+(openSteps[t.id]?stepsPanel(t):'');
 }
+// ================= MY WORK =================
+// Everything the old Work Board, My Schedule, Daily Admin and Log Work tabs
+// used to say, in the order Monika actually asks it: what today, how often,
+// how many, what does it pay.
+function renderWork(monKey){
+  const thisMonth=todayISO().slice(0,7);
+  const mine=db.filter(e=>mkey(e.date)===thisMonth);
+  const earned=mine.reduce((s,e)=>s+total(e),0);
+  const waiting=mine.filter(e=>e.appr==='menunggu'||e.appr==='revisi').reduce((s,e)=>s+total(e),0);
+  const hrsWeek=db.filter(e=>e.type==='admin'&&mondayOf(e.date)===monKey)
+                  .reduce((s,e)=>s+(+e.qty||0),0);
+  const hrsClass=hrsWeek>25?'':(hrsWeek>=15?' olv':'');
+  const hrsNote=hrsWeek>25?'Over the 25 hour cap. Needs Sophia’s written approval.'
+    :hrsWeek>=15?'Inside the agreed 15 to 25 hours':'Below 15 hours so far this week';
+
+  // Due today: every client line that still has something left this week,
+  // plus any admin task dated today.
+  const daily=plan.filter(p=>targetThisWeek(p)>0&&leftThisWeek(p,monKey)>0);
+  const todayTasks=tasks.filter(t=>t.date===todayISO()&&t.status!=='done');
+
+  document.getElementById('workStats').innerHTML=
+    '<div class="stat olv"><div class="k">Earned this month</div><div class="v">'+fmt(earned)+'</div>'+
+      '<div class="n">'+fmt(waiting)+' still waiting on approval</div></div>'+
+    '<div class="stat'+hrsClass+'"><div class="k">Admin hours this week</div><div class="v">'+hrsWeek+' hrs</div>'+
+      '<div class="n">'+hrsNote+'</div></div>'+
+    '<div class="stat"><div class="k">Due today</div><div class="v">'+(daily.length+todayTasks.length)+'</div>'+
+      '<div class="n">'+daily.length+' from clients, '+todayTasks.length+' admin</div></div>';
+
+  // ---- today
+  const todayRows=daily.map(p=>{
+    const r=R[p.type]||{};
+    const done=doneThisWeek(p,monKey), target=targetThisWeek(p), left=leftThisWeek(p,monKey);
+    const pace=Math.min(dailyPace(p),left);
+    return '<tr class="fold-'+clientColour(p.client)+'">'+
+      '<td data-label="Client"><strong>'+esc(clientName(p.client))+'</strong></td>'+
+      '<td data-label="What">'+esc(r.lbl||p.type)+'</td>'+
+      '<td data-label="Do today">'+pace+' '+esc(r.unit||'')+'</td>'+
+      '<td data-label="This week">'+done+' of '+target+' done, '+left+' left</td>'+
+      '<td class="num" data-label="Pays">'+fmt(planEach(p))+' each</td>'+
+      '<td class="noprint"><button class="mini" onclick="planDone(\''+p.id+'\')">+1 done</button></td></tr>';
+  }).join('')+todayTasks.map(t=>
+    '<tr class="fold-'+esc(t.fold||'monthly')+'">'+
+      '<td data-label="Client"><strong>Admin</strong></td>'+
+      '<td data-label="What">'+esc(t.title)+'</td>'+
+      '<td data-label="Do today">once</td>'+
+      '<td data-label="This week">'+pill(TST,t.status)+'</td>'+
+      '<td class="num" data-label="Pays"><span style="color:var(--muted)">hourly</span></td>'+
+      '<td class="noprint"><button class="mini" onclick="taskStep(\''+t.id+'\')">next step</button></td></tr>').join('');
+
+  document.getElementById('todayList').innerHTML=todayRows
+    ? '<div class="tblwrap"><table class="rsp"><thead><tr><th>Who</th><th>What</th><th>Do today</th>'+
+      '<th>This week</th><th class="num">Pays</th><th></th></tr></thead><tbody>'+todayRows+'</tbody></table></div>'
+    : '<div class="empty"><span class="serif">Nothing due today</span>Enjoy it.</div>';
+
+  // ---- one card per client
+  document.getElementById('clientCards').innerHTML=CLIENTS.map(c=>{
+    const rows=plan.filter(p=>p.client===c.id);
+    const weekly=rows.reduce((s,p)=>s+planPerWeek(p),0);
+    const body=rows.length?rows.map(p=>{
+      const r=R[p.type]||{};
+      const done=doneThisWeek(p,monKey), target=targetThisWeek(p);
+      const prog=target?'<div class="bar"><span style="width:'+Math.min(100,Math.round(done/target*100))+'%"></span></div>'+
+        '<div style="font-size:11px;color:var(--muted)">'+done+' of '+target+' this week</div>':'';
+      return '<tr class="fold-'+c.colour+'">'+
+        '<td data-label="What"><strong>'+esc(r.lbl||p.type)+'</strong>'+
+          (p.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(p.note)+'</div>':'')+prog+'</td>'+
+        '<td data-label="How often">'+esc(PER_LABEL[p.per])+'</td>'+
+        '<td data-label="How many"><button class="cellbtn" onclick="planQty(\''+p.id+'\')">'+p.qty+' '+esc(r.unit||'')+'</button></td>'+
+        '<td class="num" data-label="Each">'+fmt(planEach(p))+'</td>'+
+        '<td class="num" data-label="Per week">'+fmt(planPerWeek(p))+'</td>'+
+        '<td class="noprint"><button class="mini" onclick="planDone(\''+p.id+'\')">+1 done</button>'+
+          '<button class="mini" onclick="planDel(\''+p.id+'\')">remove</button></td></tr>';
+    }).join(''):'<tr><td colspan="6"><div class="empty"><span class="serif">Nothing agreed yet</span>'+
+      'Add what you make for '+esc(c.name)+' using the box below.</div></td></tr>';
+    return '<div style="margin-bottom:22px">'+
+      '<div class="fcard f-'+c.colour+'" style="cursor:default;min-height:0;padding:12px 16px;margin-bottom:0;border-radius:4px 4px 0 0">'+
+        '<div class="k">'+esc(c.name)+'</div>'+
+        '<div class="n" style="font-size:12.5px">'+(rows.length?fmt(weekly)+' a week &middot; about '+fmt(weekly*4.33)+' a month':'no work set up yet')+'</div>'+
+      '</div>'+
+      '<div class="tblwrap"><table class="rsp"><thead><tr><th>What you make</th><th>How often</th>'+
+      '<th>How many</th><th class="num">Each</th><th class="num">Per week</th><th></th></tr></thead>'+
+      '<tbody>'+body+'</tbody></table></div></div>';
+  }).join('');
+
+  // ---- this month's logged work
+  document.getElementById('workLogBody').innerHTML=mine.length
+    ? mine.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>
+      '<tr><td data-label="Date">'+esc(e.date)+'</td><td data-label="Client">'+esc(e.client||'-')+'</td>'+
+      '<td data-label="Work">'+esc((R[e.type]||{}).lbl||e.type)+'</td>'+
+      '<td class="num" data-label="How many">'+(e.qty||0)+'</td>'+
+      '<td class="num" data-label="Pays">'+fmt(total(e))+'</td>'+
+      '<td data-label="Approved">'+pill(APPR,e.appr)+'</td>'+
+      '<td class="noprint"><button class="mini" onclick="del(\''+e.id+'\')">delete</button></td></tr>').join('')
+    : '<tr><td colspan="7"><div class="empty"><span class="serif">Nothing logged this month</span>'+
+      'Press +1 done on a line above when you finish something.</div></td></tr>';
+}
+
 function renderBoard(){
   const today=todayISO();
   const d=new Date(today+'T00:00:00');
@@ -1513,6 +1858,41 @@ document.getElementById('qTitle').addEventListener('keydown',e=>{
 function taskToggle(id){
   tasks=tasks.map(x=>x.id===id?{...x,status:x.status==='done'?'todo':'done'}:x);saveTasks();
 }
+// ---- the plan form: client, kind of work, how many, how often
+(function(){
+  const pc=document.getElementById('pClient'), pt=document.getElementById('pType');
+  pc.innerHTML=CLIENTS.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
+  let lastCat='';
+  RATES.forEach(r=>{
+    if(r.id==='other')return;
+    if(r.cat!==lastCat){pt.appendChild(Object.assign(document.createElement('optgroup'),{label:r.cat}));lastCat=r.cat}
+    const o=document.createElement('option');o.value=r.id;o.textContent=r.lbl;
+    pt.lastElementChild.appendChild(o);
+  });
+  function preview(){
+    const r=R[pt.value];if(!r)return;
+    const qty=+document.getElementById('pQty').value||0, per=document.getElementById('pPer').value;
+    const wk=r.rate*qty*(PER_WEEK[per]||1);
+    document.getElementById('pPreview').innerHTML=
+      '<strong>'+qty+' '+esc(r.unit)+' '+esc(PER_LABEL[per])+'</strong> at '+fmt(r.rate)+' each. '+
+      'That is '+fmt(wk)+' a week, about '+fmt(wk*4.33)+' a month.<br>'+esc(r.cond);
+  }
+  ['pType','pQty','pPer'].forEach(id=>{
+    document.getElementById(id).onchange=preview;
+    document.getElementById(id).oninput=preview;
+  });
+  preview();
+  document.getElementById('pAdd').onclick=()=>{
+    const qty=+document.getElementById('pQty').value||0;
+    if(!(qty>0)){alert('Please write how many.');return}
+    plan.push({id:'p'+Date.now()+Math.random().toString(36).slice(2,7),
+      client:pc.value,type:pt.value,qty,per:document.getElementById('pPer').value,note:''});
+    savePlan();
+  };
+})();
+
+document.getElementById('fAddBtn').onclick=quickAddTask;
+document.getElementById('fAdd').onkeydown=e=>{if(e.key==='Enter')quickAddTask()};
 document.getElementById('tFilter').onchange=render;
 document.getElementById('tSearch').oninput=render;
 
@@ -1798,46 +2178,54 @@ function render(){
     :'<tr><td colspan="7"><div class="empty"><span class="serif">No commitments yet</span>Add your first one with the form below.</div></td></tr>';
 
   renderBoard();
+  renderWork(monKey);
 
   // ---------- daily admin ----------
+  // Folder cards first. Each one counts what is open inside it, and the
+  // one currently open is marked.
+  document.getElementById('folderCards').innerHTML=FOLDERS.map(f=>{
+    const inF=tasks.filter(t=>(t.fold||'')===f.id);
+    const open=inF.filter(t=>t.status!=='done').length;
+    const on=f.id===activeFolder;
+    return '<div class="fcard f-'+f.id+(on?' on':'')+'" onclick="openFolder(\''+f.id+'\')">'+
+      '<div class="k">'+esc(f.name)+'</div><div class="v">'+open+'</div>'+
+      '<div class="n">'+(inF.length?open+' open of '+inF.length:'nothing in here yet')+
+      (on?' &middot; open now':'')+'</div></div>';
+  }).join('');
+  const fMeta=FOLDERS.find(f=>f.id===activeFolder)||FOLDERS[0];
+  const fNote=document.getElementById('folderNote');
+  fNote.innerHTML=FOLDER_NOTE[activeFolder]||'';
+  fNote.style.display=FOLDER_NOTE[activeFolder]?'':'none';
+  document.getElementById('tFormTitle').textContent='Add to '+fMeta.name;
+  document.getElementById('tListTitle').textContent=fMeta.name;
+
   const filt=document.getElementById('tFilter').value;
   const q=document.getElementById('tSearch').value.trim().toLowerCase();
-  let tl=[...tasks];
+  let tl=tasks.filter(t=>(t.fold||'')===activeFolder);
   if(filt==='today')tl=tl.filter(t=>t.date===todayISO());
   else if(filt==='week')tl=tl.filter(t=>mondayOf(t.date)===monKey);
   else if(filt==='open')tl=tl.filter(t=>t.status!=='done');
   if(q)tl=tl.filter(t=>[t.title,t.note,t.who,t.wa,t.cat,t.link].join(' ').toLowerCase().includes(q));
   tl.sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
 
-  const tToday=tasks.filter(t=>t.date===todayISO());
-  const tWeek=tasks.filter(t=>mondayOf(t.date)===monKey);
-  const openAll=tasks.filter(t=>t.status!=='done').length;
-  const hrsWeek=tWeek.reduce((s,t)=>s+(+t.hrs||0),0);
-  const unpushed=tasks.filter(t=>t.status==='done'&&!t.pushed&&(+t.hrs||0)>0).reduce((s,t)=>s+(+t.hrs||0),0);
-  const donePct=tToday.length?Math.round(tToday.filter(t=>t.status==='done').length/tToday.length*100):0;
-  document.getElementById('taskStats').innerHTML=
-    '<div class="stat olv"><div class="k">Finished today</div><div class="v">'+tToday.filter(t=>t.status==='done').length+' / '+tToday.length+'</div>'+
-      '<div class="bar"><span style="width:'+donePct+'%"></span></div><div class="n">'+donePct+'% of today’s list</div></div>'+
-    '<div class="stat"><div class="k">Still open</div><div class="v">'+openAll+'</div><div class="n">across every date</div></div>'+
-    '<div class="stat"><div class="k">Hours on this week’s tasks</div><div class="v">'+hrsWeek+' hrs</div><div class="n">'+fmt(hrsWeek*40000)+' at the admin rate</div></div>'+
-    '<div class="stat'+(unpushed>0?' olv':'')+'"><div class="k">Finished, not yet billed</div><div class="v">'+unpushed+' hrs</div><div class="n">'+(unpushed>0?'Press Send hours to Log Work':'Nothing waiting')+'</div></div>';
 
+  // Four columns and nothing else: what it is, how far along, the link, the
+  // date. Progress, link and date are all set by clicking the cell itself,
+  // so there is no form to fill in.
   document.getElementById('taskBody').innerHTML=tl.length?tl.map(t=>{
-    const wa=t.wa?'<a class="wa" href="https://wa.me/'+esc(t.wa.replace(/[^0-9]/g,''))+'" target="_blank" rel="noopener">'+esc(t.wa)+'</a>':'';
-    const who=t.who?'<div style="color:var(--muted);font-size:11.5px">'+esc(t.who)+'</div>':'';
-    const rep=t.rep&&t.rep!=='none'?' <span class="pill p-neu">'+(REP_LABEL[t.rep]||t.rep)+'</span>':'';
-    const ar=t.area||areaOf(t.cat);
-    const arTag=' <span class="area area-'+esc(ar)+'">'+esc(AREA_LABEL[ar]||ar)+'</span>';
-    return '<tr class="ar-'+esc(ar)+' '+(t.status==='done'?'done':'')+'"><td data-label="Task"><strong>'+esc(t.title)+'</strong>'+arTag+rep+
+    const rep=t.rep&&t.rep!=='none'&&t.rep!=='unset'?' <span class="pill p-neu">'+(REP_LABEL[t.rep]||t.rep)+'</span>':'';
+    const link=t.link
+      ? '<a class="lnk" href="'+esc(t.link)+'" target="_blank" rel="noopener">Open</a> '+
+        '<button class="cellbtn muted" style="font-size:11px" onclick="taskSetLink(\''+t.id+'\')">change</button>'
+      : '<button class="cellbtn muted" onclick="taskSetLink(\''+t.id+'\')">+ add link</button>';
+    return '<tr class="fold-'+esc(t.fold||'')+' '+(t.status==='done'?'done':'')+'">'+
+      '<td data-label="Task"><strong>'+esc(t.title)+'</strong>'+rep+
       (t.note?'<div style="color:var(--muted);font-size:11.5px">'+esc(t.note)+'</div>':'')+
-      (t.pushed?'<div style="color:var(--olive);font-size:11px">hours already billed</div>':'')+
-      '</td><td data-label="Date">'+esc(t.date)+'</td><td data-label="Time">'+(t.time?esc(t.time):'<span style="color:var(--muted)">-</span>')+
-      '</td><td data-label="Category">'+esc(t.cat||'-')+'</td><td data-label="Contact">'+(wa||who?wa+who:'<span style="color:var(--muted)">-</span>')+
-      '</td><td data-label="Link">'+(t.link?'<a class="lnk" href="'+esc(t.link)+'" target="_blank" rel="noopener">Open</a>':'<span style="color:var(--muted)">-</span>')+
-      '</td><td class="num" data-label="Hrs">'+(t.hrs||0)+'</td><td data-label="Status">'+pill(TST,t.status)+
-      '</td><td class="noprint" data-label=""><button class="mini" onclick="taskToggle(\''+t.id+'\')">'+(t.status==='done'?'reopen':'done')+
-      '</button><button class="mini" onclick="taskEdit(\''+t.id+'\')">edit</button><button class="mini" onclick="taskDel(\''+t.id+'\')">delete</button></td></tr>';
-  }).join(''):'<tr><td colspan="9"><div class="empty"><span class="serif">Nothing on this list</span>Add a task above, or change the filter to see other days.</div></td></tr>';
+      '</td><td data-label="Progress"><button class="cellbtn" onclick="taskStep(\''+t.id+'\')">'+pill(TST,t.status)+'</button>'+
+      '</td><td data-label="Link">'+link+
+      '</td><td data-label="Date"><button class="cellbtn" onclick="taskSetDate(\''+t.id+'\')">'+esc(t.date||'set date')+'</button>'+
+      '</td><td class="noprint" data-label=""><button class="mini" onclick="taskDel(\''+t.id+'\')">delete</button></td></tr>';
+  }).join(''):'<tr><td colspan="5"><div class="empty"><span class="serif">Nothing in this folder</span>Add something with the box above.</div></td></tr>';
 
   // ---------- salary ----------
   const yFor=document.getElementById('yFor'),keepFor=yFor.value;
@@ -2034,7 +2422,7 @@ const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
 // one shared team account, so the gate only ever asks for a password
 const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
             'monika_finance_v1','monika_commit_v1','monika_seeded_v1','monika_scope_v1',
-            'monika_steps_v1'];
+            'monika_steps_v1','monika_plan_v1'];
 
 // each person signs in to her own account with her own password, so the
 // separation is enforced by row level security in the database, not by the
