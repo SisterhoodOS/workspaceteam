@@ -182,6 +182,31 @@ a.wa{color:var(--olive);font-size:12px;font-weight:500}
 .tline .mt{display:block;font-size:11px;color:var(--muted)}
 .emptyline{padding:16px 0;color:var(--muted);font-size:12.5px}
 
+/* step by step under a task */
+.stbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font-family:inherit;
+  font-size:10.5px;letter-spacing:.4px;color:var(--muted);cursor:pointer;white-space:nowrap;flex:none}
+.stbtn:hover{border-color:var(--olive);color:var(--olive)}
+.stbtn.has{color:var(--olive);border-color:var(--olive-lt)}
+.stbtn.hot{background:var(--olive-pale);border-color:var(--olive);color:var(--olive)}
+.steps{margin:0 0 10px 29px;padding:12px 14px;background:var(--cream);border:1px solid var(--line);border-radius:5px}
+.steps .offer{background:var(--olive-pale);border-radius:4px;padding:12px 14px;margin-bottom:12px;font-size:12.5px}
+.steps .offer .prev{margin-top:7px;color:var(--choc-lt);font-size:11.5px;line-height:1.6}
+.steps .offer .obtn{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn.mini2{padding:6px 13px;font-size:11px;letter-spacing:.8px}
+ol.stl{list-style:none;margin:0 0 10px}
+ol.stl li{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+ol.stl li:last-child{border-bottom:0}
+ol.stl li span{flex:1;min-width:0}
+ol.stl li.sd span{text-decoration:line-through;color:var(--muted)}
+.tk.sm{width:17px;height:17px;font-size:10px;margin-top:1px}
+ol.stl li.sd .tk.sm{background:var(--olive);border-color:var(--olive);color:#fff}
+.xdel{border:0;background:none;color:var(--muted);cursor:pointer;font-size:12px;padding:0 3px;flex:none}
+.xdel:hover{color:var(--burg)}
+.addstep{display:flex;gap:8px;flex-wrap:wrap}
+.addstep input{flex:1;min-width:150px;padding:8px 11px;border:1px solid var(--line);border-radius:3px;font-family:inherit;font-size:13px}
+.addstep input:focus{outline:none;border-color:var(--olive)}
+.mt2{font-size:11px;color:var(--muted);margin-top:9px}
+
 /* the three people a household shop splits between */
 .who-sophia{color:#C2477E}
 .who-sam{color:#1F3A6E}
@@ -1051,7 +1076,8 @@ function groupOf(cat){return GROUP_OF[cat]||'other'}
 
 const KEY='monika_workspace_v1', PKEY='monika_payments_v1',
       TKEY='monika_tasks_v1', FKEY='monika_finance_v1',
-      CKEY='monika_commit_v1', SEEDFLAG='monika_seeded_v1';
+      CKEY='monika_commit_v1', SEEDFLAG='monika_seeded_v1',
+      RKEY='monika_steps_v1';
 
 function readStore(k,fb){try{const v=JSON.parse(localStorage.getItem(k));return v==null?fb:v}catch(e){return fb}}
 function writeStore(k,v){
@@ -1060,7 +1086,8 @@ function writeStore(k,v){
 }
 
 let db=readStore(KEY,[]), pays=readStore(PKEY,[]),
-    tasks=readStore(TKEY,[]), cash=readStore(FKEY,null), commits=readStore(CKEY,null);
+    tasks=readStore(TKEY,[]), cash=readStore(FKEY,null), commits=readStore(CKEY,null),
+    recipes=readStore(RKEY,{});
 
 // first run: load the spreadsheet Monika already keeps, and sensible starting commitments
 if(cash===null){cash=FINANCE_SEED.slice();writeStore(FKEY,cash)}
@@ -1112,6 +1139,7 @@ function savePays(){writeStore(PKEY,pays);render()}
 function saveTasks(){writeStore(TKEY,tasks);render()}
 function saveCash(){writeStore(FKEY,cash);render()}
 function saveCommits(){writeStore(CKEY,commits);render()}
+function saveRecipes(){writeStore(RKEY,recipes)}
 
 function fmt(n){return'IDR '+Math.round(n).toLocaleString('en-US')}
 function n0(n){return Math.round(n).toLocaleString('en-US')}
@@ -1319,19 +1347,101 @@ function taskEdit(id){
   document.querySelector('nav button[data-p="daily"]').click();
 }
 function taskDel(id){if(confirm('Delete this task?')){tasks=tasks.filter(x=>x.id!==id);saveTasks()}}
+// ---- steps: the small breakdown under a task, and the memory of it
+// A task's steps are remembered against its name, so the next time the same
+// job comes round the workspace can offer them back instead of asking her to
+// remember what she did last month.
+function normKey(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
+function stepsOf(t){return Array.isArray(t.steps)?t.steps:[]}
+function rememberSteps(t){
+  const k=normKey(t.title);
+  if(!k)return;
+  const list=stepsOf(t).map(s=>s.text).filter(Boolean);
+  if(!list.length){delete recipes[k];saveRecipes();return}
+  recipes[k]={label:t.title,cat:t.cat||'',steps:list,updated:todayISO()};
+  saveRecipes();
+}
+// what could be offered to this task: its own name first, then the only
+// routine filed under the same kind of work
+function recipeFor(t){
+  const k=normKey(t.title);
+  if(recipes[k]&&recipes[k].steps.length)return {key:k,r:recipes[k],why:'same name'};
+  const sameCat=Object.keys(recipes).filter(x=>recipes[x].cat&&recipes[x].cat===t.cat);
+  if(sameCat.length===1&&normKey(recipes[sameCat[0]].label)!==k)
+    return {key:sameCat[0],r:recipes[sameCat[0]],why:'same kind of work'};
+  return null;
+}
+function useRecipe(id,key){
+  const t=tasks.find(x=>x.id===id),r=recipes[key];
+  if(!t||!r)return;
+  t.steps=r.steps.map((tx,i)=>({id:'s'+Date.now()+i,text:tx,done:false}));
+  openSteps[id]=true;saveTasks();
+}
+function dismissRecipe(id){declined[id]=true;renderBoard()}
+function addStep(id){
+  const box=document.getElementById('st_'+id);
+  const text=box?box.value.trim():'';
+  if(!text)return;
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.steps=stepsOf(t).concat([{id:'s'+Date.now()+Math.random().toString(36).slice(2,6),text,done:false}]);
+  rememberSteps(t);openSteps[id]=true;saveTasks();
+}
+function stepToggle(id,sid){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  const s=stepsOf(t).find(x=>x.id===sid);if(!s)return;
+  s.done=!s.done;saveTasks();
+}
+function stepDel(id,sid){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.steps=stepsOf(t).filter(x=>x.id!==sid);
+  rememberSteps(t);saveTasks();
+}
+function toggleSteps(id){openSteps[id]=!openSteps[id];renderBoard()}
+
 // ---- work board
-let openCols={};
+let openCols={}, openSteps={}, declined={};
+function stepsPanel(t){
+  const steps=stepsOf(t);
+  const offer=(!steps.length&&!declined[t.id])?recipeFor(t):null;
+  return '<div class="steps">'+
+    (offer?'<div class="offer">'+
+      '<div><strong>'+esc(offer.r.label)+'</strong> had '+offer.r.steps.length+' step'+
+      (offer.r.steps.length===1?'':'s')+' last time'+(offer.why==='same kind of work'?', under the same kind of work':'')+
+      '. Same again?<div class="prev">'+offer.r.steps.slice(0,4).map((s,i)=>esc((i+1)+'. '+s)).join('<br>')+
+      (offer.r.steps.length>4?'<br>and '+(offer.r.steps.length-4)+' more':'')+'</div></div>'+
+      '<div class="obtn">'+
+        '<button class="btn olv mini2" onclick="useRecipe(\''+t.id+'\',\''+esc(offer.key)+'\')">Yes, use them</button>'+
+        '<button class="btn ghost mini2" onclick="dismissRecipe(\''+t.id+'\')">No, start fresh</button>'+
+      '</div></div>':'')+
+    (steps.length?'<ol class="stl">'+steps.map(s=>
+      '<li class="'+(s.done?'sd':'')+'">'+
+        '<button class="tk sm" onclick="stepToggle(\''+t.id+'\',\''+s.id+'\')">'+(s.done?'✓':'')+'</button>'+
+        '<span>'+esc(s.text)+'</span>'+
+        '<button class="xdel" onclick="stepDel(\''+t.id+'\',\''+s.id+'\')" title="Remove">✕</button>'+
+      '</li>').join('')+'</ol>':'')+
+    '<div class="addstep">'+
+      '<input id="st_'+t.id+'" placeholder="Next step, then Enter" onkeydown="if(event.key===\'Enter\')addStep(\''+t.id+'\')">'+
+      '<button class="btn mini2" onclick="addStep(\''+t.id+'\')">Add step</button>'+
+    '</div>'+
+    (steps.length?'<div class="mt2">These steps are remembered against “'+esc(t.title)+'”, so next time they can be offered back.</div>':'')+
+  '</div>';
+}
 function boardLine(t){
   const ar=t.area||areaOf(t.cat);
   const done=t.status==='done';
+  const steps=stepsOf(t);
+  const sdone=steps.filter(s=>s.done).length;
+  const hasOffer=!steps.length&&!declined[t.id]&&recipeFor(t);
+  const badge=steps.length?sdone+'/'+steps.length+' steps':(hasOffer?'steps ready':'add steps');
   return '<div class="tline'+(done?' is-done':'')+'">'+
     '<button class="tk" onclick="taskToggle(\''+t.id+'\')" title="'+(done?'Reopen':'Mark done')+'">'+(done?'✓':'')+'</button>'+
     '<span class="tt"><b>'+esc(t.title)+'</b>'+
       '<span class="area area-'+esc(ar)+'">'+esc(AREA_LABEL[ar]||ar)+'</span>'+
       '<span class="mt">'+esc(t.cat||'')+(t.time?' · '+esc(t.time):'')+
       ((+t.hrs||0)?' · '+t.hrs+' hrs':'')+(t.date!==todayISO()?' · '+esc(t.date):'')+'</span></span>'+
+    '<button class="stbtn'+(hasOffer?' hot':'')+(steps.length?' has':'')+'" onclick="toggleSteps(\''+t.id+'\')">'+badge+'</button>'+
     '<span>'+pill(TST,t.status)+'</span>'+
-  '</div>';
+  '</div>'+(openSteps[t.id]?stepsPanel(t):'');
 }
 function renderBoard(){
   const today=todayISO();
@@ -1913,7 +2023,8 @@ const SB_URL='https://pkojpglpjtixrwetlxyj.supabase.co';
 const SB_KEY='sb_publishable__FuKPe3UC4jDNEjcRWb_JQ_1DannJ1U';
 // one shared team account, so the gate only ever asks for a password
 const KEYS=['monika_workspace_v1','monika_payments_v1','monika_tasks_v1',
-            'monika_finance_v1','monika_commit_v1','monika_seeded_v1','monika_scope_v1'];
+            'monika_finance_v1','monika_commit_v1','monika_seeded_v1','monika_scope_v1',
+            'monika_steps_v1'];
 
 // each person signs in to her own account with her own password, so the
 // separation is enforced by row level security in the database, not by the
