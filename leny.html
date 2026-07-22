@@ -4174,7 +4174,10 @@ function renderWorkMonthly(){
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div class="card-title" style="margin:0">📋 ${isId?'Rincian Jam Kerja':'Work Hours Detail'}</div>
-        <button class="btn btn-o btn-sm" onclick="openManualWork()">${isId?'+ Tambah':'+ Add'}</button>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-o btn-sm" onclick="openImportWork()">📥 ${isId?'Tempel':'Paste'}</button>
+          <button class="btn btn-o btn-sm" onclick="openManualWork()">${isId?'+ Tambah':'+ Add'}</button>
+        </div>
       </div>
       ${entries.length===0
         ?`<div class="empty"><span class="empty-icon">📭</span>${isId?'Belum ada catatan jam kerja bulan ini':'No work entries this month yet'}</div>`
@@ -4312,30 +4315,117 @@ function clockAction(){
 function setWorkTab(t){ state.activeWorkTab=t; renderWork(); }
 
 function openManualWork(){
+  const isId = state.lang==='id';
   showModal(`
     <div class="modal-title">➕ ${t('add_manual')}</div>
     <div class="fg"><label class="fl">${t('date')}</label><input class="fi" id="m-date" type="date" value="${today()}"></div>
+    <div style="font-size:.7rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.4px;margin:6px 0 4px">${isId?'Shift 1':'Shift 1'}</div>
     <div class="fi-row">
       <div class="fg"><label class="fl">${t('time_in')}</label><input class="fi" id="m-in" type="time" value="08:00"></div>
-      <div class="fg"><label class="fl">${t('time_out')}</label><input class="fi" id="m-out" type="time" value="17:00"></div>
+      <div class="fg"><label class="fl">${t('time_out')}</label><input class="fi" id="m-out" type="time" value="14:00"></div>
+    </div>
+    <div style="font-size:.7rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.4px;margin:6px 0 4px">${isId?'Shift 2 (opsional)':'Shift 2 (optional)'}</div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('time_in')}</label><input class="fi" id="m-in2" type="time"></div>
+      <div class="fg"><label class="fl">${t('time_out')}</label><input class="fi" id="m-out2" type="time"></div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-p" style="flex:1" onclick="saveManualWork()">${t('save')}</button>
       <button class="btn btn-o" style="flex:1" onclick="closeModal()">${t('cancel')}</button>
-    </div>`);
+    </div>
+    <button class="btn btn-o btn-w" style="margin-top:10px" onclick="openImportWork()">📥 ${isId?'Tempel banyak sekaligus':'Paste many at once'}</button>`);
+}
+
+// returns duration in hours, or 0 if the times are missing / out<=in
+function shiftDur(inT,outT){
+  if(!inT||!outT) return 0;
+  const [ih,im]=inT.split(':').map(Number); const [oh,om]=outT.split(':').map(Number);
+  const d=(oh*60+om-ih*60-im)/60;
+  return d>0?Math.round(d*100)/100:0;
+}
+// avoid adding the exact same shift twice (same date + in + out)
+function workEntryExists(date,inT,outT){
+  return state.workHours.entries.some(e=>e.date===date&&e.timeIn===inT&&e.timeOut===outT);
+}
+function addWorkShift(date,inT,outT){
+  const dur=shiftDur(inT,outT);
+  if(!dur) return false;
+  if(workEntryExists(date,inT,outT)) return false;
+  state.workHours.entries.push({id:uid(), date, timeIn:inT, timeOut:outT, duration:dur});
+  return true;
 }
 
 function saveManualWork(){
   const date = document.getElementById('m-date').value;
   const inT = document.getElementById('m-in').value;
   const outT = document.getElementById('m-out').value;
-  if(!date||!inT||!outT) return;
-  const [ih,im]=inT.split(':').map(Number); const [oh,om]=outT.split(':').map(Number);
-  const duration = (oh*60+om-ih*60-im)/60;
-  if(duration<=0){ alert(state.lang==='id'?'Waktu keluar harus setelah masuk!':'Clock out must be after clock in!'); return; }
-  state.workHours.entries.push({id:uid(), date, timeIn:inT, timeOut:outT, duration:Math.round(duration*100)/100});
+  const in2 = document.getElementById('m-in2').value;
+  const out2 = document.getElementById('m-out2').value;
+  if(!date||!inT||!outT){ alert(state.lang==='id'?'Tanggal dan jam Shift 1 wajib diisi.':'Date and Shift 1 times are required.'); return; }
+  if(shiftDur(inT,outT)<=0){ alert(state.lang==='id'?'Waktu keluar harus setelah masuk!':'Clock out must be after clock in!'); return; }
+  if((in2||out2)&&shiftDur(in2,out2)<=0){ alert(state.lang==='id'?'Shift 2: waktu keluar harus setelah masuk!':'Shift 2: clock out must be after clock in!'); return; }
+  addWorkShift(date,inT,outT);
+  if(in2&&out2) addWorkShift(date,in2,out2);
   saveState(); closeModal(); renderWork();
   if(state.activeSection==='report') renderReport();
+}
+
+// ---- bulk paste importer -----------------------------------------------------
+// Accepts free-form lines like "6 Juli 8:23-14:00 lanjut 18:00-20:00". It reads
+// the day, the month name (Indonesian or English, defaults to this month), and
+// every HH:MM-HH:MM range on the line, so two shifts on one line become two
+// entries. Noise words (pagi, siang, sore, malam, lanjut, lembur) are ignored.
+const MONTHS_IMP={jan:1,feb:2,mar:3,apr:4,mei:5,may:5,jun:6,jul:7,agu:8,ags:8,aug:8,sep:9,okt:10,oct:10,nov:11,des:12,dec:12};
+function openImportWork(){
+  const isId = state.lang==='id';
+  const now = new Date();
+  showModal(`
+    <div class="modal-title">📥 ${isId?'Tempel Jam Kerja':'Paste Work Hours'}</div>
+    <div style="font-size:.75rem;color:#888;line-height:1.5;margin-bottom:8px">
+      ${isId?'Satu baris per hari. Tulis tanggal lalu jam-nya. Kalau ada 2 shift, tulis dua rentang jam di baris yang sama.':'One line per day. Write the date then the times. For two shifts, put two ranges on the same line.'}<br>
+      <span style="color:#aaa">${isId?'Contoh':'Example'}: 6 Juli 08:23-14:00 lanjut 18:00-20:00</span>
+    </div>
+    <div class="fg"><label class="fl">${isId?'Tahun':'Year'}</label><input class="fi" id="imp-year" type="number" value="${now.getFullYear()}" style="max-width:120px"></div>
+    <div class="fg"><textarea class="fi" id="imp-text" rows="10" placeholder="1 Juli 07:20-14:23&#10;6 Juli 08:23-14:00 lanjut 18:00-20:00" style="font-family:monospace;font-size:.85rem;resize:vertical"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-p" style="flex:1" onclick="runImportWork()">📥 ${isId?'Masukkan':'Import'}</button>
+      <button class="btn btn-o" style="flex:1" onclick="closeModal()">${t('cancel')}</button>
+    </div>`);
+}
+function runImportWork(){
+  const isId = state.lang==='id';
+  const year = parseInt(document.getElementById('imp-year').value,10) || new Date().getFullYear();
+  const text = document.getElementById('imp-text').value || '';
+  const rangeRe = /(\d{1,2})[:.](\d{2})\s*-\s*(\d{1,2})[:.](\d{2})/g;
+  let added=0, dup=0, bad=0;
+  text.split('\n').forEach(line=>{
+    const raw=line.trim();
+    if(!raw) return;
+    const dayM = raw.match(/^(\d{1,2})/);
+    if(!dayM){ bad++; return; }
+    const day = parseInt(dayM[1],10);
+    // find a month name anywhere on the line, else keep this month
+    let month = new Date().getMonth()+1;
+    const words = raw.toLowerCase().match(/[a-z]{3,}/g)||[];
+    for(const w of words){ if(MONTHS_IMP[w.slice(0,3)]){ month=MONTHS_IMP[w.slice(0,3)]; break; } }
+    const date = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    // strip filler words that can sit between a time and its dash (e.g.
+    // "7:20 pagi -14:23") so the range regex still lines up
+    const clean = raw.replace(/\b(pagi|siang|sore|malam|lanjut|lembur|jam)\b/gi,' ');
+    let m, found=false;
+    rangeRe.lastIndex=0;
+    while((m=rangeRe.exec(clean))){
+      found=true;
+      const inT = `${String(+m[1]).padStart(2,'0')}:${m[2]}`;
+      const outT = `${String(+m[3]).padStart(2,'0')}:${m[4]}`;
+      if(shiftDur(inT,outT)<=0){ bad++; continue; }
+      if(addWorkShift(date,inT,outT)) added++; else dup++;
+    }
+    if(!found) bad++;
+  });
+  saveState(); closeModal(); renderWork();
+  if(state.activeSection==='report') renderReport();
+  showToast((isId?`${added} shift masuk`:`${added} shifts added`)+(dup?(isId?`, ${dup} sudah ada`:`, ${dup} duplicate`):'')+(bad?(isId?`, ${bad} baris dilewati`:`, ${bad} skipped`):''), added?'sage':'red');
 }
 
 function deleteWorkEntry(id){
