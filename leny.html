@@ -5379,6 +5379,12 @@ function buildDailySnapshot(dateStr){
   const meal = state.mealPlan[dateStr]||{};
   const low = allStock().filter(i=>stockStatus(i)!=='ok');
 
+  // extra tasks Leny added that day ("Pekerjaan Tambahan"). These already exist
+  // in state.customTasks but the report never pulled them in, so cooking and
+  // any ad-hoc work were missing from the recap.
+  const tasks = (state.customTasks[dateStr]||[]).map(t=>({text:t.text, emoji:t.emoji||'📋', done:!!t.done}));
+  const tasksDone = tasks.filter(t=>t.done).length;
+
   // score: up to 100
   const hanuScore = hanuTotal>0?Math.round(hanuDone/hanuTotal*25):0;
   const workScore = workHrs>0?Math.min(25,Math.round(workHrs/8*25)):0;
@@ -5386,7 +5392,7 @@ function buildDailySnapshot(dateStr){
   const stockScore = low.length===0?25:low.length<=2?15:5;
   const score = hanuScore+workScore+mealScore+stockScore;
 
-  return {dateStr, care, hanuDone, hanuTotal, workToday, workHrs, shopTrips, shopTotal, shopItems, meal, low, score};
+  return {dateStr, care, hanuDone, hanuTotal, workToday, workHrs, shopTrips, shopTotal, shopItems, meal, low, score, tasks, tasksDone};
 }
 
 function saveReport(){
@@ -5455,6 +5461,14 @@ function renderReport(){
       </div>
 
       <div class="rd-section">
+        <div class="rd-section-title">🧹 ${state.lang==='id'?'Pekerjaan Tambahan':'Extra Work'}</div>
+        ${snap.tasks.length?snap.tasks.map(tk=>`
+          <div class="rd-row"><span style="color:${tk.done?'var(--green)':'#666'}">${tk.done?'✓':'○'} ${tk.emoji} ${tk.text}</span></div>`).join('')
+          :`<div style="font-size:.75rem;color:#ccc">${state.lang==='id'?'Belum ada pekerjaan tambahan':'No extra work yet'}</div>`}
+        ${snap.tasks.length?`<div class="rd-row" style="font-weight:700"><span>${state.lang==='id'?'Selesai':'Done'}</span><span class="rd-val">${snap.tasksDone}/${snap.tasks.length}</span></div>`:''}
+      </div>
+
+      <div class="rd-section">
         <div class="rd-section-title">🍽️ ${t('meals_cooked')}</div>
         <div class="rd-row"><span>${t('breakfast')}</span><span class="rd-val">${meal.breakfast?getRecipeName(meal.breakfast):'—'}</span></div>
         <div class="rd-row"><span>${t('lunch')}</span><span class="rd-val">${meal.lunch?getRecipeName(meal.lunch):'—'}</span></div>
@@ -5514,6 +5528,11 @@ function renderPastReport(dateStr, rep){
           <div class="rd-section-title">⏰ ${t('work_summary')}</div>
           <div class="rd-row"><span>Total</span><span class="rd-val">${(rep.workHrs||0).toFixed(1)} ${state.lang==='id'?'jam':'hrs'}</span></div>
         </div>
+        ${rep.tasks&&rep.tasks.length?`
+        <div class="rd-section">
+          <div class="rd-section-title">🧹 ${state.lang==='id'?'Pekerjaan Tambahan':'Extra Work'}</div>
+          ${rep.tasks.map(tk=>`<div class="rd-row"><span style="color:${tk.done?'var(--green)':'#666'}">${tk.done?'✓':'○'} ${tk.emoji||'📋'} ${tk.text}</span></div>`).join('')}
+        </div>`:''}
         <div class="rd-section">
           <div class="rd-section-title">🍽️ ${t('meals_cooked')}</div>
           ${rep.meal&&Object.keys(rep.meal).length
@@ -5563,6 +5582,10 @@ function formatReportText(dateStr, rep, note){
     s += `🐾 PERAWATAN HANU\nSelesai: ${rep.hanuDone||0}/${rep.hanuTotal||5} tugas\n\n`;
     s += `⏰ JAM KERJA\nTotal: ${(rep.workHrs||0).toFixed(1)} jam\n`;
     if(rep.workToday&&rep.workToday.length) rep.workToday.forEach(e=>s+=`  ${e.timeIn} → ${e.timeOut} (${e.duration.toFixed(1)}h)\n`);
+    if(rep.tasks&&rep.tasks.length){
+      s += `\n🧹 PEKERJAAN TAMBAHAN\n`;
+      rep.tasks.forEach(tk=>s+=`  ${tk.done?'✓':'○'} ${tk.emoji||'📋'} ${tk.text}\n`);
+    }
     s += `\n🍽️ MENU HARI INI\n`;
     if(rep.meal&&Object.keys(rep.meal).length){
       Object.entries(rep.meal).forEach(([m,rid])=>s+=`  ${T.id[m]}: ${getRecipeName(rid)}\n`);
@@ -5580,6 +5603,10 @@ function formatReportText(dateStr, rep, note){
     s += `🐾 HANU CARE\nCompleted: ${rep.hanuDone||0}/${rep.hanuTotal||5} tasks\n\n`;
     s += `⏰ WORK HOURS\nTotal: ${(rep.workHrs||0).toFixed(1)} hours\n`;
     if(rep.workToday&&rep.workToday.length) rep.workToday.forEach(e=>s+=`  ${e.timeIn} → ${e.timeOut} (${e.duration.toFixed(1)}h)\n`);
+    if(rep.tasks&&rep.tasks.length){
+      s += `\n🧹 EXTRA WORK\n`;
+      rep.tasks.forEach(tk=>s+=`  ${tk.done?'✓':'○'} ${tk.emoji||'📋'} ${tk.text}\n`);
+    }
     s += `\n🍽️ MEALS TODAY\n`;
     if(rep.meal&&Object.keys(rep.meal).length){
       Object.entries(rep.meal).forEach(([m,rid])=>s+=`  ${T.en[m]}: ${getRecipeName(rid)}\n`);
@@ -6274,6 +6301,12 @@ function shopDraw(){
       '<input type="number" id="s_'+p[0]+'" min="0" step="1000" placeholder="0"></label>').join('')+'</div>'+
     '<div class="qs" style="margin-top:6px">'+L('Terisi otomatis. Ubah angkanya kalau pembagiannya tidak rata.',
                                                 'Filled in for you. Change the numbers if the split is not even.')+'</div>'+
+
+    // A note for Sophia. When guests eat too, the three shares may not cover the
+    // whole amount; Leny writes here who ate / how Sophia should split it.
+    '<label style="margin-top:10px"><span class="l">'+L('📝 Catatan untuk Sophia (mis. ada tamu ikut makan)','📝 Note for Sophia (e.g. guests ate too)')+'</span>'+
+    '<textarea id="sNote" rows="2" placeholder="'+L('Contoh: ada 2 tamu ikut makan, Sophia yang bagi','e.g. 2 guests joined the meal, Sophia to divide')+'" style="width:100%;font-family:inherit;padding:8px;border:1px solid #d8dae6;border-radius:8px;resize:vertical"></textarea></label>'+
+
     '<div class="rowbtns" style="margin-top:12px">'+
       '<button class="alt" id="sThird">'+L('Hitung ulang','Recalculate')+'</button>'+
       '<button id="sSave">'+L('Simpan','Save')+'</button>'+
@@ -6343,17 +6376,32 @@ async function shopSave(){
   const amt=Number(document.getElementById('sAmt').value)||0;
   if(!desc){shopMsg(L('Tulis dulu belanja apa.','Say what was bought.'),true);return}
   if(amt<=0){shopMsg(L('Jumlahnya belum diisi.','The amount is missing.'),true);return}
+  const note=(document.getElementById('sNote')?document.getElementById('sNote').value:'').trim();
   const shares={};let sum=0;
   PEOPLE.forEach(p=>{const v=Number(document.getElementById('s_'+p[0]).value)||0;shares[p[0]]=v;sum+=v});
-  // a split that does not add up is the whole point of this being written down
-  if(sum!==amt){
-    shopMsg(L('Pembagian '+money(sum)+' tidak sama dengan total '+money(amt)+'. Perbaiki dulu.',
-              'The split of '+money(sum)+' does not match the total of '+money(amt)+'. Fix it first.'),true);
+  // Over-allocating is always an error. Under-allocating is allowed only when a
+  // note explains it (guests ate, so the remainder is Sophia's to divide).
+  if(sum>amt){
+    shopMsg(L('Pembagian '+money(sum)+' lebih besar dari total '+money(amt)+'. Perbaiki dulu.',
+              'The split of '+money(sum)+' is more than the total of '+money(amt)+'. Fix it first.'),true);
     return;
   }
+  if(sum<amt){
+    if(!note){
+      shopMsg(L('Pembagian '+money(sum)+' belum menutup total '+money(amt)+'. Kalau ada tamu ikut makan, tulis di catatan untuk Sophia dulu.',
+                'The split of '+money(sum)+' does not cover the total of '+money(amt)+'. If guests ate too, add a note for Sophia first.'),true);
+      return;
+    }
+    const left=amt-sum;
+    if(!confirm(L('Sisa '+money(left)+' belum dibagi (untuk tamu / diatur Sophia). Simpan begini?',
+                  money(left)+' is left unsplit (guests / Sophia to divide). Save it like this?')))return;
+  }
   shopBusy=true;
+  // cara cepat: the note rides along inside the description so nothing in the
+  // database schema has to change; every read view already shows the description.
+  const fullDesc=note?desc+' — 📝 '+note:desc;
   const row=Object.assign({spent_on:document.getElementById('sDate').value||isoToday(),
-    description:desc,amount:amt,entered_by:'leny'},shares);
+    description:fullDesc,amount:amt,entered_by:'leny'},shares);
   const {error}=await sb.from('home_expenses').insert(row);
   shopBusy=false;
   if(error){console.error(error);shopMsg(L('Gagal disimpan. Coba lagi.','Could not save. Try again.'),true);return}

@@ -2824,12 +2824,19 @@ async function loadHome(){
   const rows=data||[];
   const total=rows.reduce((s,r)=>s+(Number(r.amount)||0),0);
   const per={};HOME_PEOPLE.forEach(p=>per[p[0]]=rows.reduce((s,r)=>s+(Number(r[p[0]])||0),0));
-  // a shop whose three shares do not add up to its total is worth flagging,
-  // not silently averaging away
-  const unsplit=rows.filter(r=>{
+  // a shop whose three shares do not add up is worth flagging, unless it is an
+  // under-split row carrying a 📝 note: that means guests ate too and the
+  // remainder is deliberately left for Sophia to divide, not a mistake.
+  const hasNote=r=>/📝/.test(r.description||'');
+  const rowState=r=>{
     const sum=HOME_PEOPLE.reduce((s,p)=>s+(Number(r[p[0]])||0),0);
-    return Math.round(sum)!==Math.round(Number(r.amount)||0);
-  });
+    const amt=Math.round(Number(r.amount)||0);
+    if(Math.round(sum)>amt)return 'over';
+    if(Math.round(sum)<amt)return hasNote(r)?'guest':'under';
+    return 'ok';
+  };
+  const unsplit=rows.filter(r=>{const s=rowState(r);return s==='over'||s==='under'});
+  const guests=rows.filter(r=>rowState(r)==='guest');
   const monthName=new Date(yy,mm-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
 
   box.innerHTML=
@@ -2851,15 +2858,18 @@ async function loadHome(){
       HOME_PEOPLE.map(p=>'<th class="num who-'+p[2]+'"><span class="whodot dot-'+p[2]+'"></span>'+p[1]+'</th>').join('')+
       '</tr></thead><tbody>'+
       (rows.length?rows.map(r=>{
-        const sum=HOME_PEOPLE.reduce((s,p)=>s+(Number(r[p[0]])||0),0);
-        const bad=Math.round(sum)!==Math.round(Number(r.amount)||0);
+        const st=rowState(r);
+        const bad=st==='over'||st==='under';
+        const guest=st==='guest';
         // who it was for is not stored separately, it is simply who has a share
         const on=HOME_PEOPLE.filter(p=>(Number(r[p[0]])||0)>0);
         const forWho=on.length===HOME_PEOPLE.length?'<span class="mini">shared by all three</span>'
           :on.map(p=>'<span class="mini who-'+p[2]+'">'+p[1]+'</span>').join(', ')||'<span class="mini">nobody</span>';
-        return '<tr'+(bad?' style="background:#FBEFEA"':'')+'>'+
+        const flag=bad?' <em style="color:#8C2038">(split does not add up)</em>'
+          :guest?' <em style="color:#8A6D1B">(sisa untuk Sophia bagi)</em>':'';
+        return '<tr'+(bad?' style="background:#FBEFEA"':guest?' style="background:#FCF6E6"':'')+'>'+
           '<td data-label="Date">'+hesc(r.spent_on||'')+'</td>'+
-          '<td data-label="What">'+hesc(r.description||'')+(bad?' <em style="color:#8C2038">(split does not add up)</em>':'')+
+          '<td data-label="What">'+hesc(r.description||'')+flag+
             '<div style="font-size:11px;color:var(--muted);margin-top:2px">'+forWho+'</div></td>'+
           '<td data-label="Amount" class="num">'+rp(r.amount)+'</td>'+
           HOME_PEOPLE.map(p=>'<td data-label="'+p[1]+'" class="num who-'+p[2]+'">'+
@@ -2872,7 +2882,9 @@ async function loadHome(){
       :'<tr><td colspan="6" class="empty">Leny has not recorded anything for this month yet.</td></tr>')+
     '</tbody></table></div>'+
     (unsplit.length?'<div class="note" style="margin-top:14px">'+unsplit.length+' row'+(unsplit.length===1?'':'s')+
-      ' shaded above do not add up. The three shares do not equal the total. Worth asking Leny about.</div>':'');
+      ' shaded pink do not add up. The three shares do not equal the total. Worth asking Leny about.</div>':'')+
+    (guests.length?'<div class="note" style="margin-top:10px;background:#FCF6E6;border-color:#E7D6A6">'+guests.length+' baris kuning'+
+      ' menandakan ada tamu ikut makan. Sisa yang belum dibagi menunggu Sophia yang membaginya (lihat catatan 📝).</div>':'');
 
   document.getElementById('homeMonthPick').onchange=e=>{homeMonth=e.target.value||homeMonth;loadHome()};
   document.getElementById('homeReload').onclick=loadHome;
