@@ -193,6 +193,18 @@ function status(t,cls){$('barTxt').textContent=t;$('bar').style.background=cls==
 // a figure with no rows behind it is said out loud, not shown as zero
 function unknown(what){return '<div class="empty">Nothing recorded yet for '+esc(what)+'.</div>'}
 
+// A shopping note for Sophia rides inside the description as "…text — 📝 note".
+// Pull it back out so the note can be shown clearly next to Denise, rather
+// than buried at the end of a long "What" cell.
+function splitNote(desc){
+  desc=String(desc||'');
+  const i=desc.indexOf('📝');
+  if(i<0)return {main:desc.trim(),note:''};
+  const main=desc.slice(0,i).replace(/[\s—-]*$/,'').trim();
+  const note=desc.slice(i+2).replace(/^[\s:—-]*/,'').trim();
+  return {main:main||desc.trim(),note:note};
+}
+
 // ---------- loading ----------
 async function loadAll(){
   status('Loading…');
@@ -450,10 +462,19 @@ function viewLeny(){
         '<div class="scroll"><table><thead><tr><th>Date</th><th>What</th><th class="num">Amount</th>'+
         PEOPLE.map(p=>'<th class="num who-'+p[2]+'"><span class="dot d-'+p[2]+'"></span>'+p[1]+'</th>').join('')+
         '</tr></thead><tbody>'+
-        H.rows.map(r=>'<tr><td class="mini">'+esc(r.spent_on||'')+'</td><td>'+esc(r.description||'')+'</td>'+
+        H.rows.map(r=>{
+          const parsed=splitNote(r.description||'');
+          return '<tr><td class="mini">'+esc(r.spent_on||'')+'</td>'+
+          '<td>'+esc(parsed.main)+(parsed.note?' <span style="color:#8A6D1B;font-weight:600">📝</span>':'')+'</td>'+
           '<td class="num">'+rp(r.amount)+'</td>'+
-          PEOPLE.map(p=>'<td class="num who-'+p[2]+'">'+((Number(r[p[0]])||0)?rp(r[p[0]]):'-')+'</td>').join('')+
-          '</tr>').join('')+
+          PEOPLE.map(p=>'<td class="num who-'+p[2]+'">'+((Number(r[p[0]])||0)?rp(r[p[0]]):'-')+
+            // the note lands in Denise's column so she sees it right by her name
+            ((p[0]==='share_denise'&&parsed.note)
+              ?'<div style="margin-top:5px;background:#FCF6E6;border:1px solid #E7D6A6;border-radius:7px;padding:5px 7px;font-size:11px;line-height:1.4;color:#8A6D1B;text-align:left;white-space:normal;font-weight:600">📝 '+esc(parsed.note)+'</div>'
+              :'')+
+            '</td>').join('')+
+          '</tr>';
+        }).join('')+
         '<tr style="background:var(--mist)"><td></td><td><strong>Total</strong></td>'+
           '<td class="num"><strong>'+rp(H.total)+'</strong></td>'+
           PEOPLE.map(p=>'<td class="num who-'+p[2]+'"><strong>'+rp(H.per[p[0]])+'</strong></td>').join('')+'</tr>'+
