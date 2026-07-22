@@ -554,9 +554,13 @@ function showLove(){
 
 // ---------- boot ----------
 $('barRefresh').onclick=loadAll;
-$('barOut').onclick=()=>{
+$('barOut').onclick=async()=>{
+  // Sign out of Supabase too, otherwise index.html sees the still-valid Sophia
+  // session on load and bounces straight back here, so the name list never
+  // appears. Clearing the local flags alone is not enough.
   try{sessionStorage.removeItem('ws_gate')}catch(e){}
   localStorage.setItem('ws_profile','');
+  try{await ws.auth.signOut()}catch(e){}
   location.href='index.html';
 };
 
