@@ -4121,6 +4121,7 @@ function renderWorkLog(entries){
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="we-dur">${e.duration.toFixed(1)}h</div>
+            <button class="btn btn-o btn-sm" onclick="editWorkEntry('${e.id}')">✏️</button>
             <button class="btn btn-d btn-sm" onclick="deleteWorkEntry('${e.id}')">🗑️</button>
           </div>
         </div>`).join('')}
@@ -4192,6 +4193,7 @@ function renderWorkMonthly(){
                 <div style="font-size:.65rem;color:#aaa;margin-top:1px">${isId?'Durasi kerja':'Duration'}</div>
               </div>
               <div style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--sage);flex-shrink:0">${e.duration.toFixed(1)}h</div>
+              <button class="btn btn-o btn-sm" style="flex-shrink:0" onclick="editWorkEntry('${e.id}')">✏️</button>
               <button class="btn btn-d btn-sm" style="flex-shrink:0" onclick="deleteWorkEntry('${e.id}')">🗑️</button>
             </div>`;
         }).join('')
@@ -4333,12 +4335,49 @@ function saveManualWork(){
   if(duration<=0){ alert(state.lang==='id'?'Waktu keluar harus setelah masuk!':'Clock out must be after clock in!'); return; }
   state.workHours.entries.push({id:uid(), date, timeIn:inT, timeOut:outT, duration:Math.round(duration*100)/100});
   saveState(); closeModal(); renderWork();
+  if(state.activeSection==='report') renderReport();
 }
 
 function deleteWorkEntry(id){
   if(!confirm(t('confirm_delete'))) return;
-  state.workHours.entries = state.workHours.entries.filter(e=>e.id!==id);
+  state.workHours.entries = state.workHours.entries.filter(e=>String(e.id)!==String(id));
   saveState(); renderWork();
+  if(state.activeSection==='report') renderReport();
+}
+
+// Edit an existing work entry: change the date or the in/out times and the
+// duration is recalculated. Reachable from the Log tab, the Monthly detail,
+// and straight from the daily report.
+function editWorkEntry(id){
+  const e = state.workHours.entries.find(x=>String(x.id)===String(id));
+  if(!e) return;
+  const isId = state.lang==='id';
+  showModal(`
+    <div class="modal-title">✏️ ${isId?'Edit Jam Kerja':'Edit Work Hours'}</div>
+    <div class="fg"><label class="fl">${t('date')}</label><input class="fi" id="e-date" type="date" value="${e.date}"></div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('time_in')}</label><input class="fi" id="e-in" type="time" value="${e.timeIn}"></div>
+      <div class="fg"><label class="fl">${t('time_out')}</label><input class="fi" id="e-out" type="time" value="${e.timeOut}"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-p" style="flex:1" onclick="saveWorkEdit('${e.id}')">${t('save')}</button>
+      <button class="btn btn-o" style="flex:1" onclick="closeModal()">${t('cancel')}</button>
+    </div>`);
+}
+
+function saveWorkEdit(id){
+  const e = state.workHours.entries.find(x=>String(x.id)===String(id));
+  if(!e) return;
+  const date = document.getElementById('e-date').value;
+  const inT = document.getElementById('e-in').value;
+  const outT = document.getElementById('e-out').value;
+  if(!date||!inT||!outT) return;
+  const [ih,im]=inT.split(':').map(Number); const [oh,om]=outT.split(':').map(Number);
+  const duration = (oh*60+om-ih*60-im)/60;
+  if(duration<=0){ alert(state.lang==='id'?'Waktu keluar harus setelah masuk!':'Clock out must be after clock in!'); return; }
+  e.date=date; e.timeIn=inT; e.timeOut=outT; e.duration=Math.round(duration*100)/100;
+  saveState(); closeModal(); renderWork();
+  if(state.activeSection==='report') renderReport();
 }
 
 // ─── HANU ────────────────────────────────────────────────────────────────────
@@ -5455,9 +5494,14 @@ function renderReport(){
       <div class="rd-section">
         <div class="rd-section-title">⏰ ${t('work_summary')}</div>
         ${snap.workToday.length?snap.workToday.map(e=>`
-          <div class="rd-row"><span>${e.timeIn} → ${e.timeOut}</span><span class="rd-val">${e.duration.toFixed(1)}h</span></div>`).join('')
+          <div class="rd-row"><span>${e.timeIn} → ${e.timeOut}</span>
+            <span style="display:flex;align-items:center;gap:8px">
+              <span class="rd-val">${e.duration.toFixed(1)}h</span>
+              <button onclick="editWorkEntry('${e.id}')" style="border:none;background:none;cursor:pointer;font-size:.9rem;padding:0" title="${state.lang==='id'?'Edit waktu':'Edit time'}">✏️</button>
+            </span></div>`).join('')
           :`<div style="font-size:.75rem;color:#ccc">${t('no_work')}</div>`}
         ${snap.workHrs>0?`<div class="rd-row" style="font-weight:700"><span>Total</span><span class="rd-val">${snap.workHrs.toFixed(1)} ${state.lang==='id'?'jam':'hrs'}</span></div>`:''}
+        <button class="btn btn-o btn-sm btn-w" style="margin-top:8px" onclick="openManualWork()">${state.lang==='id'?'+ Tambah / Edit jam kerja':'+ Add / edit work hours'}</button>
       </div>
 
       <div class="rd-section">
